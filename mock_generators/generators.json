@@ -1,80 +1,92 @@
 {
+    "338d576e": {
+        "args": [
+            {
+                "default": 1,
+                "label": "Minimum Number",
+                "type": "Int"
+            },
+            {
+                "default": 10,
+                "label": "Maximum Number",
+                "type": "Int"
+            }
+        ],
+        "code_url": "mock_generators/generators/338d576e.py",
+        "description": "String generator using the lorem-text package",
+        "name": "Paragraphs (Lorem-text)",
+        "type": "String"
+    },
+    "469b37c7": {
+        "args": [
+            {
+                "default": 1,
+                "label": "Min",
+                "type": "Int"
+            },
+            {
+                "default": 10,
+                "label": "Max",
+                "type": "Int"
+            }
+        ],
+        "code_url": "mock_generators/generators/469b37c7.py",
+        "description": "Random integer from a min and max value argument. Argument values are inclusive.",
+        "name": "Random Int",
+        "type": "Int"
+    },
     "ab64469b": {
         "args": [
             {
-                "type":"datetime",
-                "label":"Oldest Date",
-                "default": "1970-01-01"
+                "default": "1970-01-01",
+                "label": "Oldest Date",
+                "type": "Datetime"
             },
             {
-                "type":"datetime",
+                "default": "2022-11-24",
                 "label": "Newest Date",
-                "default": "2022-11-24"
+                "type": "Datetime"
             }
         ],
         "code_url": "mock_generators/generators/ab64469b.py",
         "description": "Generate a random date between 2 specified dates. Exclusive of days specified.",
-        "image_url": "",
         "name": "Random Date",
         "type": "String"
     },
     "id1": {
-        "code_url" : "mock_generators/generators/loremtext_words.py",
-        "description": "String generator using the lorem-text package",
-        "image_url": "<url_to_thumbnail_image>",
-        "name": "Words (Lorem-text)",
-        "type": "string",
-        "args":[
+        "args": [
             {
-                "type":"int",
-                "label":"Minimum Number",
-                "default": 1
+                "default": 1,
+                "label": "Minimum Number",
+                "type": "Int"
             },
             {
-                "type":"int",
+                "default": 10,
                 "label": "Maximum Number",
-                "default": 10
+                "type": "Int"
             }
-        ]
+        ],
+        "code_url": "mock_generators/generators/loremtext_words.py",
+        "description": "String generator using the lorem-text package",
+        "name": "Words (Lorem-text)",
+        "type": "String"
     },
     "id2": {
-        "code_url" : "mock_generators/generators/loremtext_sentence.py",
+        "args": [
+            {
+                "default": 1,
+                "label": "Minimum Number",
+                "type": "Int"
+            },
+            {
+                "default": 10,
+                "label": "Maximum Number",
+                "type": "Int"
+            }
+        ],
+        "code_url": "mock_generators/generators/loremtext_sentence.py",
         "description": "String generator using the lorem-text package",
-        "image_url": "<url_to_thumbnail_image>",
         "name": "Sentences (Lorem-text)",
-        "type": "string",
-        "args":[
-            {
-                "type":"int",
-                "label":"Minimum Number",
-                "default": 1
-            },
-            {
-                "type":"int",
-                "label": "Maximum Number",
-                "default": 10
-            }
-
-        ]
-    },
-    "338d576e": {
-        "code_url" : "mock_generators/generators/338d576e.py",
-        "description": "String generator using the lorem-text package",
-        "image_url": "<url_to_thumbnail_image>",
-        "name": "Paragraphs (Lorem-text)",
-        "type": "string",
-        "args":[
-            {
-                "type":"int",
-                "label":"Minimum Number",
-                "default": 1
-            },
-            {
-                "type":"int",
-                "label": "Maximum Number",
-                "default": 10
-            }
-
-        ]
+        "type": "String"
     }
 }

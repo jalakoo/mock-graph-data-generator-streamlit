@@ -41,7 +41,7 @@ class GeneratorType(Enum):
 class GeneratorArg():
 
     @staticmethod
-    def fromDict(dict: dict):
+    def from_dict(dict: dict):
         if "type" not in dict.keys():
             raise KeyError("Arg dict missing type key")
         if "label" not in dict.keys():
@@ -67,9 +67,16 @@ class GeneratorArg():
         self.label = label
         self.default = default
 
+    def to_dict(self):
+        return {
+            "type": self.type.to_string(),
+            "label": self.label,
+            "default": self.default
+        }
+
     @staticmethod
-    def listFrom(list: list[dict]):
-        return [GeneratorArg.fromDict(item) for item in list]
+    def list_from(list: list[dict]):
+        return [GeneratorArg.from_dict(item) for item in list]
 
 
 # class GeneratorPackage():
@@ -121,7 +128,7 @@ class Generator():
         if 'args' not in generator_dict.keys():
             args = []
         else :
-            args = GeneratorArg.listFrom(generator_dict['args'])
+            args = GeneratorArg.list_from(generator_dict['args'])
         # if "packages" not in generator_dict.keys():
         #     packages = []
         # else:
@@ -158,3 +165,18 @@ class Generator():
     def import_url(self):
         trimmed = self.code_url.split("/", 1)[1]
         return trimmed.replace("/", ".").replace(".py", "")
+
+    def to_dict(self):
+        return {
+            "name": self.name,
+            "description": self.description,
+            "code_url": self.code_url,
+            "args": [arg.to_dict() for arg in self.args],
+            "type": self.type.to_string()
+        }
+
+def generators_dict_to_json(dict: dict[str, Generator]) -> str:
+    return {key: value.to_dict() for key, value in dict.items()}
+
+def generators_list_to_json(list: list[Generator]) -> str:
+    return [generator.to_dict() for generator in list]

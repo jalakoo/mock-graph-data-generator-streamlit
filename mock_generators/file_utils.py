@@ -67,8 +67,8 @@ def save_file(filepath, data):
         f.write(data)
 
 def save_json(filepath, data):
-    logging.info(f'file_utils.py: Saving json data to {filepath}. Current directory: {os.getcwd()}')
-    with open(filepath, 'w+') as f:
+    logging.info(f'file_utils.py: Saving json data {data} to {filepath}. Current directory: {os.getcwd()}')
+    with open(filepath, 'w') as f:
         json.dump(data, f, cls=EnhancedJSONEncoder, indent=4, sort_keys=True)
         
 def save_csv(filepath, data=list[any], header=list[str]):

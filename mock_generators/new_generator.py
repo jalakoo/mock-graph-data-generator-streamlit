@@ -2,6 +2,7 @@ import uuid
 from file_utils import save_file, save_json
 import logging
 import sys
+from models.generator import Generator, GeneratorArg, GeneratorType, generators_dict_to_json
 
 def createGenerator(
     existing: dict,
@@ -21,18 +22,28 @@ def createGenerator(
     save_file(filename, code)
 
     # Save generator entry to generators.json
-    new_generator_dict = {
-        "name": name,
-        "description": description,
-        "type": type,
-        "code_url": filename,
-        "image_url": "",
-        "args": args,
-    }
-    # existing.update({id: new_generator_dict})
-    existing[id] = new_generator_dict
+    # new_generator_dict = {
+    #     "name": name,
+    #     "description": description,
+    #     "type": type,
+    #     "code_url": filename,
+    #     "image_url": "",
+    #     "args": args,
+    # }
+
+    new_generator = Generator(
+        id = id,
+        type = GeneratorType.typeFromString(type),
+        name = name,
+        description = description,
+        code_url = filename,
+        args = GeneratorArg.list_from(args)
+    )
+    existing[id] = new_generator
+    json = generators_dict_to_json(existing)
+
     try:
-        save_json("mock_generators/generators.json", existing)
+        save_json("mock_generators/generators.json", json)
         return True
     except:
         logging.error(f"Could not save generators.json: {sys.exc_info()[0]}")
