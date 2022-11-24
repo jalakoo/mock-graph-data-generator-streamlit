@@ -1,0 +1,41 @@
+{
+    "id1": {
+        "code_url" : "mock_generators/generators/loremtext_words.py",
+        "description": "String generator using the lorem-text package",
+        "image_url": "<url_to_thumbnail_image>",
+        "name": "Words (Lorem-text)",
+        "type": "string",
+        "args":[
+            {
+                "type":"int",
+                "label":"Minimum Number",
+                "default": 1
+            },
+            {
+                "type":"int",
+                "label": "Maximum Number",
+                "default": 10
+            }
+        ]
+    },
+    "id2": {
+        "code_url" : "mock_generators/generators/loremtext_sentence.py",
+        "description": "String generator using the lorem-text package",
+        "image_url": "<url_to_thumbnail_image>",
+        "name": "Sentences (Lorem-text)",
+        "type": "string",
+        "args":[
+            {
+                "type":"int",
+                "label":"Minimum Number",
+                "default": 1
+            },
+            {
+                "type":"int",
+                "label": "Maximum Number",
+                "default": 10
+            }
+
+        ]
+    }
+}

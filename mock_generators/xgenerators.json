@@ -1,0 +1,37 @@
+{
+    "42bb461c": {
+        "code_url": "mock_generators/generators/42bb461c.py",
+        "description": "Generate random lorem ipsum paragraphs using lorem-text package.",
+        "id": "42bb461c",
+        "image_url": "",
+        "name": "Lorem Ipsum Paragraphs",
+        "type": "String"
+    },
+    "id1": {
+        "code_url": "mock_generators/generators/loremtext_words.py",
+        "description": "String generator using the lorem-text package",
+        "image_url": "<url_to_thumbnail_image>",
+        "name": "Words via Lorem-text",
+        "type": "string",
+        "args":[
+            {
+                "type":"int",
+                "label":"Minimum Number",
+                "default": 1
+            },
+            {
+                "type":"int",
+                "label": "Maximum Number",
+                "default": 10
+            }
+
+        ]
+    },
+    "id2": {
+        "code_url": "mock_generators/generators/loremtext_sentence.py",
+        "description": "String generator using the lorem-text package using sentences, which will captalize the first letter of the sentence",
+        "image_url": "<url_to_thumbnail_image>",
+        "name": "Sentences via Lorem-text",
+        "type": "string"
+    }
+}

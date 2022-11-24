@@ -1,0 +1,80 @@
+{
+    "ab64469b": {
+        "args": [
+            {
+                "type":"datetime",
+                "label":"Oldest Date",
+                "default": "1970-01-01"
+            },
+            {
+                "type":"datetime",
+                "label": "Newest Date",
+                "default": "2022-11-24"
+            }
+        ],
+        "code_url": "mock_generators/generators/ab64469b.py",
+        "description": "Generate a random date between 2 specified dates. Exclusive of days specified.",
+        "image_url": "",
+        "name": "Random Date",
+        "type": "String"
+    },
+    "id1": {
+        "code_url" : "mock_generators/generators/loremtext_words.py",
+        "description": "String generator using the lorem-text package",
+        "image_url": "<url_to_thumbnail_image>",
+        "name": "Words (Lorem-text)",
+        "type": "string",
+        "args":[
+            {
+                "type":"int",
+                "label":"Minimum Number",
+                "default": 1
+            },
+            {
+                "type":"int",
+                "label": "Maximum Number",
+                "default": 10
+            }
+        ]
+    },
+    "id2": {
+        "code_url" : "mock_generators/generators/loremtext_sentence.py",
+        "description": "String generator using the lorem-text package",
+        "image_url": "<url_to_thumbnail_image>",
+        "name": "Sentences (Lorem-text)",
+        "type": "string",
+        "args":[
+            {
+                "type":"int",
+                "label":"Minimum Number",
+                "default": 1
+            },
+            {
+                "type":"int",
+                "label": "Maximum Number",
+                "default": 10
+            }
+
+        ]
+    },
+    "338d576e": {
+        "code_url" : "mock_generators/generators/338d576e.py",
+        "description": "String generator using the lorem-text package",
+        "image_url": "<url_to_thumbnail_image>",
+        "name": "Paragraphs (Lorem-text)",
+        "type": "string",
+        "args":[
+            {
+                "type":"int",
+                "label":"Minimum Number",
+                "default": 1
+            },
+            {
+                "type":"int",
+                "label": "Maximum Number",
+                "default": 10
+            }
+
+        ]
+    }
+}
