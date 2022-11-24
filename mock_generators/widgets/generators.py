@@ -5,9 +5,23 @@ import datetime
 
 def generators_tab(generators: list[Generator]):
     st.write("List of available mock data generators")
+
+    # Search by name or description
+    search_term = st.text_input("Search by keyword", "")
+
+    # Filter by type
+    st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
+    type_filter = st.radio("Filter by type", ["All", "String", "Bool", "Int", "Float","Datetime"])
     # logging.info(f"Generators: {generators}")
     for key in generators:
         generator = generators[key]
+        # Filtering
+        if type_filter != "All" and type_filter != generator.type.to_string():
+            continue
+
+        if search_term != "" and search_term.lower() not in generator.name.lower() and search_term.lower() not in generator.description.lower():
+            continue
+        
         # logging.info(f"Generator: {generator}")
         with st.expander(generator.name):
             st.write(f"Description:\n {generator.description}")

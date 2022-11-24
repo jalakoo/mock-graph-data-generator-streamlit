@@ -14,10 +14,6 @@ def create_tab(generators: list[Generator], args: list[dict] = []):
     description = st.text_input("Generator Description")
     code_template = generic_template()
     code = st.text_area("Generator Code", placeholder = code_template, height = 200, value = code_template)
-    if type == "String":
-        logging.info('String')
-    if type == "Bool":
-        logging.info('Bool')
 
     # Arguments
     num_cols = st.number_input("Number of Arguments", 0)

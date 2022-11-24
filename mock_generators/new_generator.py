@@ -33,7 +33,7 @@ def createGenerator(
 
     new_generator = Generator(
         id = id,
-        type = GeneratorType.typeFromString(type),
+        type = GeneratorType.type_from_string(type),
         name = name,
         description = description,
         code_url = filename,

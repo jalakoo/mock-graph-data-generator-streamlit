@@ -9,7 +9,7 @@ class GeneratorType(Enum):
     DATETIME = 5
 
     @staticmethod
-    def typeFromString(aType: str):
+    def type_from_string(aType: str):
         type = aType.lower()
         if type == "string":
             return GeneratorType.STRING
@@ -52,7 +52,7 @@ class GeneratorArg():
             default = dict["default"]
 
         return GeneratorArg(
-            type = GeneratorType.typeFromString(dict["type"]),
+            type = GeneratorType.type_from_string(dict["type"]),
             label = dict["label"],
             default= default
         )
@@ -136,7 +136,7 @@ class Generator():
         
         return Generator(
             id = id,
-            type = GeneratorType.typeFromString(generator_dict['type']),
+            type = GeneratorType.type_from_string(generator_dict['type']),
             name = generator_dict['name'],
             description = generator_dict['description'],
             # packages = packages,

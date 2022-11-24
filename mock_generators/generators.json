@@ -51,7 +51,7 @@
         "code_url": "mock_generators/generators/ab64469b.py",
         "description": "Generate a random date between 2 specified dates. Exclusive of days specified.",
         "name": "Random Date",
-        "type": "String"
+        "type": "Datetime"
     },
     "id1": {
         "args": [
