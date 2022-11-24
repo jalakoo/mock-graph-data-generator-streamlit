@@ -1,11 +1,14 @@
 import streamlit as st
 from template_selector import generic_template
-import logging
 from widgets.arguments import argument_widget
 from new_generator import createGenerator
 from models.generator import Generator
 
-def create_tab(generators: list[Generator], args: list[dict] = []):
+def create_tab(
+    generators: list[Generator], 
+    spec_filepath: str,
+    code_filepath: str,
+    args: list[dict] = []):
     st.write("Create a new mock data generator")
     # Make radio horizontal
     st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
@@ -35,6 +38,8 @@ def create_tab(generators: list[Generator], args: list[dict] = []):
     if st.button("Create Generator"):
         st.write("Creating generator...")
         success = createGenerator(
+            code_filepath=code_filepath,
+            spec_filepath=spec_filepath,
             existing=generators, 
             type=type, 
             name=name, 

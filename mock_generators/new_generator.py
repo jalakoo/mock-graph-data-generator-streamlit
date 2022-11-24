@@ -5,6 +5,8 @@ import sys
 from models.generator import Generator, GeneratorArg, GeneratorType, generators_dict_to_json
 
 def createGenerator(
+    spec_filepath: str,
+    code_filepath: str,
     existing: dict,
     type: str,
     name: str,
@@ -13,16 +15,13 @@ def createGenerator(
     args: list[dict]
 ) -> bool:
 
-    global spec_filepath
-    global code_filepath
-
     #  Generate new id
     id = str(uuid.uuid4())[:8]
     while id in existing.keys():
         id = str(uuid.uuid4())[:8]
 
     # Save code to file
-    filename = f"{code_filepath}{id}.py"
+    filename = f"{code_filepath}/{id}.py"
     save_file(filename, code)
 
     # Save generator entry to generators.json

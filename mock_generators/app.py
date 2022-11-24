@@ -22,10 +22,18 @@ with tab1:
         global generators
         generators = new_generators
 
-    config_tab(spec_filepath, callback)
+    config_tab(
+        spec_filepath, 
+        code_filepath, 
+        callback)
 
 with tab2:
-    generators_tab(generators)
+    generators_tab(
+        generators, 
+        code_filepath)
 
 with tab3:
-    create_tab(generators)
+    create_tab(
+        generators = generators,
+        spec_filepath = spec_filepath,
+        code_filepath= code_filepath)

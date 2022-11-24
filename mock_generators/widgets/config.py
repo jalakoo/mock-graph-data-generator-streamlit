@@ -2,13 +2,13 @@ import streamlit as st
 from file_utils import load_json, load_string
 from models.generator import Generator, generators_from_json
 
-def config_tab(default_filepath: str, callback) -> list[Generator]:
+def config_tab(default_filepath: str, default_code_filepath: str, callback) -> list[Generator]:
     global generators
     global spec_filepath
     global code_filepath
     st.write("Configuration Options")
     spec_filepath = st.text_input("Generators Spec filepath", default_filepath)
-    code_filepath = st.text_input("Generators Code filepath", "mock_generators/generators")
+    code_filepath = st.text_input("Generators Code filepath", default_code_filepath)
     try:
         with open(spec_filepath) as input:
             generators_file = input.read()

@@ -10,6 +10,7 @@ packages = [{include = "mock_generators"}]
 python = "^3.11"
 streamlit = "^1.15.1"
 lorem-text = "^2.1"
+faker = "^15.3.3"
 
 
 [build-system]

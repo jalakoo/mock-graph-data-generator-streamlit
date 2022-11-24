@@ -113,6 +113,17 @@ optional = false
 python-versions = ">=3.6"
 
 [[package]]
+name = "faker"
+version = "15.3.3"
+description = "Faker is a Python package that generates fake data for you."
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+python-dateutil = ">=2.4"
+
+[[package]]
 name = "gitdb"
 version = "4.0.9"
 description = "Git Object Database"
@@ -560,7 +571,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.11"
-content-hash = "5f10b0e6a6a140b067a205db2483facbc348053597947b22afbc3d9f420f0d3b"
+content-hash = "f439183dc5c6f74d1a8ece75e2fff14ad7bd704e75d29a978d962fbdf0b9cc1a"
 
 [metadata.files]
 altair = [
@@ -606,6 +617,10 @@ decorator = [
 entrypoints = [
     {file = "entrypoints-0.4-py3-none-any.whl", hash = "sha256:f174b5ff827504fd3cd97cc3f8649f3693f51538c7e4bdf3ef002c8429d42f9f"},
     {file = "entrypoints-0.4.tar.gz", hash = "sha256:b706eddaa9218a19ebcd67b56818f05bb27589b1ca9e8d797b74affad4ccacd4"},
+]
+faker = [
+    {file = "Faker-15.3.3-py3-none-any.whl", hash = "sha256:b95b2423ef18d17dcd5977732a0bf0fbbde4937f10dce24ff804581f7f3ca4e9"},
+    {file = "Faker-15.3.3.tar.gz", hash = "sha256:20d090e661bbe88a5d801ea5eb3d853564940352120c84c9a14968847aca2893"},
 ]
 gitdb = [
     {file = "gitdb-4.0.9-py3-none-any.whl", hash = "sha256:8033ad4e853066ba6ca92050b9df2f89301b8fc8bf7e9324d412a63f8bf1a8fd"},

@@ -14,7 +14,7 @@
         ],
         "code_url": "mock_generators/generators/338d576e.py",
         "description": "String generator using the lorem-text package",
-        "name": "Paragraphs (Lorem-text)",
+        "name": "Paragraphs",
         "type": "String"
     },
     "469b37c7": {
@@ -32,8 +32,69 @@
         ],
         "code_url": "mock_generators/generators/469b37c7.py",
         "description": "Random integer from a min and max value argument. Argument values are inclusive.",
-        "name": "Random Int",
+        "name": "Int",
         "type": "Int"
+    },
+    "470ff56f": {
+        "args": [],
+        "code_url": "mock_generators/generators/470ff56f.py",
+        "description": "Country name generator using the Faker library.",
+        "name": "Country",
+        "type": "String"
+    },
+    "57f2df99": {
+        "args": [
+            {
+                "default": 50,
+                "label": "Percent chance of true (out of 100)",
+                "type": "Int"
+            }
+        ],
+        "code_url": "mock_generators/generators/57f2df99.py",
+        "description": "Bool generator using the Faker library.",
+        "name": "Bool",
+        "type": "Bool"
+    },
+    "58e9ddbb": {
+        "args": [],
+        "code_url": "mock_generators/generators/58e9ddbb.py",
+        "description": "First name generator using the Faker library",
+        "name": "First Name",
+        "type": "String"
+    },
+    "5929c11b": {
+        "args": [],
+        "code_url": "mock_generators/generators/5929c11b.py",
+        "description": "Last name generator using the Faker library.",
+        "name": "Last Name",
+        "type": "String"
+    },
+    "5e30c30b": {
+        "args": [],
+        "code_url": "mock_generators/generators/5e30c30b.py",
+        "description": "Company name generator using the Faker library.",
+        "name": "Company Name",
+        "type": "String"
+    },
+    "78bc0765": {
+        "args": [
+            {
+                "default": 37,
+                "label": "Limit character length",
+                "type": "Int"
+            }
+        ],
+        "code_url": "mock_generators/generators/78bc0765.py",
+        "description": "Random UUID 4 hash using Faker library. 37 Characters Max.",
+        "name": "UUID",
+        "type": "String"
+    },
+    "92eeddbb": {
+        "args": [],
+        "code_url": "mock_generators/generators/92eeddbb.py",
+        "description": "City name generator using the Faker library.",
+        "name": "City",
+        "type": "String"
     },
     "ab64469b": {
         "args": [
@@ -50,8 +111,21 @@
         ],
         "code_url": "mock_generators/generators/ab64469b.py",
         "description": "Generate a random date between 2 specified dates. Exclusive of days specified.",
-        "name": "Random Date",
+        "name": "Date",
         "type": "Datetime"
+    },
+    "e0eb78b0": {
+        "args": [
+            {
+                "default": 33,
+                "label": "Limit Character Length",
+                "type": "Int"
+            }
+        ],
+        "code_url": "mock_generators/generators/e0eb78b0.py",
+        "description": "Random MD5 hash using Faker library. 33 Characters max",
+        "name": "MD5",
+        "type": "String"
     },
     "id1": {
         "args": [
@@ -68,7 +142,7 @@
         ],
         "code_url": "mock_generators/generators/loremtext_words.py",
         "description": "String generator using the lorem-text package",
-        "name": "Words (Lorem-text)",
+        "name": "Words",
         "type": "String"
     },
     "id2": {
@@ -86,7 +160,7 @@
         ],
         "code_url": "mock_generators/generators/loremtext_sentence.py",
         "description": "String generator using the lorem-text package",
-        "name": "Sentences (Lorem-text)",
+        "name": "Sentences",
         "type": "String"
     }
 }
