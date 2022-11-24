@@ -4,6 +4,10 @@ from file_utils import load_string
 import datetime
 
 def generators_tab(generators: list[Generator]):
+    if generators is None:
+        st.write("No generators loaded")
+        return
+        
     st.write("List of available mock data generators")
 
     # Search by name or description

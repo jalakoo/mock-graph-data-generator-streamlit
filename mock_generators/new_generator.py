@@ -12,13 +12,17 @@ def createGenerator(
     code: str,
     args: list[dict]
 ) -> bool:
+
+    global spec_filepath
+    global code_filepath
+
     #  Generate new id
     id = str(uuid.uuid4())[:8]
     while id in existing.keys():
         id = str(uuid.uuid4())[:8]
 
     # Save code to file
-    filename = f"mock_generators/generators/{id}.py"
+    filename = f"{code_filepath}{id}.py"
     save_file(filename, code)
 
     # Save generator entry to generators.json
@@ -43,7 +47,7 @@ def createGenerator(
     json = generators_dict_to_json(existing)
 
     try:
-        save_json("mock_generators/generators.json", json)
+        save_json(spec_filepath, json)
         return True
     except:
         logging.error(f"Could not save generators.json: {sys.exc_info()[0]}")
