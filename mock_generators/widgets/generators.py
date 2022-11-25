@@ -1,13 +1,17 @@
 import streamlit as st
+from constants import *
 from models.generator import Generator, GeneratorType
 from file_utils import load_string
 import datetime
 import logging
 import sys
 
-def generators_tab(
-    generators: list[Generator], 
-    code_filepath: str):
+def generators_tab():
+
+    st.write("Search and test available data generators.")
+    st.markdown("--------")
+
+    generators = st.session_state[GENERATORS]
     if generators is None:
         st.write("No generators loaded")
         return
@@ -75,5 +79,5 @@ def generators_tab(
                     result = module.generate(arg_inputs)
                     st.write(f'Output: {result}')
         except:
-            continue
             logging.error(f"Could not load generator code from {code_filepath}: {sys.exc_info()[0]}")
+            continue
