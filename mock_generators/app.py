@@ -1,13 +1,27 @@
 import streamlit as st
 from constants import *
-from widgets.config import config_tab
-from widgets.generators import generators_tab
-from widgets.create import create_tab
-from widgets.mapping import mapping_tab
-from widgets.export import export_tab
-from widgets.importing import import_tab
+from tabs.config import config_tab
+from tabs.generators import generators_tab
+from tabs.create import create_tab
+from tabs.mapping import mapping_tab
+from tabs.export import export_tab
+from tabs.importing import import_tab
 from models.generator import Generator
 
+# SETUP
+# Default state
+if GENERATORS not in st.session_state:
+    st.session_state[GENERATORS] = None
+if SPEC_FILE not in st.session_state:
+    st.session_state[SPEC_FILE] = DEFAULT_GENERATORS_SPEC_FILE
+if CODE_FILE not in st.session_state:
+    st.session_state[CODE_FILE] = DEFAULT_GENERATORS_CODE_PATH
+if SAMPLE_ARROWS_FILE not in st.session_state:
+    st.session_state[SAMPLE_ARROWS_FILE] = DEFAULT_ARROWS_SAMPLE_PATH
+if IMPORTED_FILE not in st.session_state:
+    st.session_state[IMPORTED_FILE] = None
+if NEW_ARGS not in st.session_state:
+    st.session_state[NEW_ARGS] = []
 
 # UI
 st.title("Mock Graph Data Generators")
