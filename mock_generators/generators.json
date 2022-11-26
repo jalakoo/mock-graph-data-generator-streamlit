@@ -1,4 +1,25 @@
 {
+    "05711cac": {
+        "args": [
+        ],
+        "code_url": "mock_generators/generators/05711cac.py",
+        "description": "Random URI with Faker library.",
+        "name": "URL",
+        "type": "String"
+    },
+    "05add148": {
+        "args": [
+            {
+                "default": "",
+                "label": "Optional Domain (ie: company.com)",
+                "type": "String"
+            }
+        ],
+        "code_url": "mock_generators/generators/05add148.py",
+        "description": "Random email with Faker library.",
+        "name": "Email",
+        "type": "String"
+    },
     "338d576e": {
         "args": [
             {

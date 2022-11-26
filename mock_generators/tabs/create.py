@@ -21,6 +21,12 @@ def create_tab():
     # Arguments
     num_cols = st.number_input("Number of Arguments", 0)
 
+    # Adjust saved args from prior run
+    prior_args = st.session_state[NEW_ARGS]
+    if len(prior_args) > num_cols:
+        new_args = prior_args[:num_cols]
+        st.session_state[NEW_ARGS] = new_args
+
     if num_cols > 0:
         for i in range(num_cols):
             st.markdown("""---""")
