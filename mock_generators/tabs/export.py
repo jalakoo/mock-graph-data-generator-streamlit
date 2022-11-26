@@ -5,5 +5,10 @@ def export_tab():
     with col1:
         st.image("mock_generators/media/export.gif")
     with col2:
-        st.write("Select export options and download.")
+        st.write("Export generated data and download.")
     st.markdown("--------")
+
+    ec1, ec2 = st.columns(2)
+    with ec1:
+        st.write("Export generated data")
+        st.button("Export")

@@ -4,6 +4,7 @@ from tabs.config import config_tab
 from tabs.generators import generators_tab
 from tabs.create import create_tab
 from tabs.mapping import mapping_tab
+from tabs.generate import generate_tab
 from tabs.export import export_tab
 from tabs.importing import import_tab
 from models.generator import Generator
@@ -24,6 +25,8 @@ if IMPORTED_FILE not in st.session_state:
     st.session_state[IMPORTED_FILE] = None
 if NEW_ARGS not in st.session_state:
     st.session_state[NEW_ARGS] = []
+if EXPORTS_PATH not in st.session_state:
+    st.session_state[EXPORTS_PATH] = DEFAULT_EXPORTS_PATH
 
 # UI
 st.title("Mock Graph Data Generators")
@@ -32,7 +35,7 @@ st.write("This is a collection of mock data generators for generating mock graph
 generators = None
 imported_file = None
 
-tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Config >", "Import >",  "Mapping >", "Generators >", "New Generator >", "Export"])
+tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(["Config >", "Import >",  "Mapping >", "Generators >", "New Generator >", "Generate", "Export"])
 
 with tab1:
     config_tab()
@@ -50,4 +53,7 @@ with tab5:
     create_tab()
 
 with tab6:
+    generate_tab()
+
+with tab7:
     export_tab()

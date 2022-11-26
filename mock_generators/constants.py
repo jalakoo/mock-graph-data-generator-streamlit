@@ -4,7 +4,7 @@ import streamlit as st
 DEFAULT_GENERATORS_SPEC_FILE = "mock_generators/generators.json"
 DEFAULT_GENERATORS_CODE_PATH = "mock_generators/generators"
 DEFAULT_ARROWS_SAMPLE_PATH = "mock_generators/samples/arrows.json"
-
+DEFAULT_EXPORTS_PATH = "mock_generators/exports"
 
 # Streamlit session keys
 GENERATORS = "generators"
@@ -13,4 +13,5 @@ CODE_FILE = "code_filepath"
 IMPORTED_FILE = "uploaded_file"
 SAMPLE_ARROWS_FILE= "sample_arrows"
 NEW_ARGS = "new_args"
+EXPORTS_PATH = "exports_path"
 
