@@ -20,7 +20,7 @@ def mapping_tab():
             json_file = json.loads(uploaded_file)
             nodes = json_file["nodes"]
             st.write("NODES:")
-            num_nodes = st.number_input("Number of nodes", min_value=1, value=len(nodes))
+            num_nodes = st.number_input("Number of nodes", min_value=1, value=len(nodes), key="mapping_number_of_nodes")
             for i in range(num_nodes):
                 if i < len(nodes):
                     nodes_row(nodes[i])
@@ -29,8 +29,14 @@ def mapping_tab():
 
             relationships = json_file["relationships"]
             st.write("RELATIONSHIPS:")
-            for relationship in relationships:
-                relationship_row(relationship)
+            # for relationship in relationships:
+            #     relationship_row(relationship)
+            num_relationships = st.number_input("Number of relationships", min_value=1, value=len(relationships), key="mapping_number_of_relationships")
+            for i in range(num_relationships):
+                if i < len(relationships):
+                    relationship_row(relationships[i])
+                else:
+                    relationship_row(None)
 
             
         except json.decoder.JSONDecodeError:

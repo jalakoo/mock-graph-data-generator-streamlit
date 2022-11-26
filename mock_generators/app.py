@@ -9,6 +9,8 @@ from tabs.importing import import_tab
 from models.generator import Generator
 
 # SETUP
+st.set_page_config(layout="wide")
+
 # Default state
 if GENERATORS not in st.session_state:
     st.session_state[GENERATORS] = None

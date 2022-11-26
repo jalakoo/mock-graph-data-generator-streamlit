@@ -10,9 +10,6 @@ def generators_filtered(byType: GeneratorType) -> list[Generator]:
     generators = st.session_state[GENERATORS]
     return [generator for _, generator in generators.items() if generator.type == byType]
 
-# def generator_by_name(generators: list[Generator])->Generator:
-
-
 def nodes_row(
     node: dict
     ):
@@ -73,7 +70,7 @@ def nodes_row(
         # Adjust properties + assign generators
         num_properties = st.number_input("Number of properties", value = len(properties), key= f'node_{id}_num_properties')
         for i in range(num_properties):
-            pc1, pc2, pc3, pc4 = st.columns(4)
+            pc1, pc2, pc3, pc4, pc5 = st.columns(5)
             with pc1:
                 existing_name = ""
                 if i < len(properties):
@@ -90,7 +87,7 @@ def nodes_row(
             with pc4:
                 arg_inputs = []
                 selected_generator = next(generator for generator in possible_generators if generator.name == selected_generator_name)
-                logging.info(f'node_row: selected generator: {selected_generator}')
+                # logging.info(f'node_row: selected generator: {selected_generator}')
                 if selected_generator is not None and selected_generator.args is not None:
                     for arg in selected_generator.args:
                         if arg.type == GeneratorType.STRING:
@@ -115,7 +112,14 @@ def nodes_row(
                             arg_inputs.append(st.date_input(
                                 label=arg.label,
                                 value=datetime.datetime.fromisoformat(arg.default),
-                                key = f'node_{id}_property_{i}_generator_{selected_generator.id}_{arg.label}'
-                            ))
+                                key = f'node_{id}_property_{i}_generator_{selected_generator.id}_{arg.label}'))
+            with pc5:
+                module = __import__(selected_generator.import_url(), fromlist=['generate'])
+                # logging.info(f'arg_inputs: {arg_inputs}')
+                result = module.generate(arg_inputs)
+                st.write(f'Sample')
+                st.text(f'{result}')
+
         st.markdown('---')
         num_select_nodes = st.number_input("Count", value = 0, key=f"node_{id}_num_nodes")
+          
