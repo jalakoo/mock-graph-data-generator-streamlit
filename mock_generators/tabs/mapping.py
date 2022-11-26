@@ -19,9 +19,19 @@ def mapping_tab():
         try:
             json_file = json.loads(uploaded_file)
             nodes = json_file["nodes"]
-            # relationships = json_file["relationships"]
-            # logging.info(f"Successfully converted uploaded file to json: {json_file}\n\nnodes: {nodes} - count: {len(nodes)}")
-            for node in nodes:
-                nodes_row(node)
+            st.write("NODES:")
+            num_nodes = st.number_input("Number of nodes", min_value=1, value=len(nodes))
+            for i in range(num_nodes):
+                if i < len(nodes):
+                    nodes_row(nodes[i])
+                else:
+                    nodes_row(None)
+
+            relationships = json_file["relationships"]
+            st.write("RELATIONSHIPS:")
+            for relationship in relationships:
+                relationship_row(relationship)
+
+            
         except json.decoder.JSONDecodeError:
             st.error('JSON file is not valid.')

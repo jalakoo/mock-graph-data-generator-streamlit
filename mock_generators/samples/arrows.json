@@ -1,65 +1,301 @@
 {
-    "nodes": [
-      {
-        "id": "n0",
-        "position": {
-          "x": -145,
-          "y": -101
-        },
-        "caption": "",
-        "labels": [
-          "Person",
-          "Actor"
-        ],
-        "properties": {
-          "string": "email"
-        },
-        "style": {}
+  "style": {
+    "font-family": "sans-serif",
+    "background-color": "#ffffff",
+    "background-image": "",
+    "background-size": "100%",
+    "node-color": "#ffffff",
+    "border-width": 4,
+    "border-color": "#000000",
+    "radius": 50,
+    "node-padding": 5,
+    "node-margin": 2,
+    "outside-position": "auto",
+    "node-icon-image": "",
+    "node-background-image": "",
+    "icon-position": "inside",
+    "icon-size": 64,
+    "caption-position": "inside",
+    "caption-max-width": 200,
+    "caption-color": "#000000",
+    "caption-font-size": 50,
+    "caption-font-weight": "normal",
+    "label-position": "inside",
+    "label-display": "pill",
+    "label-color": "#000000",
+    "label-background-color": "#ffffff",
+    "label-border-color": "#000000",
+    "label-border-width": 4,
+    "label-font-size": 40,
+    "label-padding": 5,
+    "label-margin": 4,
+    "directionality": "directed",
+    "detail-position": "inline",
+    "detail-orientation": "parallel",
+    "arrow-width": 5,
+    "arrow-color": "#000000",
+    "margin-start": 5,
+    "margin-end": 5,
+    "margin-peer": 20,
+    "attachment-start": "normal",
+    "attachment-end": "normal",
+    "relationship-icon-image": "",
+    "type-color": "#000000",
+    "type-background-color": "#ffffff",
+    "type-border-color": "#000000",
+    "type-border-width": 0,
+    "type-font-size": 16,
+    "type-padding": 5,
+    "property-position": "outside",
+    "property-alignment": "colon",
+    "property-color": "#000000",
+    "property-font-size": 16,
+    "property-font-weight": "normal"
+  },
+  "nodes": [
+    {
+      "id": "n0",
+      "position": {
+        "x": -306.93969052033395,
+        "y": 271.3634778613202
       },
-      {
-        "id": "n1",
-        "position": {
-          "x": 157.25,
-          "y": -101
-        },
-        "caption": "Project",
-        "labels": [],
-        "properties": {},
-        "style": {}
+      "caption": "Person",
+      "labels": [],
+      "properties": {
+        "email": "string",
+        "salary_usd": "int",
+        "first_name": "string",
+        "last_name": "string"
+      },
+      "style": {}
+    },
+    {
+      "id": "n1",
+      "position": {
+        "x": 140.47912663185497,
+        "y": -242.94280598852143
+      },
+      "caption": "Company",
+      "style": {},
+      "labels": [],
+      "properties": {
+        "name": "string",
+        "url": "string"
       }
-    ],
-    "relationships": [
-      {
-        "id": "n0",
-        "fromId": "n0",
-        "toId": "n1",
-        "type": "CREATED",
-        "properties": {},
-        "style": {}
+    },
+    {
+      "id": "n2",
+      "position": {
+        "x": 327.18123761141004,
+        "y": 321.16964734862705
       },
-      {
-        "id": "n1",
-        "fromId": "n0",
-        "toId": "n1",
-        "type": "CAN_ADMIN",
-        "properties": {},
-        "style": {}
-      },
-      {
-        "id": "n2",
-        "fromId": "n0",
-        "toId": "n1",
-        "type": "CAN_EDIT",
-        "properties": {},
-        "style": {}
-      },
-      {
-        "id": "n3",
-        "fromId": "n0",
-        "toId": "n1",
-        "type": "CAN_VIEW",
-        "properties": {},
-        "style": {}
+      "caption": "Task",
+      "style": {},
+      "labels": [],
+      "properties": {
+        "name": "string",
+        "uuid": "string",
+        "status": "string",
+        "url": "string"
       }
-    ]
-  }
+    },
+    {
+      "id": "n3",
+      "position": {
+        "x": 368.8996870029248,
+        "y": 83
+      },
+      "caption": "Project",
+      "style": {},
+      "labels": [],
+      "properties": {
+        "uuid": "string",
+        "name": "string",
+        "description": "string",
+        "status": "string",
+        "url": "string"
+      }
+    },
+    {
+      "id": "n4",
+      "position": {
+        "x": 234.98709028113726,
+        "y": 684.896929711894
+      },
+      "caption": "Comm",
+      "style": {},
+      "labels": [],
+      "properties": {
+        "type": "string",
+        "uuid": "string"
+      }
+    },
+    {
+      "id": "n5",
+      "position": {
+        "x": 22.00373805355819,
+        "y": 144.97533582828441
+      },
+      "caption": "Tool",
+      "style": {},
+      "labels": [],
+      "properties": {
+        "cost_usd_monthly": "int",
+        "uuid": "string",
+        "name": "string",
+        "url": "string"
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "id": "n0",
+      "type": "WORKS_AT",
+      "style": {},
+      "properties": {},
+      "fromId": "n0",
+      "toId": "n1"
+    },
+    {
+      "id": "n1",
+      "type": "CREATED",
+      "style": {},
+      "properties": {
+        "created_at": "datetime"
+      },
+      "fromId": "n0",
+      "toId": "n2"
+    },
+    {
+      "id": "n2",
+      "type": "ASSIGNED",
+      "style": {},
+      "properties": {
+        "created_at": "datetime"
+      },
+      "fromId": "n0",
+      "toId": "n2"
+    },
+    {
+      "id": "n3",
+      "type": "WATCHING",
+      "style": {},
+      "properties": {
+        "created_at": "datetime"
+      },
+      "fromId": "n0",
+      "toId": "n2"
+    },
+    {
+      "id": "n4",
+      "type": "ASSOCIATED_WITH",
+      "style": {},
+      "properties": {},
+      "fromId": "n2",
+      "toId": "n3"
+    },
+    {
+      "id": "n5",
+      "type": "SENT",
+      "style": {},
+      "properties": {
+        "created_at": "datetime"
+      },
+      "fromId": "n0",
+      "toId": "n4"
+    },
+    {
+      "id": "n6",
+      "type": "ASSOCIATED_WITH",
+      "style": {},
+      "properties": {},
+      "fromId": "n4",
+      "toId": "n2"
+    },
+    {
+      "id": "n7",
+      "type": "ASSOCIATED_WITH",
+      "style": {},
+      "properties": {},
+      "fromId": "n3",
+      "toId": "n1"
+    },
+    {
+      "id": "n8",
+      "type": "ASSOCIATED_WITH",
+      "style": {},
+      "properties": {},
+      "fromId": "n2",
+      "toId": "n1"
+    },
+    {
+      "id": "n9",
+      "type": "USES",
+      "style": {},
+      "properties": {
+        "started_at": "datetime",
+        "ended_at": "datetime"
+      },
+      "fromId": "n0",
+      "toId": "n5"
+    },
+    {
+      "id": "n10",
+      "type": "ASSOCIATED_WITH",
+      "style": {},
+      "properties": {},
+      "fromId": "n5",
+      "toId": "n2"
+    },
+    {
+      "id": "n11",
+      "type": "ASSOCIATED_WITH",
+      "style": {},
+      "properties": {},
+      "fromId": "n5",
+      "toId": "n3"
+    },
+    {
+      "id": "n12",
+      "type": "ASSOCIATED_WITH",
+      "style": {},
+      "properties": {},
+      "fromId": "n5",
+      "toId": "n4"
+    },
+    {
+      "id": "n13",
+      "type": "CLIENT_OF",
+      "style": {},
+      "properties": {},
+      "fromId": "n1",
+      "toId": "n1"
+    },
+    {
+      "id": "n14",
+      "type": "WORKS_FOR",
+      "style": {},
+      "properties": {},
+      "fromId": "n0",
+      "toId": "n0"
+    },
+    {
+      "id": "n15",
+      "type": "ASSOCIATED_WITH",
+      "style": {},
+      "properties": {},
+      "fromId": "n4",
+      "toId": "n4"
+    },
+    {
+      "id": "n16",
+      "type": "SENT_TO",
+      "style": {},
+      "properties": {
+        "created_at": "datetime"
+      },
+      "fromId": "n4",
+      "toId": "n0"
+    }
+  ]
+}

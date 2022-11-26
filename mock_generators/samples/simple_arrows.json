@@ -1,0 +1,65 @@
+{
+    "nodes": [
+      {
+        "id": "n0",
+        "position": {
+          "x": -145,
+          "y": -101
+        },
+        "caption": "",
+        "labels": [
+          "Person",
+          "Actor"
+        ],
+        "properties": {
+          "string": "email"
+        },
+        "style": {}
+      },
+      {
+        "id": "n1",
+        "position": {
+          "x": 157.25,
+          "y": -101
+        },
+        "caption": "Project",
+        "labels": [],
+        "properties": {},
+        "style": {}
+      }
+    ],
+    "relationships": [
+      {
+        "id": "n0",
+        "fromId": "n0",
+        "toId": "n1",
+        "type": "CREATED",
+        "properties": {},
+        "style": {}
+      },
+      {
+        "id": "n1",
+        "fromId": "n0",
+        "toId": "n1",
+        "type": "CAN_ADMIN",
+        "properties": {},
+        "style": {}
+      },
+      {
+        "id": "n2",
+        "fromId": "n0",
+        "toId": "n1",
+        "type": "CAN_EDIT",
+        "properties": {},
+        "style": {}
+      },
+      {
+        "id": "n3",
+        "fromId": "n0",
+        "toId": "n1",
+        "type": "CAN_VIEW",
+        "properties": {},
+        "style": {}
+      }
+    ]
+  }
