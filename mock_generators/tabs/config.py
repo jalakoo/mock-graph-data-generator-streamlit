@@ -4,20 +4,24 @@ from file_utils import load_json, load_string
 from models.generator import Generator, generators_from_json
 
 def config_tab() -> list[Generator]:
-    default_spec_filepath = st.session_state[SPEC_FILE]
-    default_code_filepath = st.session_state[CODE_FILE]
 
-    st.write("This is where you can change the source locations for importing and reading generator specifications and code files.")
+    col1, col2 = st.columns([1,11])
+    with col1:
+        st.image("mock_generators/media/options.gif")
+    with col2:
+        st.write("Optionally change the source locations for importing and reading generator specifications and code files.")
     st.markdown("--------")
 
-    new_spec_filepath = st.text_input("Generators Spec filepath", default_spec_filepath)
-    new_code_filepath = st.text_input("Generators Code filepath", default_code_filepath)
 
-    # Update filepaths
-    if new_spec_filepath != default_spec_filepath:
+    new_spec_filepath = st.text_input("Generators Spec filepath", st.session_state[SPEC_FILE])
+    new_code_filepath = st.text_input("Generators Code filepath", st.session_state[CODE_FILE])
+    
+    if new_spec_filepath != st.session_state[SPEC_FILE]:
         st.session_state[SPEC_FILE] = new_spec_filepath
-    if new_code_filepath != default_code_filepath:
+    if new_code_filepath != st.session_state[CODE_FILE]:
         st.session_state[CODE_FILE] = new_code_filepath
+        
+    # TODO: Add resest
 
     # Load generators
     generators = st.session_state[GENERATORS]
@@ -34,3 +38,5 @@ def config_tab() -> list[Generator]:
         st.error('File not found.')
     with st.expander("Raw Generators JSON"):
         st.text(generators_file)
+
+    st.markdown("Images by Freepik from [Flaticon](https://www.flaticon.com/)")

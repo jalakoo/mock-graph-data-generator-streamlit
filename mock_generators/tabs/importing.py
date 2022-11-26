@@ -5,7 +5,11 @@ from io import StringIO
 
 def import_tab():
 
-    st.markdown("This is where you can import JSON files from an [arrows.app](https://arrows.app/#/local/id=A330UT1VEBAjNH1Ykuss) data model for us in the mapping section.")
+    col1, col2 = st.columns([1,11])
+    with col1:
+        st.image("mock_generators/media/import.gif")
+    with col2:
+        st.markdown("Optionally import JSON files from an [arrows.app](https://arrows.app/#/local/id=A330UT1VEBAjNH1Ykuss) data model for use in the mapping tab.")
     st.markdown("--------")
 
     uploaded_file = st.file_uploader("Upload an arrows JSON file", type="json")
@@ -42,3 +46,4 @@ def import_tab():
         st.error('File not found.')
     with st.expander("Arrows JSON Sample"):
         st.text(generators_file)
+

@@ -23,7 +23,7 @@
         "args": [
             {
                 "default": "",
-                "label": "List of float (ie: 1, 2, 3)",
+                "label": "List of float (ie: 1.0, 2.2, 3.3)",
                 "type": "String"
             }
         ],

@@ -9,7 +9,11 @@ import sys
 
 def generators_tab():
 
-    st.write("Search and test available data generators.")
+    col1, col2 = st.columns([1,11])
+    with col1:
+        st.image("mock_generators/media/electric-tower.gif")
+    with col2:
+        st.write("Search and test available data generators.")
     st.markdown("--------")
 
     generators = st.session_state[GENERATORS]

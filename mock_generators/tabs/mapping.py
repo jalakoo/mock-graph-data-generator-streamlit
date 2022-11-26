@@ -7,7 +7,11 @@ from widgets.relationships import relationship_row
 
 def mapping_tab():
 
-    st.write("Import, create, and edit mock data generation options.")
+    col1, col2 = st.columns([1,11])
+    with col1:
+        st.image("mock_generators/media/shuffle.gif")
+    with col2:
+        st.write("Create and edit mock data generation options.")
     uploaded_file = st.session_state[IMPORTED_FILE]
     if uploaded_file is not None:
         with st.expander("Imported File"):

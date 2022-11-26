@@ -7,9 +7,15 @@ from models.generator import Generator
 
 def create_tab():
 
-    st.write("This is where you can add additional generators for creating mock data with.")
+    col1, col2 = st.columns([1,11])
+    with col1:
+        st.image("mock_generators/media/blueprint.gif")
+    with col2:
+        st.write("Add additional generators for creating mock data with. Currently doesnt not clear after saving a new generator. Please go to the Generator tab to check if the generator was properly added.")
     st.markdown("--------")
 
+    # TODO: Put into a reseting st.form
+    
     # Make radio horizontal
     st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
     type = st.radio("Generator Type", ["String", "Bool", "Int", "Float","Datetime"])

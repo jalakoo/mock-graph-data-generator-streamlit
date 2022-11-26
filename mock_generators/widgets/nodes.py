@@ -127,29 +127,30 @@ def nodes_row(
         selected_count_generator_name = st.selectbox("Int Generator to use", possible_count_generator_names, key=f"node_{id}_count_generator")
         selected_count_generator = next(generator for generator in possible_count_generators if generator.name == selected_count_generator_name)
         count_arg_inputs = []
-        for arg in selected_count_generator.args:
-            if arg.type == GeneratorType.STRING:
-                count_arg_inputs.append(st.text_input(
-                    label=arg.label, 
-                    value = arg.default,
-                    key = f'node_{id}_count_generator_{selected_generator.id}_{arg.label}'
+        if selected_count_generator is not None:
+            for arg in selected_count_generator.args:
+                if arg.type == GeneratorType.STRING:
+                    count_arg_inputs.append(st.text_input(
+                        label=arg.label, 
+                        value = arg.default,
+                        key = f'node_{id}_count_generator_{selected_count_generator.id}_{arg.label}'
+                        ))
+                if arg.type == GeneratorType.INT or arg.type == GeneratorType.FLOAT:
+                    count_arg_inputs.append(st.number_input(
+                        label= arg.label,
+                        value= arg.default,
+                        key = f'node_{id}_count_generator_{selected_count_generator.id}_{arg.label}'
+                        ))
+                if arg.type == GeneratorType.BOOL:
+                    count_arg_inputs.append(st.radio(
+                        label=arg.label,
+                        index=arg.default,
+                        key = f'node_{id}_count_generator_{selected_count_generator.id}_{arg.label}'
                     ))
-            if arg.type == GeneratorType.INT or arg.type == GeneratorType.FLOAT:
-                count_arg_inputs.append(st.number_input(
-                    label= arg.label,
-                    value= arg.default,
-                    key = f'node_{id}_count_generator_{selected_generator.id}_{arg.label}'
-                    ))
-            if arg.type == GeneratorType.BOOL:
-                count_arg_inputs.append(st.radio(
-                    label=arg.label,
-                    index=arg.default,
-                    key = f'node_{id}_count_generator_{selected_generator.id}_{arg.label}'
-                ))
-            if arg.type == GeneratorType.DATETIME:
-                count_arg_inputs.append(st.date_input(
-                    label=arg.label,
-                    value=datetime.datetime.fromisoformat(arg.default),
-                    key = f'node_{id}_count_generator_{selected_generator.id}_{arg.label}'))
+                if arg.type == GeneratorType.DATETIME:
+                    count_arg_inputs.append(st.date_input(
+                        label=arg.label,
+                        value=datetime.datetime.fromisoformat(arg.default),
+                        key = f'node_{id}_count_generator_{selected_count_generator.id}_{arg.label}'))
         # num_select_nodes = st.number_input("Count", value = 0, key=f"node_{id}_num_nodes")
           
