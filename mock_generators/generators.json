@@ -1,7 +1,6 @@
 {
     "05711cac": {
-        "args": [
-        ],
+        "args": [],
         "code_url": "mock_generators/generators/05711cac.py",
         "description": "Random URI with Faker library.",
         "name": "URL",
@@ -19,6 +18,19 @@
         "description": "Random email with Faker library.",
         "name": "Email",
         "type": "String"
+    },
+    "111d38e0": {
+        "args": [
+            {
+                "default": "",
+                "label": "List of float (ie: 1, 2, 3)",
+                "type": "String"
+            }
+        ],
+        "code_url": "mock_generators/generators/111d38e0.py",
+        "description": "Randomly selected float from a comma-seperated list of options.",
+        "name": "Float from list",
+        "type": "Float"
     },
     "338d576e": {
         "args": [
@@ -90,6 +102,19 @@
         "name": "Last Name",
         "type": "String"
     },
+    "5bf1fbd6": {
+        "args": [
+            {
+                "default": "",
+                "label": "List of words (ie: alpha, brave, charlie)",
+                "type": "String"
+            }
+        ],
+        "code_url": "mock_generators/generators/5bf1fbd6.py",
+        "description": "Randomly selected string from a comma-seperated list of options.",
+        "name": "String from list",
+        "type": "String"
+    },
     "5e30c30b": {
         "args": [],
         "code_url": "mock_generators/generators/5e30c30b.py",
@@ -135,6 +160,20 @@
         "name": "Date",
         "type": "Datetime"
     },
+    "c9a071b5": {
+        "args": [],
+        "code_url": "mock_generators/generators/c9a071b5.py",
+        "description": "Technobabble words all lower-cased. Faker Library",
+        "name": "Technical BS Phrase",
+        "type": "String"
+    },
+    "d1ebdc1a": {
+        "args": [],
+        "code_url": "mock_generators/generators/d1ebdc1a.py",
+        "description": "Phrase with first letter capitalized. Faker Library",
+        "name": "Catch Phrase",
+        "type": "String"
+    },
     "e0eb78b0": {
         "args": [
             {
@@ -147,6 +186,42 @@
         "description": "Random MD5 hash using Faker library. 33 Characters max",
         "name": "MD5",
         "type": "String"
+    },
+    "e56d87a3": {
+        "args": [
+            {
+                "default": "",
+                "label": "List of integers (ie: 1, 2, 3)",
+                "type": "String"
+            }
+        ],
+        "code_url": "mock_generators/generators/e56d87a3.py",
+        "description": "Randomly selected int from a comma-seperated list of options.",
+        "name": "Int from list",
+        "type": "Int"
+    },
+    "e8cff8c1": {
+        "args": [
+            {
+                "default": 0.0,
+                "label": "Min",
+                "type": "Float"
+            },
+            {
+                "default": 1.0,
+                "label": "Max",
+                "type": "Float"
+            },
+            {
+                "default": 2,
+                "label": "Decimal Places",
+                "type": "Int"
+            }
+        ],
+        "code_url": "mock_generators/generators/e8cff8c1.py",
+        "description": "Random float between a range. Inclusive.",
+        "name": "Float",
+        "type": "Float"
     },
     "id1": {
         "args": [

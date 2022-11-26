@@ -4,6 +4,16 @@ import uuid
 
 def relationship_row(relationship: dict):
 
+    # Sample relationship dict from arrows.app
+    # {
+    #   "id": "n0",
+    #   "type": "WORKS_AT",
+    #   "style": {},
+    #   "properties": {},
+    #   "fromId": "n0",
+    #   "toId": "n1"
+    # }
+
     if relationship is None:
         id = str(uuid.uuid4())[:8]
         type = ""
