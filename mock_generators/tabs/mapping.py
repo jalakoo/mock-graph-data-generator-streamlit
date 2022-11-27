@@ -2,8 +2,8 @@ import streamlit as st
 from constants import *
 import json
 import logging
-from widgets.nodes import nodes_row
-from widgets.relationships import relationship_row
+from widgets.node_row import nodes_row
+from widgets.relationship_row import relationship_row
 
 def mapping_tab():
 
@@ -11,7 +11,7 @@ def mapping_tab():
     with col1:
         st.image("mock_generators/media/shuffle.gif")
     with col2:
-        st.write("Create and edit mock data generation options.")
+        st.write("Create and edit mock data generation options. \n\nNodes and relationships are default EXCLUDED from mapping, meaning no data will be generated for them. Expand options for each node or relationship, verify/edit labels and properties before enabling each for mock data generation by clicking on the 'Generate Data for this Node' or 'Generate Data for this Relationship' checkbox.")
     uploaded_file = st.session_state[IMPORTED_FILE]
     if uploaded_file is not None:
         with st.expander("Imported File"):
@@ -21,21 +21,21 @@ def mapping_tab():
     # Default options
     nodes = [{
         "id": "1",
-        "labels": ["Person"],
-        "caption": "",
+        "caption": "Person",
+        "labels": [],
         "properties": {
         }
     },
     {
         "id": "2",
-        "labels": ["Company"],
-        "caption": "",
+        "caption": "Company",
+        "labels": [],
         "properties": {
         }
     }]
     relationships = [{
         "id": "r1",
-        "type": "",
+        "type": "WORKS_AT",
         "fromId": "1",
         "toId": "2",
         "properties": {

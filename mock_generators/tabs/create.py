@@ -1,6 +1,5 @@
 import streamlit as st
 from constants import *
-from template_selector import generic_template
 from widgets.arguments import argument_widget
 from new_generator import createGenerator
 from models.generator import Generator
@@ -15,13 +14,15 @@ def create_tab():
     st.markdown("--------")
 
     # TODO: Put into a reseting st.form
-    
+
     # Make radio horizontal
     st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
     type = st.radio("Generator Type", ["String", "Bool", "Int", "Float","Datetime"])
     name = st.text_input("Generator Name")
     description = st.text_input("Generator Description")
-    code_template = generic_template()
+    # code_template = generic_template()
+    with open(st.session_state[CODE_TEMPLATE_FILE], "r") as file:
+        code_template = file.read()
     code = st.text_area("Generator Code", placeholder = code_template, height = 200, value = code_template)
 
     # Arguments

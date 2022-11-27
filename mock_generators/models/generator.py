@@ -175,6 +175,12 @@ class Generator():
             "type": self.type.to_string()
         }
 
+    def __str__(self):
+        return f'Generator: id: {self.id}, name: {self.name}'
+
+    def __repr__(self):
+        return self.__str__()
+
 def generators_dict_to_json(dict: dict[str, Generator]) -> str:
     return {key: value.to_dict() for key, value in dict.items()}
 

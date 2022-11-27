@@ -34,7 +34,7 @@ def config_tab() -> list[Generator]:
             st.error('File not found.')
         st.write("Loaded spec file")
         with st.expander("Generators Spec JSON"):
-            st.text(generators_file)
+            st.code(generators_file)
 
     # Load generators code
     cc1, cc2 = st.columns([1,2])
@@ -56,7 +56,20 @@ def config_tab() -> list[Generator]:
             if files == "":
                 st.warning("No files found in specified path.")
             # TODO: Make files list vertically
-            st.text(files)
+            st.code(files)
+
+    # Load new generator template file
+    cc1, cc2 = st.columns([1,2])
+    with cc1:
+        new_template_filepath = st.text_input("Generator Code Template file", st.session_state[CODE_TEMPLATE_FILE])
+        if new_template_filepath != st.session_state[CODE_TEMPLATE_FILE]:
+            st.session_state[CODE_TEMPLATE_FILE] = new_template_filepath
+        with open(st.session_state[CODE_TEMPLATE_FILE], "r") as file:
+            code_template = file.read()
+    with cc2:
+        st.write("Loaded code template file")
+        with st.expander("Generator Code Template"):
+            st.code(code_template)
 
     # Load export path
     new_exports_filepath = st.text_input("Generated Data filepath", st.session_state[EXPORTS_PATH])
@@ -66,6 +79,7 @@ def config_tab() -> list[Generator]:
     # TODO: Verify export path is available
 
     # TODO: Add resest
+
 
 
 

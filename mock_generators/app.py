@@ -8,6 +8,7 @@ from tabs.generate import generate_tab
 from tabs.export import export_tab
 from tabs.importing import import_tab
 from models.generator import Generator
+from models.mapping import Mapping, NodeMapping, RelationshipMapping, PropertyMapping
 
 # SETUP
 st.set_page_config(layout="wide")
@@ -27,15 +28,21 @@ if NEW_ARGS not in st.session_state:
     st.session_state[NEW_ARGS] = []
 if EXPORTS_PATH not in st.session_state:
     st.session_state[EXPORTS_PATH] = DEFAULT_EXPORTS_PATH
+if CODE_TEMPLATE_FILE not in st.session_state:
+    st.session_state[CODE_TEMPLATE_FILE] = DEFAULT_CODE_TEMPLATES_FILE
+if MAPPINGS not in st.session_state:
+    st.session_state[MAPPINGS] = Mapping(
+        nodes={}, 
+        relationships={})
 
 # UI
-st.title("Mock Graph Data Generators")
-st.write("This is a collection of mock data generators for generating mock graph data in a mockgraphdata app")
+st.title("Mock Graph Data Generator")
+st.markdown("This is a collection of tools to generate mock graph data for [Neo4j](https://neo4j.com) graph databases.")
 
 generators = None
 imported_file = None
 
-tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(["Config >", "Import >",  "Mapping >", "Generators >", "New Generator >", "Generate", "Export"])
+tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(["Config >", "Import >",  "Mapping >", "Generators >", "New Generator >", "Generate >", "Export"])
 
 with tab1:
     config_tab()
