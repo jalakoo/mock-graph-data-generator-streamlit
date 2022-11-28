@@ -97,6 +97,8 @@ def nodes_row(
         # Generate fields for user to adjust property names, types, and generator to create mock data with
         property_maps = []
         for i in range(num_properties):
+
+            # Create a new propertyMapping for storing user selections
             property_map = PropertyMapping(id=f'node_{id}_property_{i}')
             pc1, pc2, pc3, pc4, pc5 = st.columns(5)
 
@@ -125,53 +127,57 @@ def nodes_row(
 
             # Optional Generator arguments, if any
             with pc4:
-                arg_inputs = []
-                if selected_generator is not None and selected_generator.args is not None:
-
-                    for index, arg in enumerate(selected_generator.args):
-                        if arg.type == GeneratorType.STRING:
-                            arg_input = st.text_input(
-                                label=arg.label, 
-                                value = arg.default,
-                                key = f'node_{id}_property_{i}_generator_{selected_generator.id}_{arg.label}'
+                if selected_generator is not None:
+                    if selected_generator.args == []:
+                        property_map.args.clear()
+                    else:
+                        for p_index, arg in enumerate(selected_generator.args):
+                            if arg.type == GeneratorType.STRING:
+                                arg_input = st.text_input(
+                                    label=arg.label, 
+                                    value = arg.default,
+                                    key = f'node_{id}_property_{i}_generator_{selected_generator.id}_{arg.label}'
+                                    )
+                            elif arg.type == GeneratorType.INT or arg.type == GeneratorType.FLOAT:
+                                arg_input = st.number_input(
+                                    label= arg.label,
+                                    value= arg.default,
+                                    key = f'node_{id}_property_{i}_generator_{selected_generator.id}_{arg.label}'
+                                    )
+                            elif arg.type == GeneratorType.BOOL:
+                                arg_input = st.radio(
+                                    label=arg.label,
+                                    index=arg.default,
+                                    key = f'node_{id}_property_{i}_generator_{selected_generator.id}_{arg.label}'
                                 )
-                        elif arg.type == GeneratorType.INT or arg.type == GeneratorType.FLOAT:
-                            arg_input = st.number_input(
-                                label= arg.label,
-                                value= arg.default,
-                                key = f'node_{id}_property_{i}_generator_{selected_generator.id}_{arg.label}'
-                                )
-                        elif arg.type == GeneratorType.BOOL:
-                            arg_input = st.radio(
-                                label=arg.label,
-                                index=arg.default,
-                                key = f'node_{id}_property_{i}_generator_{selected_generator.id}_{arg.label}'
-                            )
-                            # arg_inputs.append()
-                        elif arg.type == GeneratorType.DATETIME:
-                            arg_input = st.date_input(
-                                label=arg.label,
-                                value=datetime.datetime.fromisoformat(arg.default),
-                                key = f'node_{id}_property_{i}_generator_{selected_generator.id}_{arg.label}')
+                                # arg_inputs.append()
+                            elif arg.type == GeneratorType.DATETIME:
+                                arg_input = st.date_input(
+                                    label=arg.label,
+                                    value=datetime.datetime.fromisoformat(arg.default),
+                                    key = f'node_{id}_property_{i}_generator_{selected_generator.id}_{arg.label}')
+                            else:
+                                arg_input = None
 
-                        # Save argument values
-                        # if index > len(property_map.generator_args):
-                        property_map.generator_args.append(arg_input)
-                        # else:
-                        #     property_map.generator_args[index] = arg_input
-                        arg_inputs.append(arg_input)
-
+                            # Save argument values
+                            logging.info(f'property_map: {property_map}: arg_input: {arg_input}')
+                            if p_index < len(property_map.args):
+                                property_map.args[p_index] = arg_input
+                            else:
+                                property_map.args.append(arg_input)
+                            logging.info(f'property_map after update: {property_map}')
 
                 # Save options for generating mock property data later
                 property_maps.append(property_map)
-                logging.info(f'property_maps: {property_maps}')
+                # logging.info(f'property_maps: {property_maps}')
                         
             with pc5:
-                generator_code_filepath = selected_generator.import_url()
-                # logging.info(f'generator_code_filepath: {generator_code_filepath}')
-                module = __import__(generator_code_filepath, fromlist=['generate'])
+                # Display sample data
+                # generator_code_filepath = selected_generator.import_url()
+                # module = __import__(generator_code_filepath, fromlist=['generate'])
                 # logging.info(f'arg_inputs: {arg_inputs}')
-                result = module.generate(arg_inputs)
+                # result = module.generate(arg_inputs)
+                result = selected_generator.run(property_map.args)
                 st.write(f'Sample')
                 st.text(f'{result}')
 
@@ -188,30 +194,37 @@ def nodes_row(
         with ncc2:
             count_arg_inputs = []
             if selected_count_generator is not None:
-                for arg in selected_count_generator.args:
+                for count_index, arg in enumerate(selected_count_generator.args):
                     if arg.type == GeneratorType.STRING:
-                        count_arg_inputs.append(st.text_input(
+                        count_arg = st.text_input(
                             label=arg.label, 
                             value = arg.default,
                             key = f'node_{id}_count_generator_{selected_count_generator.id}_{arg.label}'
-                            ))
-                    if arg.type == GeneratorType.INT or arg.type == GeneratorType.FLOAT:
-                        count_arg_inputs.append(st.number_input(
+                            )
+                    elif arg.type == GeneratorType.INT or arg.type == GeneratorType.FLOAT:
+                        count_arg = st.number_input(
                             label= arg.label,
                             value= arg.default,
                             key = f'node_{id}_count_generator_{selected_count_generator.id}_{arg.label}'
-                            ))
-                    if arg.type == GeneratorType.BOOL:
-                        count_arg_inputs.append(st.radio(
+                            )
+                    elif arg.type == GeneratorType.BOOL:
+                        count_arg = st.radio(
                             label=arg.label,
                             index=arg.default,
                             key = f'node_{id}_count_generator_{selected_count_generator.id}_{arg.label}'
-                        ))
-                    if arg.type == GeneratorType.DATETIME:
-                        count_arg_inputs.append(st.date_input(
+                        )
+                    elif arg.type == GeneratorType.DATETIME:
+                        count_arg = st.date_input(
                             label=arg.label,
                             value=datetime.datetime.fromisoformat(arg.default),
-                            key = f'node_{id}_count_generator_{selected_count_generator.id}_{arg.label}'))
+                            key = f'node_{id}_count_generator_{selected_count_generator.id}_{arg.label}')
+                    else:
+                        count_arg = None
+                    if count_arg is not None:
+                        if count_index >= len(count_arg_inputs):
+                            count_arg_inputs.append(count_arg)
+                        else:
+                            count_arg_inputs[count_index] = count_arg
         with ncc3:
             enabled = st.checkbox("Generate Data for this node", value=False, key=f"node_{id}_enabled")
             if enabled:
@@ -226,7 +239,7 @@ def nodes_row(
                     labels = labels,
                     properties=property_maps,
                     count_generator=selected_count_generator,
-                    count_generator_args=count_arg_inputs,)
+                    count_args=count_arg_inputs,)
                 nodes[id] = node_mapping
                 mapping.nodes = nodes
                 st.session_state[MAPPINGS] = mapping

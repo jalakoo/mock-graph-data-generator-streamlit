@@ -9,7 +9,7 @@ class PropertyMapping():
             name = "",
             type = "",
             generator = None,
-            generator_args = {}
+            args = []
         )
 
     def __init__(
@@ -18,15 +18,16 @@ class PropertyMapping():
         name: str = None, 
         type: GeneratorType = None, 
         generator: Generator = None, 
-        generator_args: list[any] = []):
+        # Args to pass into generator during running
+        args: list[any] = []):
         self.id = id
         self.name = name
         self.type = type
         self.generator = generator
-        self.generator_args = generator_args
+        self.args = args
 
     def __str__(self):
-        return f"PropertyMapping(id={self.id}, name={self.name}, type={self.type}, generator={self.generator}, generator_args={self.generator_args})"
+        return f"PropertyMapping(id={self.id}, name={self.name}, type={self.type}, generator={self.generator}, args={self.args})"
         
     def __repr__(self):
         return self.__str__()
@@ -37,6 +38,6 @@ class PropertyMapping():
             "name": self.name,
             "type": self.type.to_string(),
             "generator": self.generator.to_dict(),
-            "generator_args": self.generator_args
+            "args": self.args
         }
 

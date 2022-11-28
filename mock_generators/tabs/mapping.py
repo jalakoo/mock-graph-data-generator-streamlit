@@ -25,6 +25,7 @@ def mapping_tab():
         "caption": "Person",
         "labels": [],
         "properties": {
+            "uuid": "string",
             "name": "string",
         }
     },
@@ -33,6 +34,7 @@ def mapping_tab():
         "caption": "Company",
         "labels": [],
         "properties": {
+            "uuid":"string",
             "name": "string",
         }
     }]

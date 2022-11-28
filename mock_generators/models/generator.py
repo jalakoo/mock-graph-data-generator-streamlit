@@ -157,9 +157,9 @@ class Generator():
     def __repr__(self):
         return self.__str__()
 
-    def run(self, *args):
+    def run(self, args):
         module = __import__(self.import_url(), fromlist=['generate'])
-        # logging.info(f'arg_inputs: {arg_inputs}')
+        logging.info(f'generator {self} running with arg_inputs: {args}')
         return module.generate(args)
 
 def generators_dict_to_json(dict: dict[str, Generator]) -> str:
