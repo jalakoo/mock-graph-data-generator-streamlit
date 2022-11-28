@@ -1,9 +1,33 @@
-from models.mapping import Mapping, NodeMapping, RelationshipMapping, PropertyMapping
+from models.mapping import Mapping
+from models.node_mapping import NodeMapping
+from models.relationship_mapping import RelationshipMapping
+from models.property_mapping import PropertyMapping
 from models.generator import Generator
 import logging
-from file_utils import load_string
+from file_utils import save_csv
 import sys
 from models.data_import_json import DataImporterJson
+import logging
+
+def generate_node_csv_header(node: NodeMapping)->list[str]:
+    # Generate a column header and value for every property in the node
+    properties: PropertyMapping = node.properties
+    result = ["id"]
+    logging.info(f'generate_node_csv_header: {node.caption} properties: {properties}')
+    for property in properties:
+        result.append(property.name)
+    return result
+
+def generate_node_csv(node: NodeMapping)->list[any]:
+    # Generate values for properties
+    properties: PropertyMapping = node.properties
+    result = [f'{node.id}'] 
+    for property in properties:
+        args = property.generator_args
+        value = property.generator.run(args)
+        logging.info(f'generate_node_csv: {property.name} = {value}')
+        result.append(value)
+    return result
 
 def generate_csv(
     mapping: Mapping,
@@ -15,6 +39,13 @@ def generate_csv(
     nodes = mapping.nodes
     for node_id, node in nodes.items():
         logging.info(f"Generating node: {node}")
+
+        # csv filename to save node data to
+        csv_filename = f"{node.caption}_{node_id}.csv"
+        # remove trailing slash if present
+        cleaned_export_folder = export_folder.rstrip("/") 
+        csv_filepath = f"{cleaned_export_folder}/{csv_filename}"
+
 
         #  Determine how many nodes to generate
         count_generator = node.count_generator
@@ -31,14 +62,20 @@ def generate_csv(
 
         # Generate nodes with properties
         if count is not None:
-            # Generate the node property values
-            for index, propertyMap in enumerate(node.properties):
-                # Generate the node
-                pass
+            # Generate .csv header
+            header = generate_node_csv_header(node)
+            rows = []
+            # Generate row data
+            for _ in range(count):
+                rows.append(generate_node_csv(node))
+            
+            logging.info(f'header: {header}, rows: {rows}')
+            # Save .csv
+            save_csv(filepath=csv_filepath, header=header, data=rows)
 
 
     # Generate relationships
-    logging.info('tbd')
+    # logging.info('tbd')
 
     # Generate data-importer json
     # The data-import json file is a dict made up of 4 keys:

@@ -38,6 +38,7 @@ class GeneratorType(Enum):
         else:
             raise TypeError("Type not supported")
 
+
 class GeneratorArg():
 
     @staticmethod
@@ -78,30 +79,6 @@ class GeneratorArg():
     def list_from(list: list[dict]):
         return [GeneratorArg.from_dict(item) for item in list]
 
-
-# class GeneratorPackage():
-#     def __init__(
-#         self, 
-#         url: str,
-#         module: str,
-#         module_import_name: str,
-#         package_names: list[str]
-#     ):
-#         self.url = url
-#         self.module = module
-#         self.module_import_name = module_import_name
-#         self.package_names = package_names
-
-# def generator_packages_from(aList : list[dict])-> list[GeneratorPackage]:
-#     result = []
-#     for item in aList:
-#         logging.info(f'generator_packages_from: {item}')
-#         result.append(GeneratorPackage(
-#             url = item["url"],
-#             module = item["module_name"],
-#             module_import_name = item["module_import_name"]
-#         ))
-#     return result
 
 def generators_from_json(json : dict) -> dict:
     result = {}
@@ -160,7 +137,6 @@ class Generator():
         self.code_url = code_url
         self.args = args
         self.type = type
-        # self.packages = packages
     
     def import_url(self):
         trimmed = self.code_url.split("/", 1)[1]
@@ -180,6 +156,11 @@ class Generator():
 
     def __repr__(self):
         return self.__str__()
+
+    def run(self, *args):
+        module = __import__(self.import_url(), fromlist=['generate'])
+        # logging.info(f'arg_inputs: {arg_inputs}')
+        return module.generate(args)
 
 def generators_dict_to_json(dict: dict[str, Generator]) -> str:
     return {key: value.to_dict() for key, value in dict.items()}

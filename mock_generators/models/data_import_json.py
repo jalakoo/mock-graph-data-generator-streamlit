@@ -1,4 +1,7 @@
-from models.mapping import Mapping, NodeMapping, RelationshipMapping, PropertyMapping
+from models.mapping import Mapping
+from models.node_mapping import NodeMapping
+from models.relationship_mapping import RelationshipMapping
+from models.property_mapping import PropertyMapping
 import logging
 
 class DataImporterJson():

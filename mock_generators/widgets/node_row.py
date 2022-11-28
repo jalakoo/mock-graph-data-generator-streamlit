@@ -2,7 +2,9 @@ import streamlit as st
 from constants import *
 from widgets.property import property_row
 from models.generator import Generator, GeneratorType
-from models.mapping import Mapping, NodeMapping, PropertyMapping
+from models.mapping import Mapping
+from models.node_mapping import NodeMapping
+from models.property_mapping import PropertyMapping
 import uuid
 import datetime
 import logging
@@ -33,7 +35,7 @@ def nodes_row(
     # "style": {}
     # }
 
-    # Optionally prelude options from an import
+    # Load a default empty node
     if node is None:
         id = str(uuid.uuid4())[:8]
         labels = ["<add_label>"]
@@ -41,6 +43,7 @@ def nodes_row(
         properties = []
         selected_labels = []
     else:
+        # Load a node from an imported file
         id = node.get("id")
         labels = node.get("labels", [])
         caption = node.get("caption", "")
@@ -50,16 +53,20 @@ def nodes_row(
     with st.expander(f"NODE {id} - {caption}"):
         st.markdown('---')
 
+        nc1, nc2 = st.columns(2)
+
         # Caption
-        new_caption = st.text_input(
-        f"Primary Label", 
-        value = caption,
-        key=f"node_{id}_primary_label")
-        if new_caption != caption:
-            caption = new_caption
+        with nc1:
+            new_caption = st.text_input(
+            f"Primary Label", 
+            value = caption,
+            key=f"node_{id}_primary_label")
+            if new_caption != caption:
+                caption = new_caption
 
         # Adjust number of labels
-        num_labels = st.number_input("Number of Additional labels", min_value=0, value=len(labels), key=f"node_{id}_num_labels")
+        with nc2:
+            num_labels = st.number_input("Number of Additional labels", min_value=0, value=len(labels), key=f"node_{id}_num_labels")
         if num_labels > 0:
             label_columns = st.columns(num_labels)
             for li, x in enumerate(label_columns):
@@ -78,13 +85,22 @@ def nodes_row(
 
         st.markdown('---')
 
-        # Adjust properties + assign generators
-        num_properties = st.number_input("Number of properties", value = len(properties), min_value=0, key= f'node_{id}_num_properties')
-        property_map = None
+        # Adjust number of properties 
+        initial_num_properties = len(properties)
+        # All nodes must have at least one property
+        # Otherwise we're just generating a bunch of empty nodes
+        # Which doesn't require a mock data generator to do
+        if initial_num_properties < 1:
+            initial_num_properties = 1
+        num_properties = st.number_input("Number of properties", value = initial_num_properties, min_value=1, key= f'node_{id}_num_properties')
+
+        # Generate fields for user to adjust property names, types, and generator to create mock data with
         property_maps = []
         for i in range(num_properties):
             property_map = PropertyMapping(id=f'node_{id}_property_{i}')
             pc1, pc2, pc3, pc4, pc5 = st.columns(5)
+
+            # Property name
             with pc1:
                 existing_name = ""
                 if i < len(properties):
@@ -92,22 +108,26 @@ def nodes_row(
                     existing_name = properties[i][0] 
                 name = st.text_input("Property Name",value=existing_name, key=f"node_{id}_property_{i}_name")
                 property_map.name = name
+
+            # Property type
             with pc2:
                 type_string = st.selectbox("Type", ["String", "Bool", "Int", "Float","Datetime"], key=f"node_{id}_property_{i}_type")
                 type = GeneratorType.type_from_string(type_string)
                 property_map.type = type
+
+            # Generator to create property data with
             with pc3:
                 possible_generators = generators_filtered(type)
                 possible_generator_names = [generator.name for generator in possible_generators]
                 selected_generator_name = st.selectbox("Generator", possible_generator_names, key=f"node_{id}_property_{i}_generator")
                 selected_generator = next(generator for generator in possible_generators if generator.name == selected_generator_name)
                 property_map.generator = selected_generator
+
+            # Optional Generator arguments, if any
             with pc4:
                 arg_inputs = []
-                # logging.info(f'node_row: selected generator: {selected_generator}')
                 if selected_generator is not None and selected_generator.args is not None:
 
-                    # Change to enumarate to get index
                     for index, arg in enumerate(selected_generator.args):
                         if arg.type == GeneratorType.STRING:
                             arg_input = st.text_input(
@@ -134,15 +154,22 @@ def nodes_row(
                                 value=datetime.datetime.fromisoformat(arg.default),
                                 key = f'node_{id}_property_{i}_generator_{selected_generator.id}_{arg.label}')
 
-                        if index > len(property_map.args):
-                            property_map.args.append(arg_input)
-                        else:
-                            property_map.args[index] = arg_input
+                        # Save argument values
+                        # if index > len(property_map.generator_args):
+                        property_map.generator_args.append(arg_input)
+                        # else:
+                        #     property_map.generator_args[index] = arg_input
                         arg_inputs.append(arg_input)
-                        property_maps.append(property_map)
+
+
+                # Save options for generating mock property data later
+                property_maps.append(property_map)
+                logging.info(f'property_maps: {property_maps}')
                         
             with pc5:
-                module = __import__(selected_generator.import_url(), fromlist=['generate'])
+                generator_code_filepath = selected_generator.import_url()
+                # logging.info(f'generator_code_filepath: {generator_code_filepath}')
+                module = __import__(generator_code_filepath, fromlist=['generate'])
                 # logging.info(f'arg_inputs: {arg_inputs}')
                 result = module.generate(arg_inputs)
                 st.write(f'Sample')
@@ -194,6 +221,7 @@ def nodes_row(
                 # logging.info(f'nodes: {nodes}')
                 node_mapping = NodeMapping(
                     id = id,
+                    caption = caption,
                     position = node.get("position", {"x": 0, "y": 0}),
                     labels = labels,
                     properties=property_maps,

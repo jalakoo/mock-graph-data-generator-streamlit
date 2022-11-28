@@ -3,6 +3,8 @@ from constants import *
 from file_utils import load_json, load_string
 from models.generator import Generator, generators_from_json
 import os
+import sys
+import logging
 
 def config_tab() -> list[Generator]:
 
@@ -12,6 +14,24 @@ def config_tab() -> list[Generator]:
     with col2:
         st.write("Optionally change the export path, source locations for importing and reading generator specifications and code files. Generators are code functions used to generate specific types of mock data (ie: email generator for creating mock email addresses).")
     st.markdown("--------")
+
+    # Load export path
+    new_exports_filepath = st.text_input("Generated Data filepath", st.session_state[EXPORTS_PATH])
+    if new_exports_filepath != st.session_state[EXPORTS_PATH]:
+        st.session_state[EXPORTS_PATH] = new_exports_filepath
+
+    # Load new generator template file
+    cc1, cc2 = st.columns([1,2])
+    with cc1:
+        new_template_filepath = st.text_input("Generator Code Template file", st.session_state[CODE_TEMPLATE_FILE])
+        if new_template_filepath != st.session_state[CODE_TEMPLATE_FILE]:
+            st.session_state[CODE_TEMPLATE_FILE] = new_template_filepath
+        with open(st.session_state[CODE_TEMPLATE_FILE], "r") as file:
+            code_template = file.read()
+    with cc2:
+        st.write("Loaded code template file")
+        with st.expander("Generator Code Template"):
+            st.code(code_template)
 
 
     # Load generators
@@ -44,37 +64,23 @@ def config_tab() -> list[Generator]:
             st.session_state[CODE_FILE] = new_code_filepath
     files = ""
     with cc2:
+        st.write(f'Code Files in path: {st.session_state[CODE_FILE]}')
         try:
+            # for root, dirs, files in os.walk(st.session_state[CODE_FILE]):
+            #     for file in files:
+            #         if file.endswith(".py"):
+            #             files += file
             for root, dirs, files in os.walk(st.session_state[CODE_FILE]):
                 for file in files:
                     if file.endswith(".py"):
-                        files += file
+                        try:
+                            with st.expander(file):
+                                with open(os.path.join(root, file), 'r') as f:
+                                    st.text(f.read())
+                        except:
+                            logging.error(f"Error reading file: {file}")
         except:
-            st.error('Could not retrieve generator .py files from specified code filepath.')
-        st.write("Loaded code files")
-        with st.expander("Generators Code Files"):
-            if files == "":
-                st.warning("No files found in specified path.")
-            # TODO: Make files list vertically
-            st.code(files)
-
-    # Load new generator template file
-    cc1, cc2 = st.columns([1,2])
-    with cc1:
-        new_template_filepath = st.text_input("Generator Code Template file", st.session_state[CODE_TEMPLATE_FILE])
-        if new_template_filepath != st.session_state[CODE_TEMPLATE_FILE]:
-            st.session_state[CODE_TEMPLATE_FILE] = new_template_filepath
-        with open(st.session_state[CODE_TEMPLATE_FILE], "r") as file:
-            code_template = file.read()
-    with cc2:
-        st.write("Loaded code template file")
-        with st.expander("Generator Code Template"):
-            st.code(code_template)
-
-    # Load export path
-    new_exports_filepath = st.text_input("Generated Data filepath", st.session_state[EXPORTS_PATH])
-    if new_exports_filepath != st.session_state[EXPORTS_PATH]:
-        st.session_state[EXPORTS_PATH] = new_exports_filepath
+            logging.error(f'config.py: Error retrieving generator .py files from {st.session_state[CODE_FILE]}: {sys.exc_info()[0]}')
     
     # TODO: Verify export path is available
 

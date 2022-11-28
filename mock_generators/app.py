@@ -8,7 +8,10 @@ from tabs.generate import generate_tab
 from tabs.export import export_tab
 from tabs.importing import import_tab
 from models.generator import Generator
-from models.mapping import Mapping, NodeMapping, RelationshipMapping, PropertyMapping
+from models.mapping import Mapping
+from models.node_mapping import NodeMapping
+from models.relationship_mapping import RelationshipMapping
+from models.property_mapping import PropertyMapping
 
 # SETUP
 st.set_page_config(layout="wide")

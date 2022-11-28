@@ -19,11 +19,13 @@ def mapping_tab():
     st.markdown("--------")
 
     # Default options
+    # Matching arrows.json dict format
     nodes = [{
         "id": "1",
         "caption": "Person",
         "labels": [],
         "properties": {
+            "name": "string",
         }
     },
     {
@@ -31,6 +33,7 @@ def mapping_tab():
         "caption": "Company",
         "labels": [],
         "properties": {
+            "name": "string",
         }
     }]
     relationships = [{
@@ -43,6 +46,7 @@ def mapping_tab():
     }]
 
     # Convert uploaded file (if available) to json
+    # Supporting arrows 0.5.4
     if uploaded_file is not None:
         try:
             json_file = json.loads(uploaded_file)
