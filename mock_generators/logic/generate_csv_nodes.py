@@ -22,7 +22,7 @@ def generate_node_csv(node: NodeMapping)->list[any]:
     result = [] 
     for property in properties:
         args = property.args
-        value = property.generator.run(args)
+        value = property.generator.generate(args)
         result.append(value)
     return result
 

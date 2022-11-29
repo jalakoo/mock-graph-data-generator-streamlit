@@ -1,5 +1,6 @@
 from enum import Enum
 import logging
+import sys
 
 class GeneratorType(Enum):
     BOOL = 1,
@@ -157,9 +158,15 @@ class Generator():
     def __repr__(self):
         return self.__str__()
 
-    def run(self, args):
+    def generate(self, args):
         module = __import__(self.import_url(), fromlist=['generate'])
-        return module.generate(args)
+        try:
+            result = module.generate(args)
+            return result
+        except:
+            logging.error(f"Error generating data for generator {self.name}, id {self.id}: {sys.exc_info()[0]}")
+            return None
+
 
 def generators_dict_to_json(dict: dict[str, Generator]) -> str:
     return {key: value.to_dict() for key, value in dict.items()}

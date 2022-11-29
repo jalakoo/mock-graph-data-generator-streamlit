@@ -176,7 +176,7 @@ def nodes_row(
                 # module = __import__(generator_code_filepath, fromlist=['generate'])
                 # logging.info(f'arg_inputs: {arg_inputs}')
                 # result = module.generate(arg_inputs)
-                result = selected_generator.run(property_map.args)
+                result = selected_generator.generate(property_map.args)
                 st.write(f'Sample')
                 st.text(f'{result}')
 

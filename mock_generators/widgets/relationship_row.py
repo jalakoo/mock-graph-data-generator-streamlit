@@ -92,11 +92,15 @@ def relationship_row(relationship: dict):
 
             # Generator to create property data with
             with pc3:
-                possible_generators = generators_filtered([type])
+                possible_generators = generators_filtered([property_type])
                 possible_generator_names = [generator.name for generator in possible_generators]
+
                 selected_generator_name = st.selectbox("Generator", possible_generator_names, key=f"relationship_{id}_property_{i}_generator")
-                selected_generator = next(generator for generator in possible_generators if generator.name == selected_generator_name)
-                property_map.generator = selected_generator
+
+                selected_generator = None
+                if selected_generator_name != "" and selected_generator_name is not None:
+                    selected_generator = next(generator for generator in possible_generators if generator.name == selected_generator_name)
+                    property_map.generator = selected_generator
 
             # Optional Generator arguments, if any
             with pc4:
@@ -144,9 +148,9 @@ def relationship_row(relationship: dict):
                         
             with pc5:
                 # Display sample data
-                result = selected_generator.run(property_map.args)
-                st.write(f'Sample')
-                st.text(f'{result}')
+                if selected_generator is not None:
+                    st.write(f'Sample')
+                    st.text(f'{selected_generator.generate(property_map.args)}')
         
 
         # Relationships to generate

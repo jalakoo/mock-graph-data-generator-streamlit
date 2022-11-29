@@ -6,10 +6,10 @@ import logging
 
 
 def file_schema_node_property(property: PropertyMapping)-> dict:
-    sample_value = property.generator.run(property.args)
+    sample_value = property.generator.generate(property.args)
     result = {
         "name": property.name,
-        "type": property.type.to_string(),
+        "type": property.type.to_string().lower(),
         "sample": sample_value,
         "include": True
     }
@@ -30,23 +30,23 @@ def file_schema_node(node: NodeMapping) -> dict:
 def graph_model_relationship_property(property: PropertyMapping)-> dict:
     result = {
         "property": property.name,
-        "type": property.type.to_string(),
+        "type": property.type.to_string().lower(),
         "identifier": property.id
         }
     return result
 
-def graph_model_relationship(relationship: RelationshipMapping) -> dict:
-    result = {
-        f"{relationship.id}":{
-            "type": relationship.type,
-            "sourceNodeSchema": relationship.start_node_id,
-            "targetNodeSchema": relationship.end_node_id,
-            "properties":[
-                file_schema_node_property(property) for property in relationship.properties
-            ]
-        }
-    }
-    return result
+# def graph_model_relationship(relationship: RelationshipMapping) -> dict:
+#     result = {
+#         f"{relationship.id}":{
+#             "type": relationship.type,
+#             "sourceNodeSchema": relationship.start_node_id,
+#             "targetNodeSchema": relationship.end_node_id,
+#             "properties":[
+#                 file_schema_node_property(property) for property in relationship.properties
+#             ]
+#         }
+#     }
+#     return result
 
 class DataImporterJson():
     def __init__(self, version: str = "0.5.2"):
@@ -127,15 +127,26 @@ class DataImporterJson():
 
     def add_relationship(
         self,
-        relationshipMapping: RelationshipMapping
+        relationship: RelationshipMapping
         ):
         # Add to graph:relationships
         self.data["graph"]["relationships"].append({
-            "id": relationshipMapping.id,
-            "type": relationshipMapping.type,
-            "fromId": relationshipMapping.start_node_id,
-            "toId": relationshipMapping.end_node_id
+            "id": relationship.id,
+            "type": relationship.type,
+            "fromId": relationship.start_node_id,
+            "toId": relationship.end_node_id
         })
         
         # TODO: Add to graphModel:relationshipSchemas
-        self.data['dataModel']['graphModel']['relationshipSchemas'].update(graph_model_relationship(relationshipMapping))
+        self.data['dataModel']['graphModel']['relationshipSchemas'].update(
+            {
+                f"{relationship.id}":{
+                    "type": relationship.type,
+                    "sourceNodeSchema": relationship.start_node_id,
+                    "targetNodeSchema": relationship.end_node_id,
+                    "properties":[
+                        graph_model_relationship_property(property) for property in relationship.properties
+                    ]
+                }
+            }
+        )
