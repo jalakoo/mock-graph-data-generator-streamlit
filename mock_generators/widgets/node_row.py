@@ -9,9 +9,9 @@ import uuid
 import datetime
 import logging
 
-def generators_filtered(byType: GeneratorType) -> list[Generator]:
+def generators_filtered(byTypes: list[GeneratorType]) -> list[Generator]:
     generators = st.session_state[GENERATORS]
-    return [generator for _, generator in generators.items() if generator.type == byType]
+    return [generator for _, generator in generators.items() if generator.type in byTypes]
 
 def nodes_row(
     node: dict
@@ -119,7 +119,7 @@ def nodes_row(
 
             # Generator to create property data with
             with pc3:
-                possible_generators = generators_filtered(type)
+                possible_generators = generators_filtered([type])
                 possible_generator_names = [generator.name for generator in possible_generators]
                 selected_generator_name = st.selectbox("Generator", possible_generator_names, key=f"node_{id}_property_{i}_generator")
                 selected_generator = next(generator for generator in possible_generators if generator.name == selected_generator_name)
@@ -182,7 +182,7 @@ def nodes_row(
 
         st.markdown('---')
         st.write('Number of these nodes to generate')
-        possible_count_generators = generators_filtered(GeneratorType.INT)
+        possible_count_generators = generators_filtered([GeneratorType.INT])
         possible_count_generator_names = [generator.name for generator in possible_count_generators]
 
         ncc1, ncc2, ncc3 = st.columns(3)

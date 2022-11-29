@@ -34,13 +34,13 @@ def graph_model_relationship_property(property: PropertyMapping)-> dict:
         "identifier": property.id
         }
     return result
-    
+
 def graph_model_relationship(relationship: RelationshipMapping) -> dict:
     result = {
         f"{relationship.id}":{
             "type": relationship.type,
-            "sourceNodeSchema": relationship.fromId,
-            "targetNodeSchema": relationship.toId,
+            "sourceNodeSchema": relationship.start_node_id,
+            "targetNodeSchema": relationship.end_node_id,
             "properties":[
                 file_schema_node_property(property) for property in relationship.properties
             ]
@@ -120,9 +120,9 @@ class DataImporterJson():
 
     def add_relationships(
         self,
-        relationshipMappings: list[RelationshipMapping]
+        relationshipMappings: dict[str, RelationshipMapping]
         ):
-        for relationshipMapping in relationshipMappings:
+        for _, relationshipMapping in relationshipMappings.items():
             self.add_relationship(relationshipMapping)
 
     def add_relationship(
@@ -133,8 +133,8 @@ class DataImporterJson():
         self.data["graph"]["relationships"].append({
             "id": relationshipMapping.id,
             "type": relationshipMapping.type,
-            "fromId": relationshipMapping.fromId,
-            "toId": relationshipMapping.toId
+            "fromId": relationshipMapping.start_node_id,
+            "toId": relationshipMapping.end_node_id
         })
         
         # TODO: Add to graphModel:relationshipSchemas

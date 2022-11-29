@@ -35,6 +35,8 @@ def import_tab():
     # if st.button("Delete Imported File"):
     #     st.session_state[IMPORTED_FILE] = None
     #     st.experimental_rerun()
+    
+    # TODO: Support copy & paste json
 
     st.markdown("--------")
     st.write("The JSON file should look something like this:")

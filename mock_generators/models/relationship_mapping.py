@@ -1,5 +1,5 @@
 
-from models.node_mapping import NodeMapping
+# from models.node_mapping import NodeMapping
 from models.property_mapping import PropertyMapping
 from models.generator import Generator
 
@@ -10,33 +10,33 @@ class RelationshipMapping():
         return RelationshipMapping(
             id = None,
             type = None,
-            start_node = NodeMapping.empty(),
-            end_node = NodeMapping.empty(),
+            start_node_id = str,
+            end_node_id = str,
             properties = [],
             count_generator = None,
-            count_generator_args = []
+            count_args = []
         )
 
     def __init__(
         self, 
         id: str,
         type: str,
-        start_node: NodeMapping, 
-        end_node: NodeMapping, 
+        start_node_id: str, 
+        end_node_id: str, 
         properties: list[PropertyMapping], 
         count_generator: Generator,
-        count_generator_args: list[any] = []
+        count_args: list[any] = []
         ):
         self.id = id
         self.type = type
-        self.start_node = start_node
-        self.end_node = end_node
+        self.start_node_id = start_node_id
+        self.end_node_id = end_node_id
         self.properties = properties
         self.count_generator = count_generator
-        self.count_generator_args = count_generator_args
+        self.count_args = count_args
 
     def __str__(self):
-        return f"RelationshipMapping(id={self.id}, type={self.type}, start_node={self.start_node}, end_node={self.end_node}, properties={self.properties}, count_generator={self.count_generator}, count_generator_args={self.count_generator_args})"
+        return f"RelationshipMapping(id={self.id}, type={self.type}, start_node_id={self.start_node_id}, end_node_id={self.end_node_id}, properties={self.properties}, count_generator={self.count_generator}, count_args={self.count_args})"
 
     def __repr__(self):
         return self.__str__()
@@ -45,12 +45,12 @@ class RelationshipMapping():
         return {
             "id": self.id,
             "type": self.type,
-            "start_node": self.start_node.to_dict(),
-            "end_node": self.end_node.to_dict(),
+            "start_node_id": self.start_node_id,
+            "end_node_id": self.end_node_id,
             "properties": [property.to_dict() for property in self.properties],
             "count_generator": self.count_generator.to_dict(),
-            "count_generator_args": self.count_generator_args
+            "count_args": self.count_args
         }
 
-    def filename(self):
-        return f"{self.type}_{self.id}"
+    # def filename(self):
+    #     return f"{self.type}_{self.id}"

@@ -26,8 +26,8 @@ def generate_tab():
     if st.button('Generate New Data', key=f'generate_data_button'):
 
         # Stop if no mapping data available
-        if len(mapping.nodes) == 0 and len(mapping.relationships) == 0:
-            st.error('No data to generate. Map a node or relationship first.')
+        if len(mapping.nodes) == 0:
+            st.error('No nodes to generate data for. Map at least one noded.')
             st.stop()
             return
 

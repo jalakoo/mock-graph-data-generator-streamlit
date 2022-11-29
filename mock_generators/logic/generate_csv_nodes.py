@@ -47,7 +47,7 @@ def generate_csv_node(
         code_filepath = count_generator.code_url
         module = __import__(count_generator.import_url(), fromlist=['generate'])
         count = module.generate(count_args)
-        logging.info(f'Generating {count} nodes')
+        # logging.info(f'Generating {count} nodes')
     except:
         logging.error(f"Could not load count_generator code from {code_filepath}: {sys.exc_info()[0]}")
         return
@@ -61,7 +61,7 @@ def generate_csv_node(
         for _ in range(count):
             rows.append(generate_node_csv(node))
         
-        logging.info(f'header: {header}, rows: {rows}')
+        # logging.info(f'header: {header}, rows: {rows}')
         # Save source .csv
         save_csv(filepath=csv_filepath, header=header, data=rows)
 
