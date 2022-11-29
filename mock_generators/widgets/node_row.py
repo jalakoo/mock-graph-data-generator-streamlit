@@ -95,6 +95,8 @@ def nodes_row(
         num_properties = st.number_input("Number of properties", value = initial_num_properties, min_value=1, key= f'node_{id}_num_properties')
 
         # Generate fields for user to adjust property names, types, and generator to create mock data with
+
+        # TODO: names should be unique
         property_maps = []
         for i in range(num_properties):
 
@@ -109,7 +111,10 @@ def nodes_row(
                     # Get key of property
                     existing_name = properties[i][0] 
                 name = st.text_input("Property Name",value=existing_name, key=f"node_{id}_property_{i}_name")
-                property_map.name = name
+                if name in [property_map.name for property_map in property_maps]:
+                    st.error("Property names must be unique")
+                else:
+                    property_map.name = name
 
             # Property type
             with pc2:
@@ -181,6 +186,12 @@ def nodes_row(
                 st.text(f'{result}')
 
         st.markdown('---')
+        st.write("Property value that uniquely identifies these nodes")
+        key_property = st.selectbox("Key Property", [property_map.name for property_map in property_maps], key=f"node_{id}_key_property")
+        selected_key_property = next(property_map for property_map in property_maps if property_map.name == key_property)
+        property_map.key_property = selected_key_property
+
+        st.markdown('---')
         st.write('Number of these nodes to generate')
         possible_count_generators = generators_filtered([GeneratorType.INT])
         possible_count_generator_names = [generator.name for generator in possible_count_generators]
@@ -238,7 +249,8 @@ def nodes_row(
                     labels = labels,
                     properties=property_maps,
                     count_generator=selected_count_generator,
-                    count_args=count_arg_inputs,)
+                    count_args=count_arg_inputs,
+                    key_property=selected_key_property,)
                 nodes[id] = node_mapping
                 mapping.nodes = nodes
                 st.session_state[MAPPINGS] = mapping

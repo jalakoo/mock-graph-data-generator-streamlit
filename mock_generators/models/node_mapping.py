@@ -12,7 +12,8 @@ class NodeMapping():
             labels = [],
             properties = [],
             count_generator = None,
-            count_args = []
+            count_args = [],
+            key_property = None
         )
 
     def __init__(
@@ -23,7 +24,8 @@ class NodeMapping():
         labels: list[str], 
         properties: list[PropertyMapping], 
         count_generator: Generator,
-        count_args: list[any] = []):
+        count_args: list[any] = [],
+        key_property: PropertyMapping = None):
         self.id = id
         self.position = position
         self.caption = caption
@@ -31,9 +33,10 @@ class NodeMapping():
         self.properties = properties
         self.count_generator = count_generator
         self.count_args = count_args
+        self.key_property = key_property # Property to use as unique key for this node
 
     def __str__(self):
-        return f"NodeMapping(id={self.id}, caption={self.caption}, labels={self.labels}, properties={self.properties}, count_generator={self.count_generator}, count_args={self.count_args})"
+        return f"NodeMapping(id={self.id}, caption={self.caption}, labels={self.labels}, properties={self.properties}, count_generator={self.count_generator}, count_args={self.count_args}, key_property={self.key_property})"
 
     def __repr__(self):
         return self.__str__()
@@ -46,7 +49,8 @@ class NodeMapping():
             "labels": self.labels,
             "properties": [property.to_dict() for property in self.properties],
             "count_generator": self.count_generator.to_dict(),
-            "count_args": self.count_args
+            "count_args": self.count_args,
+            "key_property" : self.key_property.to_dict()
         }
 
     def filename(self):

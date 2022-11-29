@@ -27,7 +27,7 @@ def file_schema_node(node: NodeMapping) -> dict:
     return result
 
 
-def graph_model_relationship_property(property: PropertyMapping)-> dict:
+def graph_model_property(property: PropertyMapping)-> dict:
     result = {
         "property": property.name,
         "type": property.type.to_string().lower(),
@@ -108,10 +108,27 @@ class DataImporterJson():
             "caption": caption
         })
 
-        # TODO: Add .csv file origin and reference info in dataModel:fileModel:fileSchemas
+        # dataModel:fileModel:fileSchemas
         self.data["dataModel"]["fileModel"]["fileSchemas"].update(file_schema_node(nodeMapping))
 
         # TODO: Add to graphModel:nodeSchemas
+        # TODO: complete
+        self.data["dataModel"]["graphModel"]["nodeSchemas"].update(
+            {
+                f"{nodeMapping.id}":{
+                    "label": nodeMapping.caption,
+                    "additionalLabels":nodeMapping.labels,
+                    "labelProperties":[],
+                    "properties":[
+                        graph_model_property(property) for property in nodeMapping.properties
+                    ],
+                    "key":{
+                        "properties":[nodeMapping.key_property.id],
+                        "name":""
+                    }
+                }
+            }
+        )
 
         # TODO: Examples of labelProperties
 
@@ -145,7 +162,7 @@ class DataImporterJson():
                     "sourceNodeSchema": relationship.start_node_id,
                     "targetNodeSchema": relationship.end_node_id,
                     "properties":[
-                        graph_model_relationship_property(property) for property in relationship.properties
+                        graph_model_property(property) for property in relationship.properties
                     ]
                 }
             }

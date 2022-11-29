@@ -19,5 +19,5 @@ def generate_data_importer_json(
 
     # Generate data-importer json
     # The data-import json file is a dict made up of 4 keys:
-    export_path = f"{export_folder}/data_import.json"
+    export_path = f"{export_folder}/neo4j_importer_model.json"
     save_json(export_path, dij.to_dict())

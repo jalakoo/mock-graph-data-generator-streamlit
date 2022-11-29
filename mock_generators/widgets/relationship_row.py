@@ -73,8 +73,6 @@ def relationship_row(relationship: dict):
             property_map = PropertyMapping(id=f'relationship_{id}_property_{i}')
             pc1, pc2, pc3, pc4, pc5 = st.columns(5)
 
-            # TODO: Possibly somewhere here data is being duplicated from nodes to relationships
-
             # Property name
             with pc1:
                 existing_name = ""
@@ -224,7 +222,7 @@ def relationship_row(relationship: dict):
                 mapping_relationships = mapping.relationships
                 if id in mapping_relationships:
                     del mapping_relationships[id]
-                    mapping.nodes = mapping_relationships
+                    mapping.relationships = mapping_relationships
                     st.session_state[MAPPINGS] = mapping
                 st.warning(f'Relationship EXCLUDED from mapping')
           
