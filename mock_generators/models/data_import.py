@@ -26,6 +26,28 @@ def file_schema_node(node: NodeMapping) -> dict:
     }
     return result
 
+
+def graph_model_relationship_property(property: PropertyMapping)-> dict:
+    result = {
+        "property": property.name,
+        "type": property.type.to_string(),
+        "identifier": property.id
+        }
+    return result
+    
+def graph_model_relationship(relationship: RelationshipMapping) -> dict:
+    result = {
+        f"{relationship.id}":{
+            "type": relationship.type,
+            "sourceNodeSchema": relationship.fromId,
+            "targetNodeSchema": relationship.toId,
+            "properties":[
+                file_schema_node_property(property) for property in relationship.properties
+            ]
+        }
+    }
+    return result
+
 class DataImporterJson():
     def __init__(self, version: str = "0.5.2"):
         self.data = {
@@ -108,10 +130,12 @@ class DataImporterJson():
         relationshipMapping: RelationshipMapping
         ):
         # Add to graph:relationships
-        # self.data["graph"]["relationships"].append({
-        #     "id": relationshipMapping.id,
-        #     "type": relationshipMapping.type,
-        #     "fromId": relationshipMapping.fromId,
-        #     "toId": relationshipMapping.toId
-        # })
-        print('add_relationship tbd')
+        self.data["graph"]["relationships"].append({
+            "id": relationshipMapping.id,
+            "type": relationshipMapping.type,
+            "fromId": relationshipMapping.fromId,
+            "toId": relationshipMapping.toId
+        })
+        
+        # TODO: Add to graphModel:relationshipSchemas
+        self.data['dataModel']['graphModel']['relationshipSchemas'].update(graph_model_relationship(relationshipMapping))

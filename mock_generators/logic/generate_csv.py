@@ -9,7 +9,7 @@ import sys
 import logging
 from logic.generate_csv_nodes import generate_csv_nodes
 from logic.generate_data_import import generate_data_importer_json
-
+# from logic.generate_csv_relationships import generate_csv_relationships
 def generate_csv(
     mapping: Mapping,
     export_folder: str):
@@ -17,11 +17,10 @@ def generate_csv(
     # Will generate .csvs and a .json file for use with Neo4j's data-importer. Returns filename of .csv file
     
     # Generate nodes
-    nodes = mapping.nodes
-    generate_csv_nodes(nodes, export_folder)
+    generate_csv_nodes(mapping.nodes, export_folder)
 
     # Generate relationships
-    # logging.info('tbd')
+    # generate_csv_relationships(mapping.relationships, export_folder)
 
     # Generate data-importer json
     # The data-import json file is a dict made up of 4 keys:
