@@ -51,3 +51,6 @@ class RelationshipMapping():
             "count_generator": self.count_generator.to_dict(),
             "count_generator_args": self.count_generator_args
         }
+
+    def filename(self):
+        return f"{self.type}_{self.id}"

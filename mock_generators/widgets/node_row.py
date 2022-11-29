@@ -160,12 +160,11 @@ def nodes_row(
                                 arg_input = None
 
                             # Save argument values
-                            logging.info(f'property_map: {property_map}: arg_input: {arg_input}')
                             if p_index < len(property_map.args):
                                 property_map.args[p_index] = arg_input
                             else:
                                 property_map.args.append(arg_input)
-                            logging.info(f'property_map after update: {property_map}')
+
 
                 # Save options for generating mock property data later
                 property_maps.append(property_map)

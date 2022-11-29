@@ -48,3 +48,6 @@ class NodeMapping():
             "count_generator": self.count_generator.to_dict(),
             "count_args": self.count_args
         }
+
+    def filename(self):
+        return f"{self.caption}_{self.id}"

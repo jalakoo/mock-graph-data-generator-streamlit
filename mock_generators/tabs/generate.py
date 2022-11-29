@@ -1,10 +1,8 @@
 import streamlit as st
 from constants import *
-from pprint import pprint, pformat
-from io import StringIO
-import json
-from models.mapping import Mapping
+# from models.mapping import Mapping
 from logic.generate_csv import generate_csv
+from logic.generate_data_import import generate_data_importer_json
 import os
 import logging
 
@@ -40,10 +38,17 @@ def generate_tab():
                 st.stop()
                 return
 
-
+        # Data Importer Options
         generate_csv(
             mapping, 
             export_folder=export_folder)
+
+        generate_data_importer_json(
+            mapping,
+            export_folder=export_folder)
+
+        # TODO: Cypher Options
+
 
 
     st.markdown("--------")
