@@ -15,10 +15,15 @@ def config_tab() -> list[Generator]:
         st.write("Optionally change the export path, source locations for importing and reading generator specifications and code files. Generators are code functions used to generate specific types of mock data (ie: email generator for creating mock email addresses).")
     st.markdown("--------")
 
-    # Load export path
-    new_exports_filepath = st.text_input("Generated Data filepath", st.session_state[EXPORTS_PATH])
+    # Load exports path
+    new_zips_path = st.text_input("Folder path for zip archives", value=st.session_state[ZIPS_PATH])
+    if new_zips_path != st.session_state[ZIPS_PATH]:
+        st.session_state[ZIPS_PATH] = new_zips_path
+
+    new_exports_filepath = st.text_input("Folder path for generated files", st.session_state[EXPORTS_PATH])
     if new_exports_filepath != st.session_state[EXPORTS_PATH]:
         st.session_state[EXPORTS_PATH] = new_exports_filepath
+
 
     # Load new generator template file
     cc1, cc2 = st.columns([1,2])

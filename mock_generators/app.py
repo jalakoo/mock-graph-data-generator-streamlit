@@ -17,6 +17,8 @@ from models.property_mapping import PropertyMapping
 st.set_page_config(layout="wide")
 
 # Default state
+if ZIPS_PATH not in st.session_state:
+    st.session_state[ZIPS_PATH] = DEFAULT_ZIPS_PATH
 if GENERATORS not in st.session_state:
     st.session_state[GENERATORS] = None
 if SPEC_FILE not in st.session_state:
