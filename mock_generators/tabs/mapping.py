@@ -20,8 +20,13 @@ def mapping_tab():
 
     # Default options
     # Matching arrows.json dict format
-    nodes = [{
-        "id": "1",
+    nodes = [
+        {
+        "id": "n0",
+        "position":{
+            "x": 0,
+            "y": 0
+        },
         "caption": "Person",
         "labels": [],
         "properties": {
@@ -30,7 +35,11 @@ def mapping_tab():
         }
     },
     {
-        "id": "2",
+        "id": "n1",
+        "position":{
+            "x": 30,
+            "y": 30
+        },
         "caption": "Company",
         "labels": [],
         "properties": {
@@ -39,10 +48,10 @@ def mapping_tab():
         }
     }]
     relationships = [{
-        "id": "r1",
+        "id": "n0",
         "type": "WORKS_AT",
-        "fromId": "1",
-        "toId": "2",
+        "fromId": "n0",
+        "toId": "n1",
         "properties": {
         }
     }]

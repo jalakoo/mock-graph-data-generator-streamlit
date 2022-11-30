@@ -35,21 +35,16 @@ def graph_model_property(property: PropertyMapping)-> dict:
         }
     return result
 
-# def graph_model_relationship(relationship: RelationshipMapping) -> dict:
-#     result = {
-#         f"{relationship.id}":{
-#             "type": relationship.type,
-#             "sourceNodeSchema": relationship.start_node_id,
-#             "targetNodeSchema": relationship.end_node_id,
-#             "properties":[
-#                 file_schema_node_property(property) for property in relationship.properties
-#             ]
-#         }
-#     }
-#     return result
+def mapping_model_node_mappings(node:NodeMapping)->list[dict[str,str]]:
+    result = []
+    for property in node.properties:
+        result.append({
+            "field": property.name,
+        })
+    return result
 
 class DataImporterJson():
-    def __init__(self, version: str = "0.5.2"):
+    def __init__(self, version: str = "0.7.0"):
         self.data = {
             "version": version,
             "graph":{
@@ -132,7 +127,16 @@ class DataImporterJson():
 
         # TODO: Examples of labelProperties
 
-        # TODO: Add to graphModel:mappingModel:nodeMappings
+        # Add to dataModel:mappingModel:nodeMappings
+        self.data["dataModel"]["mappingModel"]["nodeMappings"].update(
+            {
+                f"{nodeMapping.id}":{
+                    "fileSchema": nodeMapping.filename(),
+                    "nodeSchema": nodeMapping.id,
+                    "mappings":mapping_model_node_mappings(nodeMapping)
+                }
+            }
+        )
 
 
     def add_relationships(
@@ -154,7 +158,7 @@ class DataImporterJson():
             "toId": relationship.end_node_id
         })
         
-        # TODO: Add to graphModel:relationshipSchemas
+        # Add to graphModel:relationshipSchemas
         self.data['dataModel']['graphModel']['relationshipSchemas'].update(
             {
                 f"{relationship.id}":{
@@ -167,3 +171,5 @@ class DataImporterJson():
                 }
             }
         )
+
+        # TODO: Add to grap hModel:mappingModel:nodeMappings

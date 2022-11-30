@@ -57,6 +57,11 @@ def generate_tab():
                     st.stop()
                     return
 
+            # Delete all files in export folder first
+            dir = export_folder
+            for f in os.listdir(dir):
+                os.remove(os.path.join(dir, f))
+
             # Data Importer Options
             generate_csv(
                 mapping, 

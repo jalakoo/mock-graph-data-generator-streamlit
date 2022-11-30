@@ -29,7 +29,7 @@ class GeneratorType(Enum):
         if self == GeneratorType.STRING:
             return "String"
         elif self == GeneratorType.INT:
-            return "Int"
+            return "Integer"
         elif self == GeneratorType.FLOAT:
             return "Float"
         elif self == GeneratorType.DATETIME:

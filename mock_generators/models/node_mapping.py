@@ -54,4 +54,4 @@ class NodeMapping():
         }
 
     def filename(self):
-        return f"{self.caption}_{self.id}"
+        return f"{self.caption.lower()}_{self.id.lower()}"
