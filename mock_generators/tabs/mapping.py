@@ -37,8 +37,8 @@ def mapping_tab():
     {
         "id": "n1",
         "position":{
-            "x": 30,
-            "y": 30
+            "x": 200,
+            "y": 200
         },
         "caption": "Company",
         "labels": [],

@@ -7,7 +7,7 @@ class NodeMapping():
     def __init__(
         self, 
         id: str,
-        position: dict,
+        position: dict,   # ie: {x: 0, y: 0}
         caption: str,
         labels: list[str], 
         properties: list[PropertyMapping], 

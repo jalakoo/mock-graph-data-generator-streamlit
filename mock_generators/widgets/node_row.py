@@ -39,6 +39,10 @@ def nodes_row(
     if node is None:
         id = str(uuid.uuid4())[:8]
         labels = ["<add_label>"]
+        position = {
+            "x": 0,
+            "y": 0
+        }
         caption = ""
         properties = []
         selected_labels = []
@@ -46,6 +50,10 @@ def nodes_row(
         # Load a node from an imported file
         id = node.get("id")
         labels = node.get("labels", [])
+        position = {
+            "x": node.get("position", {}).get("x", 0),
+            "y": node.get("position", {}).get("y", 0)
+        }
         caption = node.get("caption", "")
         properties = [(k,v) for k,v in node.get("properties").items()]
         selected_labels = labels
@@ -254,7 +262,7 @@ def nodes_row(
                 node_mapping = NodeMapping(
                     id = id,
                     caption = caption,
-                    position = node.get("position", {"x": 0, "y": 0}),
+                    position = position,
                     labels = labels,
                     properties=property_maps,
                     count_generator=selected_count_generator,
