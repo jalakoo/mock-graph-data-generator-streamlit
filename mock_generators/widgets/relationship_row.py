@@ -197,12 +197,19 @@ def relationship_row(relationship: dict):
                         else:
                             count_arg_inputs[count_index] = count_arg
         with ncc3:
-            enabled = st.checkbox("Generate Data for this relationship", value=False, key=f"relationship_{id}_enabled")
-            if enabled:
-                # Add to mapping
+            disabled = st.checkbox("Exclude/ignore relationship", value=False, key=f"relationship_{id}_enabled")
+            if disabled:
+                # Remove from mapping
+                mapping = st.session_state[MAPPINGS]
+                mapping_relationships = mapping.relationships
+                if id in mapping_relationships:
+                    del mapping_relationships[id]
+                    mapping.relationships = mapping_relationships
+                    st.session_state[MAPPINGS] = mapping
+                st.warning(f'Relationship EXCLUDED from mapping')
+            else:
                 mapping = st.session_state[MAPPINGS]
                 relationships = mapping.relationships
-                # logging.info(f'relationships: {relationships}')
                 relationship_mapping = RelationshipMapping(
                     id=id,
                     type=type,
@@ -216,13 +223,4 @@ def relationship_row(relationship: dict):
                 mapping.relationships = relationships
                 st.session_state[MAPPINGS] = mapping
                 st.info(f'Relationship added to mapping')
-            else:
-                # Remove from mapping
-                mapping = st.session_state[MAPPINGS]
-                mapping_relationships = mapping.relationships
-                if id in mapping_relationships:
-                    del mapping_relationships[id]
-                    mapping.relationships = mapping_relationships
-                    st.session_state[MAPPINGS] = mapping
-                st.warning(f'Relationship EXCLUDED from mapping')
           

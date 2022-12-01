@@ -236,8 +236,17 @@ def nodes_row(
                         else:
                             count_arg_inputs[count_index] = count_arg
         with ncc3:
-            enabled = st.checkbox("Generate Data for this node", value=False, key=f"node_{id}_enabled")
-            if enabled:
+            disabled = st.checkbox("Exclude/ignore node", value=False, key=f"node_{id}_disabled")
+            if disabled:
+                # Remove from mapping
+                mapping = st.session_state[MAPPINGS]
+                mapping_nodes = mapping.nodes
+                if id in mapping_nodes:
+                    del mapping_nodes[id]
+                    mapping.nodes = mapping_nodes
+                    st.session_state[MAPPINGS] = mapping
+                st.warning(f'Nodes EXCLUDED from mapping')
+            else:
                 # Add to mapping
                 mapping = st.session_state[MAPPINGS]
                 nodes = mapping.nodes
@@ -255,13 +264,4 @@ def nodes_row(
                 mapping.nodes = nodes
                 st.session_state[MAPPINGS] = mapping
                 st.info(f'Nodes added to mapping')
-            else:
-                # Remove from mapping
-                mapping = st.session_state[MAPPINGS]
-                mapping_nodes = mapping.nodes
-                if id in mapping_nodes:
-                    del mapping_nodes[id]
-                    mapping.nodes = mapping_nodes
-                    st.session_state[MAPPINGS] = mapping
-                st.warning(f'Nodes EXCLUDED from mapping')
           
