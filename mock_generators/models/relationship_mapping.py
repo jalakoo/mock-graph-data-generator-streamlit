@@ -5,18 +5,6 @@ from models.generator import Generator
 
 class RelationshipMapping():
 
-    @staticmethod
-    def empty():
-        return RelationshipMapping(
-            id = None,
-            type = None,
-            start_node_id = str,
-            end_node_id = str,
-            properties = [],
-            count_generator = None,
-            count_args = []
-        )
-
     def __init__(
         self, 
         id: str,
