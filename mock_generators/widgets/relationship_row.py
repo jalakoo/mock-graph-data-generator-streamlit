@@ -52,6 +52,8 @@ def relationship_row(relationship: dict):
         # Relationship nodes
         st.markdown('---')
         r1, r2 = st.columns(2)
+
+        # TODO: Update to use selectbox instead.
         with r1:
             # Relationship from
             new_fromId = st.text_input("From Node", value=fromId, key=f"relationship_{id}_fromId")

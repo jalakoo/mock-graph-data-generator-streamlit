@@ -16,9 +16,15 @@ def generate_csv(
     
     # Generate node values
     #  Determine how many nodes to generate
-    for _, node in mapping.nodes.items():
+    
+    node_values : dict[str, list[dict]] = {}
+    
+    for uid, node in mapping.nodes.items():
         values : list[dict] = node.generate_values()
         generate_csv_node(f'{node.filename()}.csv', values, export_folder)
+
+        #  Retain for use with relationships
+        node_values[uid] = values
 
     # Generate relationships, or more accurately, the csv files that
     # the data-importer will use to know which created nodes are connected
