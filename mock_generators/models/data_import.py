@@ -150,6 +150,8 @@ class DataImporterJson():
         self,
         relationship: RelationshipMapping
         ):
+        # Must be run AFTER relationshipMappings have generated mock data.
+
         # Add to graph:relationships
         self.data["graph"]["relationships"].append({
             "id": relationship.id,
@@ -158,7 +160,20 @@ class DataImporterJson():
             "toId": relationship.end_node_id
         })
         
-        # Add to graphModel:relationshipSchemas
+        # Add to dataModel:graphModel:relationshipSchemas
+        # EXAMPLE
+        # "n2": {
+        #   "type": "CREATED",
+        #   "sourceNodeSchema": "n0",
+        #   "targetNodeSchema": "n3",
+        #   "properties": [
+        #     {
+        #       "property": "created_at",
+        #       "type": "datetime",
+        #       "identifier": "Qd0FzMHkcCxGIzSnBqbhb"
+        #     }
+        #   ]
+        # }
         self.data['dataModel']['graphModel']['relationshipSchemas'].update(
             {
                 f"{relationship.id}":{
@@ -172,4 +187,78 @@ class DataImporterJson():
             }
         )
 
-        # TODO: Add to grap hModel:mappingModel:nodeMappings
+        # Add dataModel:fileModel:fileSchemas
+        # Get filename of csv generated for relationships
+        #  EXAMPLE
+        # "works_at.csv": {
+        #   "expanded": true,
+        #   "fields": [
+        #     {
+        #       "name": "from_node_key",
+        #       "type": "string",
+        #       "sample": "cdab7d16-1147-4de4-8eb9-b9d3a541a617",
+        #       "include": true
+        #     },
+        #     {
+        #       "name": "to_node_key",
+        #       "type": "string",
+        #       "sample": "4e228111-d659-47e5-a560-d46a81ed3927",
+        #       "include": true
+        #     }
+        #   ]
+        # }
+        self.data['dataModel']['graphModel']['mappingModel']['relationshipMappings'].update(
+            {
+                f'{relationship.filename()}':{
+                    "expanded": True,
+                    "fields": [
+                        {
+                            "name": "_from_node_key",
+                            "type": "string",
+                            "sample": f"{relationship.generated_values[0]['_from_node_key_sample']}",
+                            "include": True
+                            },
+                        {
+                            "name": "_to_node_key",
+                            "type": "string",
+                            "sample": f"{relationship.generated_values[0]['_to_node_key_sample']}",
+                                "include": True
+                        }
+                    ]
+                }
+            }
+        )
+
+        # Add to dataModel:graphModel:mappingModel:relationshipMappings
+        # EXAMPLE
+        # "n0": {
+        #   "relationshipSchema": "n0",
+        #   "mappings": [],
+        #   "sourceMappings": [
+        #     {
+        #       "field": "company_id"
+        #     }
+        #   ],
+        #   "targetMappings": [
+        #     {
+        #       "field": "company_id"
+        #     }
+        #   ],
+        #   "fileSchema": "people.csv"
+        # },
+
+        self.data['dataModel']['graphModel']['mappingModel']['relationshipMappings'].update(
+          {
+                f"{relationship.id}":{
+                    "relationshipSchema": {relationship.id},
+                    "mappings":[],
+                    "source_mappings": [{
+                        "field":"_from_node_key"
+                    }],
+                    "target_mappings": [{
+                        "field":"_to_node_key"
+                    }],
+                    "fileSchema": relationship.filename(), 
+                }
+            }
+        )

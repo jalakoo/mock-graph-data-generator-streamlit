@@ -6,6 +6,10 @@ def generate_data_importer_json(
     mapping: Mapping,
     export_folder: str):
     # Will generate .csvs and a .json file for use with Neo4j's data-importer. Returns filename of .csv file
+
+    # MUST be run AFTER nodes and relationships have generated their
+    # mock data, as the data-importer needs this info to generate the
+    # schemas
     
     dij = DataImporterJson()
 

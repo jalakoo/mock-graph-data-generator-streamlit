@@ -7,7 +7,8 @@ class GeneratorType(Enum):
     INT = 2,
     FLOAT = 3,
     STRING = 4,
-    DATETIME = 5
+    DATETIME = 5,
+    RELATIONAL = 6
 
     @staticmethod
     def type_from_string(aType: str):
@@ -22,6 +23,8 @@ class GeneratorType(Enum):
             return GeneratorType.DATETIME
         elif type == "bool":
             return GeneratorType.BOOL
+        elif type == "relational":
+            return GeneratorType.RELATIONAL
         else:
             raise TypeError("Type not supported")
     
@@ -36,6 +39,8 @@ class GeneratorType(Enum):
             return "Datetime"
         elif self == GeneratorType.BOOL:
             return "Bool"
+        elif self == GeneratorType.RELATIONAL:
+            return "Relational"
         else:
             raise TypeError("Type not supported")
 
@@ -159,6 +164,7 @@ class Generator():
         return self.__str__()
 
     def generate(self, args):
+        # Args are not the same as the generator args, these are the arg inputs from user
         module = __import__(self.import_url(), fromlist=['generate'])
         try:
             result = module.generate(args)

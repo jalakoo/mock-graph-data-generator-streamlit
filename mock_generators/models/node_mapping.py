@@ -1,6 +1,8 @@
 from models.property_mapping import PropertyMapping
 from models.generator import Generator
 import sys
+import uuid
+import logging
 
 class NodeMapping():
 
@@ -49,10 +51,12 @@ class NodeMapping():
         # Example return:
         # [
         #     {
+        #         "_uid": "n1_abc",
         #         "first_name": "John",
         #         "last_name": "Doe"
         #     },
         #     {
+        #         "_uid": "n1_xyz",
         #         "first_name": "Jane",
         #         "last_name": "Doe"
         #     }
@@ -61,17 +65,21 @@ class NodeMapping():
         count_args = self.count_args
         count = None
         try:
-            module = __import__(count_generator.import_url(), fromlist=['generate'])
+            import_url = f"{count_generator.import_url()}"
+            module = __import__(import_url, fromlist=['generate'])
             count = module.generate(count_args)
             result = []
             for _ in range(count):
                 node_result = {}
                 for property in self.properties:
-                    args = property.args
-                    value = property.generator.generate(args)
+                    # args = property.args
+                    # value = property.generator.generate(args)
+                    value = property.generate_value()
                     node_result[property.name] = value
                     result.append(node_result)
+                # node_result["_uid"] = f"{self.id}_{str(uuid.uuid4())[:8]}"
             self.generate_values = result
+            # logging.info(f'generated node values: {result}')
             return result
         except:
-            raise Exception(f"Node mapping could not load count generator from url {count_generator.import_url()}, error: {str(sys.exc_info()[0])}")
+            raise Exception(f"Node mapping could not generate property values, error: {str(sys.exc_info()[0])}")

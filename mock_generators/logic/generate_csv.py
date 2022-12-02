@@ -7,25 +7,34 @@ import logging
 from file_utils import save_csv
 import sys
 import logging
-from logic.generate_csv_nodes import generate_csv_node
+from logic.generate_csv_nodes import export_csv_node
+from logic.generate_csv_relationships import export_csv_relationship
 from logic.generate_data_import import generate_data_importer_json
 
 def generate_csv(
     mapping: Mapping,
     export_folder: str):
     
-    # Generate node values
-    #  Determine how many nodes to generate
+    # For storing all generated value from each node type
+    all_node_values : dict[str, list[dict]] = {}
     
-    node_values : dict[str, list[dict]] = {}
-    
+    # Generate node values    
     for uid, node in mapping.nodes.items():
+        # Each nodeMapping is capable of generating and retaining it's own mock list data
         values : list[dict] = node.generate_values()
-        generate_csv_node(f'{node.filename()}.csv', values, export_folder)
+        if values is None or values == []:
+            logging.warning(f'No values generated for node {node.name}')
+        export_csv_node(f'{node.filename()}.csv', values, export_folder)
 
         #  Retain for use with relationships
-        node_values[uid] = values
+        all_node_values[uid] = values
+        # logging.info(f'Generated values for node {node.caption}: {values}, added to {all_node_values}')
 
     # Generate relationships, or more accurately, the csv files that
-    # the data-importer will use to know which created nodes are connected
-    # generate_csv_relationships(mapping.relationships, export_folder)
+    # the data-importer will use to know which created nodes are connected with the mapped relationships
+    for uid, relationship in mapping.relationships.items():
+        # Each relationship mapping is capable of generating and storing it's own list of mock list data, dependent on previously generated node values
+        # logging.info(f'Generating values for relationship {relationship}: all nodes: {all_node_values}')
+        r_values : list[dict] = relationship.generate_values(all_node_values)
+        logging.info(f'r_values: {r_values}')
+        export_csv_relationship(f'{relationship.filename()}.csv', r_values, export_folder)

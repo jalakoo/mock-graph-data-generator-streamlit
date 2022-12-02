@@ -4,5 +4,6 @@ import random
 def generate(args: list[any]):
     min = args[0]
     max = args[1]
-    result = random.randint(min, max)
-    return result
+    if min == max:
+        return min
+    return random.randint(min, max)

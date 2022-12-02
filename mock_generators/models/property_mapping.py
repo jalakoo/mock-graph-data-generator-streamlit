@@ -41,3 +41,6 @@ class PropertyMapping():
             "args": self.args
         }
 
+    def generate_value(self):
+        return self.generator.generate(self.args)
+

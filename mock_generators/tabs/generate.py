@@ -85,7 +85,7 @@ def generate_tab():
                     if file[0] == ".":
                         # Skip hidden files
                         continue
-                    logging.info(f'Found file: {file}')
+                    # logging.info(f'Found file: {file}')
                     with st.expander(file):
                         with open(os.path.join(root, file), 'r') as f:
                             st.text(f.read())
@@ -101,7 +101,7 @@ def generate_tab():
                     if file[0] == ".":
                         # Skip hidden files
                         continue
-                    logging.info(f'Found file: {file}')
+                    # logging.info(f'Found file: {file}')
                     with st.expander(f'{file}'):
                         with open(os.path.join(root, file), 'r') as f:
                             st.text(f.read())

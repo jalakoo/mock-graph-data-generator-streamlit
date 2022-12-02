@@ -13,11 +13,15 @@ def create_tab():
         st.write("Add additional generators for creating mock data with. Currently doesnt not clear after saving a new generator. Please go to the Generator tab to check if the generator was properly added.")
     st.markdown("--------")
 
-    # TODO: Put into a reseting st.form
+    # TODO: Put into a resetting st.form
 
     # Make radio horizontal
     st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
-    type = st.radio("Generator Type", ["String", "Bool", "Int", "Float","Datetime"])
+
+    # Generator type
+    type = st.radio("Generator Type", ["String", "Bool", "Int", "Float","Datetime"],help="Generators are grouped by the data type they generate.")
+
+
     name = st.text_input("Generator Name")
     description = st.text_input("Generator Description")
     # code_template = generic_template()

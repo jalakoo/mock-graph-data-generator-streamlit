@@ -1,6 +1,6 @@
 import streamlit as st
 from constants import *
-from widgets.property import property_row
+from widgets.property_row import property_row
 from models.generator import Generator, GeneratorType
 from models.mapping import Mapping
 from models.node_mapping import NodeMapping
@@ -47,7 +47,7 @@ def nodes_row(
         properties = []
         selected_labels = []
     else:
-        # Load a node from an imported file
+        # Load a node from an imported dict
         id = node.get("id")
         labels = node.get("labels", [])
         position = {
@@ -104,100 +104,114 @@ def nodes_row(
 
         # Generate fields for user to adjust property names, types, and generator to create mock data with
 
-        # TODO: names should be unique
+        # TODO: identical to relationship properties - refactor to use the same widget/class
         property_maps = []
         for i in range(num_properties):
 
-            # Create a new propertyMapping for storing user selections
-            property_map = PropertyMapping(id=f'node_{id}_property_{i}')
-            pc1, pc2, pc3, pc4, pc5 = st.columns(5)
+            new_property_map = property_row(
+                type="node", 
+                id=id, 
+                index=i, 
+                properties= properties)
 
-            # Property name
-            with pc1:
-                existing_name = ""
-                if i < len(properties):
-                    # Get key of property
-                    existing_name = properties[i][0] 
-                name = st.text_input("Property Name",value=existing_name, key=f"node_{id}_property_{i}_name")
-                if name in [property_map.name for property_map in property_maps]:
-                    st.error("Property names must be unique")
-                else:
-                    property_map.name = name
+            property_maps.append(new_property_map)
+            # # Create a new propertyMapping for storing user selections
+            # property_map = PropertyMapping(id=f'node_{id}_property_{i}')
+            # pc1, pc2, pc3, pc4, pc5 = st.columns(5)
 
-            # Property type
-            with pc2:
-                type_string = st.selectbox("Type", ["String", "Bool", "Int", "Float","Datetime"], key=f"node_{id}_property_{i}_type")
-                type = GeneratorType.type_from_string(type_string)
-                property_map.type = type
+            # # Property name
+            # with pc1:
+            #     existing_name = ""
+            #     if i < len(properties):
+            #         # Get key of property
+            #         existing_name = properties[i][0] 
+            #     name = st.text_input("Property Name",value=existing_name, key=f"node_{id}_property_{i}_name")
+            #     if name != "" and name[0] == "_":
+            #         st.error("Property names cannot start with an underscore")
+            #         property_map.name = None
+            #     if name in [property_map.name for property_map in property_maps]:
+            #         st.error("Property names must be unique")
+            #         property_map.name = None
+            #     else:
+            #         property_map.name = name
 
-            # Generator to create property data with
-            with pc3:
-                possible_generators = generators_filtered([type])
-                possible_generator_names = [generator.name for generator in possible_generators]
-                selected_generator_name = st.selectbox("Generator", possible_generator_names, key=f"node_{id}_property_{i}_generator")
-                selected_generator = next(generator for generator in possible_generators if generator.name == selected_generator_name)
-                property_map.generator = selected_generator
+            # # Property type
+            # with pc2:
+            #     type_string = st.selectbox("Type", ["String", "Bool", "Int", "Float","Datetime"], key=f"node_{id}_property_{i}_type")
+            #     type = GeneratorType.type_from_string(type_string)
+            #     property_map.type = type
 
-            # Optional Generator arguments, if any
-            with pc4:
-                if selected_generator is not None:
-                    if selected_generator.args == []:
-                        property_map.args.clear()
-                    else:
-                        for p_index, arg in enumerate(selected_generator.args):
-                            if arg.type == GeneratorType.STRING:
-                                arg_input = st.text_input(
-                                    label=arg.label, 
-                                    value = arg.default,
-                                    key = f'node_{id}_property_{i}_generator_{selected_generator.id}_{arg.label}'
-                                    )
-                            elif arg.type == GeneratorType.INT or arg.type == GeneratorType.FLOAT:
-                                arg_input = st.number_input(
-                                    label= arg.label,
-                                    value= arg.default,
-                                    key = f'node_{id}_property_{i}_generator_{selected_generator.id}_{arg.label}'
-                                    )
-                            elif arg.type == GeneratorType.BOOL:
-                                arg_input = st.radio(
-                                    label=arg.label,
-                                    index=arg.default,
-                                    key = f'node_{id}_property_{i}_generator_{selected_generator.id}_{arg.label}'
-                                )
-                                # arg_inputs.append()
-                            elif arg.type == GeneratorType.DATETIME:
-                                arg_input = st.date_input(
-                                    label=arg.label,
-                                    value=datetime.datetime.fromisoformat(arg.default),
-                                    key = f'node_{id}_property_{i}_generator_{selected_generator.id}_{arg.label}')
-                            else:
-                                arg_input = None
+            # # Generator to create property data with
+            # with pc3:
+            #     possible_generators = generators_filtered([type])
+            #     possible_generator_names = [generator.name for generator in possible_generators]
+            #     selected_generator_name = st.selectbox("Generator", possible_generator_names, key=f"node_{id}_property_{i}_generator")
+            #     selected_generator = next(generator for generator in possible_generators if generator.name == selected_generator_name)
+            #     property_map.generator = selected_generator
 
-                            # Save argument values
-                            if p_index < len(property_map.args):
-                                property_map.args[p_index] = arg_input
-                            else:
-                                property_map.args.append(arg_input)
+            # # Optional Property Generator arguments, if any
+            # with pc4:
+            #     if selected_generator is not None:
+            #         if selected_generator.args == []:
+            #             property_map.args.clear()
+            #         else:
+            #             for p_index, arg in enumerate(selected_generator.args):
+            #                 if arg.type == GeneratorType.STRING:
+            #                     arg_input = st.text_input(
+            #                         label=arg.label, 
+            #                         value = arg.default,
+            #                         key = f'node_{id}_property_{i}_generator_{selected_generator.id}_{arg.label}'
+            #                         )
+            #                 elif arg.type == GeneratorType.INT or arg.type == GeneratorType.FLOAT:
+            #                     arg_input = st.number_input(
+            #                         label= arg.label,
+            #                         value= arg.default,
+            #                         key = f'node_{id}_property_{i}_generator_{selected_generator.id}_{arg.label}'
+            #                         )
+            #                 elif arg.type == GeneratorType.BOOL:
+            #                     arg_input = st.radio(
+            #                         label=arg.label,
+            #                         index=arg.default,
+            #                         key = f'node_{id}_property_{i}_generator_{selected_generator.id}_{arg.label}'
+            #                     )
+            #                     # arg_inputs.append()
+            #                 elif arg.type == GeneratorType.DATETIME:
+            #                     arg_input = st.date_input(
+            #                         label=arg.label,
+            #                         value=datetime.datetime.fromisoformat(arg.default),
+            #                         key = f'node_{id}_property_{i}_generator_{selected_generator.id}_{arg.label}')
+            #                 else:
+            #                     logging.error(f'Unknown argument type {arg.type}')
+            #                     arg_input = None
+
+            #                 logging.info(f'arg_input: {arg_input}')
+            #                 # Save argument values
+            #                 if p_index < len(property_map.args):
+            #                     property_map.args[p_index] = arg_input
+            #                     logging.info(f'arg_input: replaced  {arg_input} in {property_map.args} at {p_index}')
+            #                 else:
+            #                     property_map.args.append(arg_input)
+            #                     logging.info(f'arg_input: added {arg_input} to {property_map.args}')
 
 
-                # Save options for generating mock property data later
-                property_maps.append(property_map)
-                # logging.info(f'property_maps: {property_maps}')
+
+            #     # Save options for generating mock property data later
+            #     property_maps.append(property_map)
+            #     logging.info(f'property_maps: {property_maps}')
                         
-            with pc5:
-                # Display sample data
-                # generator_code_filepath = selected_generator.import_url()
-                # module = __import__(generator_code_filepath, fromlist=['generate'])
-                # logging.info(f'arg_inputs: {arg_inputs}')
-                # result = module.generate(arg_inputs)
-                result = selected_generator.generate(property_map.args)
-                st.write(f'Sample')
-                st.text(f'{result}')
+            # with pc5:
+            #     # Display sample data
+            #     result = selected_generator.generate(property_map.args)
+            #     st.write(f'Sample')
+            #     st.text(f'{result}')
 
         st.markdown('---')
         st.write("Property value that uniquely identifies these nodes")
         key_property = st.selectbox("Key Property", [property_map.name for property_map in property_maps], key=f"node_{id}_key_property")
-        selected_key_property = next(property_map for property_map in property_maps if property_map.name == key_property)
-        property_map.key_property = selected_key_property
+        selected_key_property = [property_map for property_map in property_maps if property_map.name == key_property][0]
+        new_property_map.key_property = selected_key_property
+        property_maps.append(new_property_map)
+
 
         st.markdown('---')
         st.write('Number of these nodes to generate')
@@ -258,7 +272,8 @@ def nodes_row(
                 # Add to mapping
                 mapping = st.session_state[MAPPINGS]
                 nodes = mapping.nodes
-                # logging.info(f'nodes: {nodes}')
+                # logging.info(f'new property maps to use: {property_maps}')
+                # All vars are retaining until this point as expected EXCEPT property maps
                 node_mapping = NodeMapping(
                     id = id,
                     caption = caption,
@@ -267,7 +282,8 @@ def nodes_row(
                     properties=property_maps,
                     count_generator=selected_count_generator,
                     count_args=count_arg_inputs,
-                    key_property=selected_key_property,)
+                    key_property=selected_key_property,
+                    )
                 nodes[id] = node_mapping
                 mapping.nodes = nodes
                 st.session_state[MAPPINGS] = mapping

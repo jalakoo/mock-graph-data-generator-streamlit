@@ -1,33 +1,44 @@
-from models.relationship_mapping import RelationshipMapping
+from models.mapping import Mapping
+from models.node_mapping import NodeMapping
+from models.property_mapping import PropertyMapping
+from models.generator import Generator
 import logging
+from file_utils import save_csv
+import sys
+from models.data_import import DataImporterJson
+import logging
+import datetime
 
-# def generate_relationship_csv_header(relationship: RelationshipMapping):
-#     result = f",{relationship.end_node.filename()}.id"
-#     return result
+def _csv_row_values(values: list[dict])->list[list[str]]:
+    # Generate rows for relationship .csv
+    result = []
+    # TODO: Sort?
+    for value in values:
+        for v in value.values():
+            # TODO: This is a hack, but it works for now
+            if type(v) is datetime:
+                result.append(v.isoformat())
+            else:
+                result.append(v)
+    return result
 
-# def generate_csv_relationship(
-#     relationship: RelationshipMapping,
-#     export_folder: str,
-#     ):
-#     # Will generate a .csv file for use with Neo4j's data-importer.
+def _csv_headers(relationship: dict)->list[str]:
+    # Generate column headers for .csv
+    result = []
+    for k in relationship.keys():
+        result.append(k)
+    return result
 
-# def generate_csv_relationships(
-#     relationships: dict[str, RelationshipMapping],
-#     export_folder: str):
-#     # Will generate .csvs and a .json file for use with Neo4j's data-importer. Returns filename of .csv file
-    
-#     # Generate relationships
-#     for relationship in relationships:
+def export_csv_relationship(
+    filename: str,
+    values: list[dict],
+    export_folder: str):
 
-#         logging.info(f"Generating node: {relationship}")
+    # remove trailing slash from export path if present
+    cleaned_export_folder = export_folder.rstrip("/") 
+    csv_filepath = f"{cleaned_export_folder}/{filename}"
 
-#         # Generate the .csv file
-#         filename = f"{export_folder}/{relationship.filename()}.csv"
-
-#         with open(filename, 'w') as f:
-#             # Write the header
-#             header = f":START_ID,:END_ID,:TYPE\n"
-#             f.write(header)
-#             # Write the rows
-#             for row in relationship.rows:
-#                 row = f"{row[0]},{row[1]},{row[2]}
+    rows = _csv_row_values(values)
+    logging.info(f'export_csv_relationship: values: {values}')
+    header = _csv_headers(values[0])
+    save_csv(filepath=csv_filepath, header=header, data=rows)

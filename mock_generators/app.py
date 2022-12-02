@@ -2,7 +2,7 @@ import streamlit as st
 from constants import *
 from tabs.config import config_tab
 from tabs.generators import generators_tab
-from tabs.create import create_tab
+from tabs.new_generator import create_tab
 from tabs.mapping import mapping_tab
 from tabs.generate import generate_tab
 from tabs.export import export_tab
