@@ -35,7 +35,8 @@ def generate_data_importer_json(
         # Generate data-importer json
         # The data-import json file is a dict made up of 4 keys:
         export_path = f"{export_folder}/neo4j_importer_model.json"
-        save_json(export_path, dij.to_dict())
+        dij_dict = dij.to_dict()
+        save_json(export_path, dij_dict)
         return True
     except:
         logging.error(f'Unable to export data-importer json file to export folder: {export_folder}\n\n Error: {sys.exc_info()[0]}')

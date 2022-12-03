@@ -16,7 +16,6 @@ def property_row(
     properties: dict) -> PropertyMapping:
 
     # Create a new propertyMapping for storing user selections
-    # property_map = PropertyMapping(id=f'{type}_{id}_property_{index}')
     pc1, pc2, pc3, pc4, pc5 = st.columns(5)
 
     # Property name
@@ -29,35 +28,25 @@ def property_row(
         if name != "" and name[0] == "_":
             st.error("Property names cannot start with an underscore")
             name = None
-        # if name in [property_map.name for property_map in property_maps]:
-        #     st.error("Property names must be unique")
-        #     property_map.name = None
-        # else:
-        #     name = name
 
     # Property type
     with pc2:
-        type_string = st.selectbox("Type", ["String", "Bool", "Int", "Float","Datetime"], key=f"{type}_{id}_property_{index}_type")
-        type = GeneratorType.type_from_string(type_string)
-        # type = type
+        generator_type_string = st.selectbox("Type", ["String", "Bool", "Int", "Float","Datetime"], key=f"{type}_{id}_property_{index}_type")
+        generator_type = GeneratorType.type_from_string(generator_type_string)
 
     # Generator to create property data with
     with pc3:
-        possible_generators = generators_filtered([type])
+        possible_generators = generators_filtered([generator_type])
         possible_generator_names = [generator.name for generator in possible_generators]
         selected_generator_name = st.selectbox("Generator", possible_generator_names, key=f"{type}_{id}_property_{index}_generator")
 
         selected_generator = [generator for generator in possible_generators if generator.name == selected_generator_name][0]
 
-        # property_map.generator = selected_generator
 
     # Optional Property Generator arguments, if any
     with pc4:
         args = []
         if selected_generator is not None:
-            # if selected_generator.args == []:
-            #     property_map.args.clear()
-            # else:
             for p_index, arg in enumerate(selected_generator.args):
                 if arg.type == GeneratorType.STRING:
                     arg_input = st.text_input(
@@ -87,13 +76,12 @@ def property_row(
                     logging.error(f'Unknown argument type {arg.type}')
                     arg_input = None
 
-                # logging.info(f'arg_input: {arg_input}')
                 args.append(arg_input)
 
         property_map = PropertyMapping(
             id=f'{type}_{id}_property_{index}',
             name=name,
-            type=type,
+            type=generator_type,
             generator=selected_generator,
             args=args
         )

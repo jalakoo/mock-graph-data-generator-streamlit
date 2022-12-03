@@ -40,9 +40,7 @@ def generate_csv(
     # the data-importer will use to know which created nodes are connected with the mapped relationships
     for uid, relationship in mapping.relationships.items():
         # Each relationship mapping is capable of generating and storing it's own list of mock list data, dependent on previously generated node values
-        # logging.info(f'Generating values for relationship {relationship}: all nodes: {all_node_values}')
         r_values : list[dict] = relationship.generate_values(all_node_values)
-        logging.info(f'r_values: {r_values}')
         export_csv_relationship(f'{relationship.filename()}.csv', r_values, export_folder)
 
     return True

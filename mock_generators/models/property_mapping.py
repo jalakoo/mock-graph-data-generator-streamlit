@@ -3,16 +3,6 @@ import logging
 
 class PropertyMapping():
 
-    @staticmethod
-    def empty():
-        return PropertyMapping(
-            id = "",
-            name = "",
-            type = "",
-            generator = None,
-            args = []
-        )
-
     def __init__(
         self, 
         id: str,
@@ -28,7 +18,7 @@ class PropertyMapping():
         self.args = args
 
     def __str__(self):
-        return f"PropertyMapping(id={self.id}, name={self.name}, type={self.type}, generator={self.generator}, args={self.args})"
+        return f"PropertyMapping(id={self.id}, name={self.name}, type={self.type}, generator={self.generator.name}, generator_id={self.generator.id}, args={self.args})"
         
     def __repr__(self):
         return self.__str__()
@@ -43,5 +33,8 @@ class PropertyMapping():
         }
 
     def generate_value(self):
-        return self.generator.generate(self.args)
+        if self.generator == None:
+            logging.error(f'Generator is not set for property {self.name}')
+        result = self.generator.generate(self.args)
+        return result
 

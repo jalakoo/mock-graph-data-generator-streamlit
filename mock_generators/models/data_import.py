@@ -15,16 +15,16 @@ def file_schema_node_property(property: PropertyMapping)-> dict:
     }
     return result
 
-def file_schema_node(node: NodeMapping) -> dict:
-    result = {
-        f"{node.filename()}.csv":{
-            "expanded": True,
-            "fields":[
-                file_schema_node_property(property) for property in node.properties
-            ]
-        }
-    }
-    return result
+# def file_schema_node(node: NodeMapping) -> dict:
+#     result = {
+#         f"{node.filename()}.csv":{
+#             "expanded": True,
+#             "fields":[
+#                 file_schema_node_property(property) for property in node.properties
+#             ]
+#         }
+#     }
+#     return result
 
 
 def graph_model_property(property: PropertyMapping)-> dict:
@@ -44,7 +44,7 @@ def mapping_model_node_mappings(node:NodeMapping)->list[dict[str,str]]:
     return result
 
 class DataImporterJson():
-    def __init__(self, version: str = "0.7.0"):
+    def __init__(self, version: str = "0.7.1"):
         self.data = {
             "version": version,
             "graph":{
@@ -77,6 +77,7 @@ class DataImporterJson():
         }
 
     def to_dict(self):
+        # TODO: Verify format is correct
         return self.data
 
     def add_nodes(
@@ -105,7 +106,16 @@ class DataImporterJson():
 
         # dataModel:fileModel:fileSchemas
         try:
-            self.data["dataModel"]["fileModel"]["fileSchemas"].update(file_schema_node(nodeMapping))
+            self.data["dataModel"]["fileModel"]["fileSchemas"].update(
+                {
+                    f"{nodeMapping.filename()}.csv":{
+                        "expanded": True,
+                        "fields":[
+                            file_schema_node_property(property) for property in nodeMapping.properties
+                        ]
+                    }
+                }
+            )
         except:
             raise Exception(f'Error adding node {nodeMapping} to fileSchemas')
 
@@ -137,7 +147,7 @@ class DataImporterJson():
             self.data["dataModel"]["mappingModel"]["nodeMappings"].update(
                 {
                     f"{nodeMapping.id}":{
-                        "fileSchema": nodeMapping.filename(),
+                        "fileSchema": f'{nodeMapping.filename()}.csv',
                         "nodeSchema": nodeMapping.id,
                         "mappings":mapping_model_node_mappings(nodeMapping)
                     }
@@ -267,7 +277,7 @@ class DataImporterJson():
             self.data['dataModel']['mappingModel']['relationshipMappings'].update(
             {
                     f"{relationship.id}":{
-                        "relationshipSchema": {relationship.id},
+                        "relationshipSchema": f'{relationship.id}',
                         "mappings":[],
                         "source_mappings": [{
                             "field":"_from_node_key"
@@ -275,7 +285,7 @@ class DataImporterJson():
                         "target_mappings": [{
                             "field":"_to_node_key"
                         }],
-                        "fileSchema": relationship.filename(), 
+                        "fileSchema": f'relationship.filename()', 
                     }
                 }
             )

@@ -11,7 +11,6 @@ import datetime
 
 def _csv_row_values(values: list[dict])->list[list[str]]:
     # Generate rows for relationship .csv
-    logging.info(f'_csv_row_values: values: {values}')
     result = []
     for a_dict in values:
         for _, v in a_dict.items():
