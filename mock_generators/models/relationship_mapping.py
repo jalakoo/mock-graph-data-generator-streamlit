@@ -49,73 +49,70 @@ class RelationshipMapping():
 
     def generate_values(
         self, 
-        node_values: dict[list[dict]]
+        all_node_values: dict[list[dict]]
         )-> list[dict]:
 
-        logging.info(f'relationship {self} received generate_values: number of node_values: {len(node_values)}')
-
-        # Sample incoming node_values:
-        # node_values: {
-        #   "<node_id>":[
+        # Sample incoming all_node_values:
+        # {
+        #   "<node_mapping_id>":[
         #       {
         #       "first_name":"John",
         #       "last_name":"Doe"
         #      }  
         #   ]
         # }
+        #  This dict keys should include the node ids found in this relationship's fromId and toId properties
+        if self.start_node_id not in all_node_values:
+            raise Exception(f"NodeMapping with id {self.start_node_id} not found in all_node_values")
+        if self.end_node_id not in all_node_values:
+            raise Exception(f"NodeMapping with id {self.end_node_id} not found in all_node_values")
 
         # Sample exported list:
         # [
         #  {
         #    "_uid": "n1_abc",
-        #    "_type": "WORKS_AT",
         #    "since": "2020-01-01"
         #   }
         # ]
 
-        # Get the generator used to generate the number of relationships
-        # count_generator = self.count_generator
-        # count_args = self.count_args
-        # count = None
 
-        # Get generated mock values for all nodes
-        # from_node_values: dict[list[dict]] = node_values[self.start_node_id]
-        for key, value in node_values.items():
+        # Generate number of relationships to create
+        count = None
+        try:
+            count = self.count_generator.generate(self.count_args)
+        except:
+            raise Exception(f"Relationship mapping could not generate a count for producing values. Mapping: {self}\n\nError: {str(sys.exc_info()[0])}")
+
+        # Generate relationships
+        if all_node_values is None or len(all_node_values.keys()) == 0:
+            raise Exception("No node values provided to relationship mapping generator")
+        result = []
+        for node_id, all_node_values in all_node_values.keys():
             try:
-                # Generate number of relationships for each node value
-                # import_url = f"{count_generator.import_url()}"
-                # module = __import__(import_url, fromlist=['generate'])
-                # count = module.generate(count_args)
-                count = self.count_generator.generate(self.count_args)
-                result = []
                 for i in range(count):
                     # Generate each relationship with any optional properties
                     relationship_result = {}
 
-                    # Generate relationship properties
+                    # Generate new relationship properties
                     for property in self.properties:
                         value = property.generate_value()
                         relationship_result[property.name] = value
                         result.append(relationship_result)
-                    
-                    # Generate default info uid
-                    # relationship_result['_uid'] = f"{self.id}_{i}"
-                    # relationship_result['_type'] = self.type
 
-                    # Get key property of source node
-                    from_node_key_property = self.get_key_property(node_values[self.start_node_id])
-                    sample_from = from_node_key_property.generate_value()
-                    relationship_result['_from_node_key_sample'] = f"{sample_from}"
-                    relationship_result['_from_node_key'] = from_node_key_property.name
+                    # Add source node
+                    relationship_result['_from_node_id'] = self.start_node_id
 
-                    # Get key property of target node
-                    to_node_key_property = self.get_key_property(node_values[self.end_node_id])
-                    sample_to = to_node_key_property.generate_value()
-                    relationship_result['_to_node_key_sample'] = f"{sample_to}"
-                    relationship_result['_to_node_key'] = to_node_key_property.name
+                    # Add target node
+                    relationship_result['_to_node_id'] = self.end_node_id
 
+                    # Add unique id to this relationship entry
+                    relationship_result["_uid"] = f"{self.id}_{str(uuid.uuid4())[:8]}"
 
-                self.generated_values.append(result)
-                return self.generated_values
+                    result.append(relationship_result)
             except:
-                raise Exception(f"Relationship mapping could not load count generator from url {self.count_generator.import_url()}, error: {str(sys.exc_info()[0])}")
+                raise Exception(f"Relationship mapping for {self.type} could not generate values for node id: {node_id}\n\nError: {str(sys.exc_info()[0])}")
+        
+        logging.info(f'Generated {len(result)} values for relationship type: {self.type}')
+        self.generated_values = result
+        return self.generated_values
+        

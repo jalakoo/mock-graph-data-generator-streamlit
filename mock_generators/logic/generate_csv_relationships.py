@@ -11,10 +11,10 @@ import datetime
 
 def _csv_row_values(values: list[dict])->list[list[str]]:
     # Generate rows for relationship .csv
+    logging.info(f'_csv_row_values: values: {values}')
     result = []
-    # TODO: Sort?
-    for value in values:
-        for v in value.values():
+    for a_dict in values:
+        for _, v in a_dict.items():
             # TODO: This is a hack, but it works for now
             if type(v) is datetime:
                 result.append(v.isoformat())
@@ -33,6 +33,14 @@ def export_csv_relationship(
     filename: str,
     values: list[dict],
     export_folder: str):
+
+    # Sample incoming values:
+    # [
+    #  {
+    #    "_uid": "n1_abc",
+    #    "since": "2020-01-01"
+    #   }
+    # ]
 
     # remove trailing slash from export path if present
     cleaned_export_folder = export_folder.rstrip("/") 

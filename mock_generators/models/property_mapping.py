@@ -1,4 +1,5 @@
 from models.generator import Generator, GeneratorType
+import logging
 
 class PropertyMapping():
 

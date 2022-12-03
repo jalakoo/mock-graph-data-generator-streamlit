@@ -104,46 +104,53 @@ class DataImporterJson():
         })
 
         # dataModel:fileModel:fileSchemas
-        self.data["dataModel"]["fileModel"]["fileSchemas"].update(file_schema_node(nodeMapping))
+        try:
+            self.data["dataModel"]["fileModel"]["fileSchemas"].update(file_schema_node(nodeMapping))
+        except:
+            raise Exception(f'Error adding node {nodeMapping} to fileSchemas')
 
-        # TODO: Add to graphModel:nodeSchemas
-        # TODO: complete
-        self.data["dataModel"]["graphModel"]["nodeSchemas"].update(
-            {
-                f"{nodeMapping.id}":{
-                    "label": nodeMapping.caption,
-                    "additionalLabels":nodeMapping.labels,
-                    "labelProperties":[],
-                    "properties":[
-                        graph_model_property(property) for property in nodeMapping.properties
-                    ],
-                    "key":{
-                        "properties":[nodeMapping.key_property.id],
-                        "name":""
+        # Add to dataModel:graphModel:nodeSchemas
+        try: 
+            self.data["dataModel"]["graphModel"]["nodeSchemas"].update(
+                {
+                    f"{nodeMapping.id}":{
+                        "label": nodeMapping.caption,
+                        "additionalLabels":nodeMapping.labels,
+                        "labelProperties":[],
+                        "properties":[
+                            graph_model_property(property) for property in nodeMapping.properties
+                        ],
+                        "key":{
+                            "properties":[nodeMapping.key_property.id],
+                            "name":""
+                        }
                     }
                 }
-            }
-        )
+            )
+        except:
+            raise Exception(f'Error adding node {nodeMapping} to dataModel:graphModel:nodeSchemas')
 
         # TODO: Examples of labelProperties
 
         # Add to dataModel:mappingModel:nodeMappings
-        self.data["dataModel"]["mappingModel"]["nodeMappings"].update(
-            {
-                f"{nodeMapping.id}":{
-                    "fileSchema": nodeMapping.filename(),
-                    "nodeSchema": nodeMapping.id,
-                    "mappings":mapping_model_node_mappings(nodeMapping)
+        try:
+            self.data["dataModel"]["mappingModel"]["nodeMappings"].update(
+                {
+                    f"{nodeMapping.id}":{
+                        "fileSchema": nodeMapping.filename(),
+                        "nodeSchema": nodeMapping.id,
+                        "mappings":mapping_model_node_mappings(nodeMapping)
+                    }
                 }
-            }
-        )
-
+            )
+        except:
+            raise Exception(f'Error adding node {nodeMapping} to dataModel:mappingModel:nodeMappings')
 
     def add_relationships(
         self,
         relationshipMappings: dict[str, RelationshipMapping]
         ):
-        for _, relationshipMapping in relationshipMappings.items():
+        for relationship_id, relationshipMapping in relationshipMappings.items():
             self.add_relationship(relationshipMapping)
 
     def add_relationship(
@@ -153,13 +160,16 @@ class DataImporterJson():
         # Must be run AFTER relationshipMappings have generated mock data.
 
         # Add to graph:relationships
-        self.data["graph"]["relationships"].append({
-            "id": relationship.id,
-            "type": relationship.type,
-            "fromId": relationship.start_node_id,
-            "toId": relationship.end_node_id
-        })
-        
+        try: 
+            self.data["graph"]["relationships"].append({
+                "id": relationship.id,
+                "type": relationship.type,
+                "fromId": relationship.start_node_id,
+                "toId": relationship.end_node_id
+            })
+        except:
+            raise Exception(f'Error adding relationship {relationship} to graph:relationships')
+
         # Add to dataModel:graphModel:relationshipSchemas
         # EXAMPLE
         # "n2": {
@@ -174,18 +184,21 @@ class DataImporterJson():
         #     }
         #   ]
         # }
-        self.data['dataModel']['graphModel']['relationshipSchemas'].update(
-            {
-                f"{relationship.id}":{
-                    "type": relationship.type,
-                    "sourceNodeSchema": relationship.start_node_id,
-                    "targetNodeSchema": relationship.end_node_id,
-                    "properties":[
-                        graph_model_property(property) for property in relationship.properties
-                    ]
+        try:
+            self.data['dataModel']['graphModel']['relationshipSchemas'].update(
+                {
+                    f"{relationship.id}":{
+                        "type": relationship.type,
+                        "sourceNodeSchema": relationship.start_node_id,
+                        "targetNodeSchema": relationship.end_node_id,
+                        "properties":[
+                            graph_model_property(property) for property in relationship.properties
+                        ]
+                    }
                 }
-            }
-        )
+            )
+        except:
+            raise Exception(f'Error adding relationship {relationship} to dataModel:graphModel:relationshipSchemas')
 
         # Add dataModel:fileModel:fileSchemas
         # Get filename of csv generated for relationships
@@ -207,27 +220,30 @@ class DataImporterJson():
         #     }
         #   ]
         # }
-        self.data['dataModel']['graphModel']['mappingModel']['relationshipMappings'].update(
-            {
-                f'{relationship.filename()}':{
-                    "expanded": True,
-                    "fields": [
-                        {
-                            "name": "_from_node_key",
-                            "type": "string",
-                            "sample": f"{relationship.generated_values[0]['_from_node_key_sample']}",
-                            "include": True
-                            },
-                        {
-                            "name": "_to_node_key",
-                            "type": "string",
-                            "sample": f"{relationship.generated_values[0]['_to_node_key_sample']}",
+        try:
+            self.data['dataModel']['fileModel']['fileSchemas'].update(
+                {
+                    f'{relationship.filename()}':{
+                        "expanded": True,
+                        "fields": [
+                            {
+                                "name": "_from_node_id",
+                                "type": "string",
+                                "sample": f"{relationship.start_node_id}",
                                 "include": True
-                        }
-                    ]
+                                },
+                            {
+                                "name": "_to_node_id",
+                                "type": "string",
+                                "sample": f"{relationship.end_node_id}",
+                                    "include": True
+                            }
+                        ]
+                    }
                 }
-            }
-        )
+            )
+        except:
+            raise Exception(f'Error adding relationship {relationship} to dataModel:fileModel:fileSchemas')
 
         # Add to dataModel:graphModel:mappingModel:relationshipMappings
         # EXAMPLE
@@ -247,18 +263,21 @@ class DataImporterJson():
         #   "fileSchema": "people.csv"
         # },
 
-        self.data['dataModel']['graphModel']['mappingModel']['relationshipMappings'].update(
-          {
-                f"{relationship.id}":{
-                    "relationshipSchema": {relationship.id},
-                    "mappings":[],
-                    "source_mappings": [{
-                        "field":"_from_node_key"
-                    }],
-                    "target_mappings": [{
-                        "field":"_to_node_key"
-                    }],
-                    "fileSchema": relationship.filename(), 
+        try:
+            self.data['dataModel']['mappingModel']['relationshipMappings'].update(
+            {
+                    f"{relationship.id}":{
+                        "relationshipSchema": {relationship.id},
+                        "mappings":[],
+                        "source_mappings": [{
+                            "field":"_from_node_key"
+                        }],
+                        "target_mappings": [{
+                            "field":"_to_node_key"
+                        }],
+                        "fileSchema": relationship.filename(), 
+                    }
                 }
-            }
-        )
+            )
+        except:
+            raise Exception(f'Error adding relationship {relationship} to dataModel:graphModel:mappingModel:relationshipMappings')

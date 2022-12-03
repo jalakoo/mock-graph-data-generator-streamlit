@@ -1,10 +1,14 @@
 from models.mapping import Mapping
 from models.data_import import DataImporterJson
 from file_utils import save_json
+import logging
+import sys
 
 def generate_data_importer_json(
     mapping: Mapping,
-    export_folder: str):
+    export_folder: str) -> bool:
+    # Returns True if files generated, False if not
+
     # Will generate .csvs and a .json file for use with Neo4j's data-importer. Returns filename of .csv file
 
     # MUST be run AFTER nodes and relationships have generated their
@@ -13,15 +17,26 @@ def generate_data_importer_json(
     
     dij = DataImporterJson()
 
-    # Generate nodes
-    nodes = mapping.nodes
-    dij.add_nodes(nodes)
+    try:
+        # Generate nodes
+        nodes = mapping.nodes
+        dij.add_nodes(nodes)
+    except:
+        raise Exception(f'Error adding nodes for data-importer json: {sys.exc_info()[0]}')
 
-    # Generate relationships
-    relationships = mapping.relationships
-    dij.add_relationships(relationships)
+    try:
+        # Generate relationships
+        relationships = mapping.relationships
+        dij.add_relationships(relationships)
+    except:
+        raise Exception(f'Error adding relationships for data-importer json: {sys.exc_info()[0]}')
 
-    # Generate data-importer json
-    # The data-import json file is a dict made up of 4 keys:
-    export_path = f"{export_folder}/neo4j_importer_model.json"
-    save_json(export_path, dij.to_dict())
+    try:
+        # Generate data-importer json
+        # The data-import json file is a dict made up of 4 keys:
+        export_path = f"{export_folder}/neo4j_importer_model.json"
+        save_json(export_path, dij.to_dict())
+        return True
+    except:
+        logging.error(f'Unable to export data-importer json file to export folder: {export_folder}\n\n Error: {sys.exc_info()[0]}')
+        return False

@@ -13,7 +13,8 @@ from logic.generate_data_import import generate_data_importer_json
 
 def generate_csv(
     mapping: Mapping,
-    export_folder: str):
+    export_folder: str) -> bool:
+    # Returns True if files generated, False if not
     
     # For storing all generated value from each node type
     all_node_values : dict[str, list[dict]] = {}
@@ -23,13 +24,18 @@ def generate_csv(
         # Each nodeMapping is capable of generating and retaining it's own mock list data
         values : list[dict] = node.generate_values()
         if values is None or values == []:
-            logging.warning(f'No values generated for node {node.name}')
+            logging.warning(f'No values generated for node {node.caption}')
+            return False
+
         export_csv_node(f'{node.filename()}.csv', values, export_folder)
 
         #  Retain for use with relationships
         all_node_values[uid] = values
-        # logging.info(f'Generated values for node {node.caption}: {values}, added to {all_node_values}')
 
+
+    if all_node_values == {}:
+        logging.warning('No node values generated. No relationships will be generated.')
+        return False
     # Generate relationships, or more accurately, the csv files that
     # the data-importer will use to know which created nodes are connected with the mapped relationships
     for uid, relationship in mapping.relationships.items():
@@ -38,3 +44,5 @@ def generate_csv(
         r_values : list[dict] = relationship.generate_values(all_node_values)
         logging.info(f'r_values: {r_values}')
         export_csv_relationship(f'{relationship.filename()}.csv', r_values, export_folder)
+
+    return True

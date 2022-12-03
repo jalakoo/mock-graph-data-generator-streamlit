@@ -63,18 +63,28 @@ def generate_tab():
                 os.remove(os.path.join(dir, f))
 
             # Data Importer Options
-            generate_csv(
+            success = generate_csv(
                 mapping, 
                 export_folder=export_folder)
 
-            generate_data_importer_json(
+            # Check that data was generated
+            if success == False:
+                st.error('Error generating data. Check console for details.')
+                st.stop()
+                return
+
+            success = generate_data_importer_json(
                 mapping,
                 export_folder=export_folder)
 
+            # Check that data-import data was generated
+            if success == False:
+                st.error('Error generating data-import json. Check console for details.')
+                st.stop()
+                return
+
             with zipfile.ZipFile(f'{zips_folder}/data_import_model_and_data.zip', 'w', zipfile.ZIP_DEFLATED) as zipf:
                 zipdir(export_folder, zipf)
-
-            # TODO: Cypher Options
 
 
     with g2:

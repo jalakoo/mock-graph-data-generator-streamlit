@@ -61,25 +61,27 @@ class NodeMapping():
         #         "last_name": "Doe"
         #     }
         # ]
-        count_generator = self.count_generator
-        count_args = self.count_args
-        count = None
+        count = 0
+        result = []
         try:
-            import_url = f"{count_generator.import_url()}"
-            module = __import__(import_url, fromlist=['generate'])
-            count = module.generate(count_args)
-            result = []
+            count = self.count_generator.generate(self.count_args)
+        except:
+            raise Exception(f"Node mapping could not generate a number of nodes to continue generation process, error: {str(sys.exc_info()[0])}")
+        finally:
+            logging.info(f'Generated {count} node values for node mapping {self.caption}')
+
+        try:
             for _ in range(count):
                 node_result = {}
                 for property in self.properties:
-                    # args = property.args
-                    # value = property.generator.generate(args)
                     value = property.generate_value()
                     node_result[property.name] = value
                     result.append(node_result)
-                # node_result["_uid"] = f"{self.id}_{str(uuid.uuid4())[:8]}"
-            self.generate_values = result
-            # logging.info(f'generated node values: {result}')
-            return result
+                node_result["_uid"] = f"{self.id}_{str(uuid.uuid4())[:8]}"
+                self.generate_values = result
         except:
             raise Exception(f"Node mapping could not generate property values, error: {str(sys.exc_info()[0])}")
+
+        logging.info(f'Generated {len(result)} node values for node  {self.caption}')
+        self.generate_values = result
+        return self.generate_values
