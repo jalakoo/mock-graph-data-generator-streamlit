@@ -5,6 +5,7 @@ from models.generator import Generator, generators_from_json
 import os
 import sys
 import logging
+from widgets.folder_files import folder_files_expander
 
 def config_tab() -> list[Generator]:
 
@@ -70,22 +71,8 @@ def config_tab() -> list[Generator]:
     files = ""
     with cc2:
         st.write(f'Code Files in path: {st.session_state[CODE_FILE]}')
-        try:
-            # for root, dirs, files in os.walk(st.session_state[CODE_FILE]):
-            #     for file in files:
-            #         if file.endswith(".py"):
-            #             files += file
-            for root, dirs, files in os.walk(st.session_state[CODE_FILE]):
-                for file in files:
-                    if file.endswith(".py"):
-                        try:
-                            with st.expander(file):
-                                with open(os.path.join(root, file), 'r') as f:
-                                    st.text(f.read())
-                        except:
-                            logging.error(f"Error reading file: {file}")
-        except:
-            logging.error(f'config.py: Error retrieving generator .py files from {st.session_state[CODE_FILE]}: {sys.exc_info()[0]}')
+        folder_files_expander(folder_path = st.session_state[CODE_FILE], specific_extension= ".py")
+
     
     # TODO: Verify export path is available
 

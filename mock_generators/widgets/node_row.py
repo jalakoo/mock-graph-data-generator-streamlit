@@ -186,7 +186,6 @@ def nodes_row(
                 # Add to mapping
                 mapping = st.session_state[MAPPINGS]
                 nodes = mapping.nodes
-                # All vars are retaining until this point as expected EXCEPT property maps
                 node_mapping = NodeMapping(
                     id = id,
                     caption = caption,

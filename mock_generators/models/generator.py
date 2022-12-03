@@ -112,10 +112,6 @@ class Generator():
             args = []
         else :
             args = GeneratorArg.list_from(generator_dict['args'])
-        # if "packages" not in generator_dict.keys():
-        #     packages = []
-        # else:
-        #     packages = generator_packages_from(generator_dict["packages"])
         
         return Generator(
             id = id,
@@ -135,7 +131,6 @@ class Generator():
         description: str, 
         code_url: str,
         args: list[GeneratorArg],
-        # packages: list[GeneratorPackage]
         ):
         self.id = id
         self.name = name

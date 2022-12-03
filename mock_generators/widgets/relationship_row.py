@@ -16,17 +16,9 @@ def _node_uid_from(caption: str)-> str:
     nodes = st.session_state[MAPPINGS].nodes
     return [uid for uid, node in nodes.items() if node.caption == caption][0]
 
-def _node_caption_from(uid: str)-> str:
-    nodes = st.session_state[MAPPINGS].nodes
-    return nodes[uid].caption
-
 def _all_node_captions()-> list[str]:
     nodes = st.session_state[MAPPINGS].nodes
     return [node.caption for _, node in nodes.items()]
-
-def _all_node_ids()-> list[str]:
-    nodes = st.session_state[MAPPINGS].nodes
-    return [uid for uid, _ in nodes.items()]
 
 def _node_index_from(uid: str)-> int:
     nodes = st.session_state[MAPPINGS].nodes
@@ -80,7 +72,6 @@ def relationship_row(relationship: dict):
             # Relationship from
             fromId_index = _node_index_from(fromId)
             new_from_node_caption = st.selectbox("From Node", index=fromId_index, options=_all_node_captions(), key=f"relationship_{id}_fromId", help="A random node of this type will be selected as the source of the relationship")
-            # new_fromId = st.text_input("From Node", value=fromId, key=f"relationship_{id}_fromId")
             new_fromId = _node_uid_from(new_from_node_caption)
             if new_fromId != fromId:
                 fromId = new_fromId
@@ -135,7 +126,6 @@ def relationship_row(relationship: dict):
             # Relationship to
             toId_index = _node_index_from(toId)
             new_to_node_caption = st.selectbox("To Node", index=toId_index, options=_all_node_captions(), key=f"relationship_{id}_toId", help="A random node of this type will be selected as the target of the relationship")
-            # new_toId = st.text_input("To Node", value=toId, key=f"relationship_{id}_toId")
             new_toId = _node_uid_from(new_to_node_caption)
             if new_toId != toId:
                 toId = new_toId
@@ -187,7 +177,3 @@ def relationship_row(relationship: dict):
             mapping.relationships = relationships
             st.session_state[MAPPINGS] = mapping
             st.info(f'Relationship added to mapping')
-          
-        # # Randomization Mode
-        # st.markdown('---')
-        # st.selectbox(f'Relationship Randomization Mode', options=['Pure Random', 'Random Once Per Node Ongoing', 'Random Once Per Node Max'], key=f"relationship_{id}_randomization_mode",help='Relationships are randomly linked between generated node values. Optionally change how this is done. For example: pure random, random once per node max, etc.')

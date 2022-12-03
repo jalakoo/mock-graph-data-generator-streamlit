@@ -15,17 +15,6 @@ def file_schema_node_property(property: PropertyMapping)-> dict:
     }
     return result
 
-# def file_schema_node(node: NodeMapping) -> dict:
-#     result = {
-#         f"{node.filename()}.csv":{
-#             "expanded": True,
-#             "fields":[
-#                 file_schema_node_property(property) for property in node.properties
-#             ]
-#         }
-#     }
-#     return result
-
 
 def graph_model_property(property: PropertyMapping)-> dict:
     result = {
@@ -45,6 +34,8 @@ def mapping_model_node_mappings(node:NodeMapping)->list[dict[str,str]]:
     return result
 
 class DataImporterJson():
+    # Object for converting mapping info to a JSON file that can be imported into the Data Importer
+
     def __init__(self, version: str = "0.7.1"):
         self.data = {
             "version": version,

@@ -15,7 +15,6 @@ class RelationshipMapping():
         start_node_id: str, 
         end_node_id: str, 
         properties: dict[str, PropertyMapping],
-        # properties: list[PropertyMapping], 
         count_generator: Generator,
         count_args: list[any] = []
         ):

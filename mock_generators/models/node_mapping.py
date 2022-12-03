@@ -13,7 +13,6 @@ class NodeMapping():
         caption: str,
         labels: list[str], 
         properties: dict[str, PropertyMapping],
-        # properties: list[PropertyMapping], 
         count_generator: Generator,
         count_args: list[any] = [],
         key_property: PropertyMapping = None):
@@ -68,15 +67,11 @@ class NodeMapping():
             count = self.count_generator.generate(self.count_args)
         except:
             raise Exception(f"Node mapping could not generate a number of nodes to continue generation process, error: {str(sys.exc_info()[0])}")
-        # finally:
-        #     logging.info(f'Generated {count} node values for node  {self.caption}')
 
         try:
             for _ in range(count):
                 node_result = {}
-                # TODO: change to:
                 for property_name, property in self.properties.items():
-                # for property in self.properties:
                     value = property.generate_value()
                     node_result[property_name] = value
                     result.append(node_result)
