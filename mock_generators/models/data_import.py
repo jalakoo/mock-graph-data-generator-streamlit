@@ -37,7 +37,8 @@ def graph_model_property(property: PropertyMapping)-> dict:
 
 def mapping_model_node_mappings(node:NodeMapping)->list[dict[str,str]]:
     result = []
-    for property in node.properties:
+    # TODO: Update to iterate through dict instead of list
+    for property in node.properties.values():
         result.append({
             "field": property.name,
         })
@@ -111,7 +112,7 @@ class DataImporterJson():
                     f"{nodeMapping.filename()}.csv":{
                         "expanded": True,
                         "fields":[
-                            file_schema_node_property(property) for property in nodeMapping.properties
+                            file_schema_node_property(property) for property in nodeMapping.properties.values()
                         ]
                     }
                 }
@@ -128,7 +129,7 @@ class DataImporterJson():
                         "additionalLabels":nodeMapping.labels,
                         "labelProperties":[],
                         "properties":[
-                            graph_model_property(property) for property in nodeMapping.properties
+                            graph_model_property(property) for property in nodeMapping.properties.values()
                         ],
                         "key":{
                             "properties":[nodeMapping.key_property.id],
@@ -202,7 +203,7 @@ class DataImporterJson():
                         "sourceNodeSchema": relationship.start_node_id,
                         "targetNodeSchema": relationship.end_node_id,
                         "properties":[
-                            graph_model_property(property) for property in relationship.properties
+                            graph_model_property(property) for property in relationship.properties.values()
                         ]
                     }
                 }

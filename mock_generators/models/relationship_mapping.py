@@ -14,7 +14,8 @@ class RelationshipMapping():
         type: str,
         start_node_id: str, 
         end_node_id: str, 
-        properties: list[PropertyMapping], 
+        properties: dict[str, PropertyMapping],
+        # properties: list[PropertyMapping], 
         count_generator: Generator,
         count_args: list[any] = []
         ):
@@ -39,7 +40,7 @@ class RelationshipMapping():
             "type": self.type,
             "start_node_id": self.start_node_id,
             "end_node_id": self.end_node_id,
-            "properties": [property.to_dict() for property in self.properties],
+            "properties": [property.to_dict() for property in self.properties.items()],
             "count_generator": self.count_generator.to_dict(),
             "count_args": self.count_args
         }
@@ -93,10 +94,12 @@ class RelationshipMapping():
                     # Generate each relationship with any optional properties
                     relationship_result = {}
 
+                    # TODO: Update to use dict properties like nodes
                     # Generate new relationship properties
-                    for property in self.properties:
+                    for property_name, property in self.properties.items():
+                    # for property in self.properties:
                         value = property.generate_value()
-                        relationship_result[property.name] = value
+                        relationship_result[property_name] = value
                         result.append(relationship_result)
 
                     # Add source node
@@ -112,7 +115,7 @@ class RelationshipMapping():
             except:
                 raise Exception(f"Relationship mapping for {self.type} could not generate values for node id: {node_id}\n\nError: {str(sys.exc_info()[0])}")
         
-        logging.info(f'Generated {len(result)} values for relationship type: {self.type}')
+        logging.info(f'Generated {len(result)} records for relationship type: {self.type}')
         self.generated_values = result
         return self.generated_values
         

@@ -6,6 +6,7 @@ from models.generator import Generator, GeneratorType
 from models.relationship_mapping import RelationshipMapping
 import datetime
 import logging
+from widgets.property_row import property_row
 
 def generators_filtered(byTypes: list[GeneratorType]) -> list[Generator]:
     generators: list[Generator] = st.session_state[GENERATORS]
@@ -143,99 +144,22 @@ def relationship_row(relationship: dict):
         st.markdown('---')
         num_properties = st.number_input("Number of properties", min_value=0, value=len(properties), key=f"relationship_{id}_number_of_properties")
 
-        # TODO: identical to nodes properties - refactor to use the same widget/class
-
-        property_maps = []
+        property_maps = {}
+        
         for i in range(num_properties):
             # Create a new propertyMapping for storing user selections
-            property_map = PropertyMapping(id=f'relationship_{id}_property_{i}')
-            pc1, pc2, pc3, pc4, pc5 = st.columns(5)
 
-            # Property name
-            with pc1:
-                existing_name = ""
-                if i < len(properties):
-                    # Get key of property
-                    existing_name = properties[i][0] 
-                name = st.text_input("Property Name",value=existing_name, key=f"relationship_{id}_property_{i}_name")
+            new_property_map = property_row(
+                type="relationship",
+                id=id,
+                index=i,
+                properties=properties
+            )
 
-                # Validation
-                if name != "" and name[0] == "_":
-                    st.error("Property names cannot start with an underscore")
-                    property_map.name = None
-                if name in [property_map.name for property_map in property_maps]:
-                    st.error("Property names must be unique")
-                    property_map.name = None
-                else:
-                    property_map.name = name
-
-            # Property type
-            with pc2:
-                property_type_string = st.selectbox("Type", ["String", "Bool", "Int", "Float","Datetime"], key=f"relationship_{id}_property_{i}_type")
-                property_type = GeneratorType.type_from_string(property_type_string)
-                property_map.type = property_type
-
-            # Generator to create property data with
-            with pc3:
-                possible_generators = generators_filtered([property_type])
-                possible_generator_names = [generator.name for generator in possible_generators]
-
-                selected_generator_name = st.selectbox("Generator", possible_generator_names, key=f"relationship_{id}_property_{i}_generator")
-
-                selected_generator = None
-                if selected_generator_name != "" and selected_generator_name is not None:
-                    selected_generator = next(generator for generator in possible_generators if generator.name == selected_generator_name)
-                    property_map.generator = selected_generator
-
-            # Optional Generator arguments, if any
-            with pc4:
-                if selected_generator is not None:
-                    if selected_generator.args == []:
-                        property_map.args.clear()
-                    else:
-                        for p_index, arg in enumerate(selected_generator.args):
-                            if arg.type == GeneratorType.STRING:
-                                arg_input = st.text_input(
-                                    label=arg.label, 
-                                    value = arg.default,
-                                    key = f'relationship_{id}_property_{i}_generator_{selected_generator.id}_{arg.label}'
-                                    )
-                            elif arg.type == GeneratorType.INT or arg.type == GeneratorType.FLOAT:
-                                arg_input = st.number_input(
-                                    label= arg.label,
-                                    value= arg.default,
-                                    key = f'relationship_{id}_property_{i}_generator_{selected_generator.id}_{arg.label}'
-                                    )
-                            elif arg.type == GeneratorType.BOOL:
-                                arg_input = st.radio(
-                                    label=arg.label,
-                                    index=arg.default,
-                                    key = f'relationship_{id}_property_{i}_generator_{selected_generator.id}_{arg.label}'
-                                )
-                                # arg_inputs.append()
-                            elif arg.type == GeneratorType.DATETIME:
-                                arg_input = st.date_input(
-                                    label=arg.label,
-                                    value=datetime.datetime.fromisoformat(arg.default),
-                                    key = f'relationship_{id}_property_{i}_generator_{selected_generator.id}_{arg.label}')
-                            else:
-                                arg_input = None
-
-                            # Save argument values
-                            if p_index < len(property_map.args):
-                                property_map.args[p_index] = arg_input
-                            else:
-                                property_map.args.append(arg_input)
-
-
-                # Save options for generating mock property data later
-                property_maps.append(property_map)
-                        
-            with pc5:
-                # Display sample data
-                if selected_generator is not None:
-                    st.write(f'Sample')
-                    st.text(f'{selected_generator.generate(property_map.args)}')
+            if new_property_map.name in property_maps:
+                st.error(f'Property "{new_property_map.name}" already exists')
+            else:
+                property_maps[new_property_map.name] = new_property_map
         
         disabled = st.checkbox("Exclude/ignore relationship", value=False, key=f"relationship_{id}_enabled")
         if disabled:

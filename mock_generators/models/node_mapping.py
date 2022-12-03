@@ -12,7 +12,8 @@ class NodeMapping():
         position: dict,   # ie: {x: 0, y: 0}
         caption: str,
         labels: list[str], 
-        properties: list[PropertyMapping], 
+        properties: dict[str, PropertyMapping],
+        # properties: list[PropertyMapping], 
         count_generator: Generator,
         count_args: list[any] = [],
         key_property: PropertyMapping = None):
@@ -37,7 +38,7 @@ class NodeMapping():
             "caption": self.caption,
             "position": self.position,
             "labels": self.labels,
-            "properties": [property.to_dict() for property in self.properties],
+            "properties": {key: property.to_dict() for (key, property) in self.properties.items()},
             "count_generator": self.count_generator.to_dict(),
             "count_args": self.count_args,
             "key_property" : self.key_property.to_dict()
@@ -67,21 +68,23 @@ class NodeMapping():
             count = self.count_generator.generate(self.count_args)
         except:
             raise Exception(f"Node mapping could not generate a number of nodes to continue generation process, error: {str(sys.exc_info()[0])}")
-        finally:
-            logging.info(f'Generated {count} node values for node mapping {self.caption}')
+        # finally:
+        #     logging.info(f'Generated {count} node values for node  {self.caption}')
 
         try:
             for _ in range(count):
                 node_result = {}
-                for property in self.properties:
+                # TODO: change to:
+                for property_name, property in self.properties.items():
+                # for property in self.properties:
                     value = property.generate_value()
-                    node_result[property.name] = value
+                    node_result[property_name] = value
                     result.append(node_result)
                 node_result["_uid"] = f"{self.id}_{str(uuid.uuid4())[:8]}"
                 self.generate_values = result
         except:
             raise Exception(f"Node mapping could not generate property values, error: {str(sys.exc_info()[0])}")
 
-        logging.info(f'Generated {len(result)} node values for node  {self.caption}')
+        logging.info(f'Generated {len(result)} node records for node  {self.caption}')
         self.generate_values = result
         return self.generate_values

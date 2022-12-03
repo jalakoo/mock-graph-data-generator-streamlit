@@ -46,6 +46,6 @@ def export_csv_relationship(
     csv_filepath = f"{cleaned_export_folder}/{filename}"
 
     rows = _csv_row_values(values)
-    logging.info(f'export_csv_relationship: values: {values}')
+    # logging.info(f'export_csv_relationship: values: {values}')
     header = _csv_headers(values[0])
     save_csv(filepath=csv_filepath, header=header, data=rows)
