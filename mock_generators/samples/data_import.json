@@ -1,0 +1,531 @@
+{
+    "version": "0.5.2",
+    "graph": {
+      "nodes": [
+        {
+          "id": "n0",
+          "position": {
+            "x": -120,
+            "y": 98
+          },
+          "caption": "Comm"
+        },
+        {
+          "id": "n1",
+          "position": {
+            "x": 146,
+            "y": -112.5
+          },
+          "caption": "Project"
+        },
+        {
+          "id": "n2",
+          "position": {
+            "x": -120,
+            "y": 398
+          },
+          "caption": "Person"
+        },
+        {
+          "id": "n3",
+          "position": {
+            "x": 268,
+            "y": 146.75
+          },
+          "caption": "Company"
+        }
+      ],
+      "relationships": [
+        {
+          "id": "n0",
+          "type": "ASSOCIATED_WITH",
+          "fromId": "n0",
+          "toId": "n1"
+        },
+        {
+          "id": "n1",
+          "type": "REPORTS_TO",
+          "fromId": "n2",
+          "toId": "n2"
+        },
+        {
+          "id": "n2",
+          "type": "WORKS_AT",
+          "fromId": "n2",
+          "toId": "n3"
+        },
+        {
+          "id": "n3",
+          "type": "SENT_BY",
+          "fromId": "n2",
+          "toId": "n0"
+        },
+        {
+          "id": "n4",
+          "type": "SENT_TO",
+          "fromId": "n0",
+          "toId": "n2"
+        }
+      ]
+    },
+    "dataModel": {
+      "fileModel": {
+        "fileSchemas": {
+          "projects.csv": {
+            "expanded": true,
+            "fields": [
+              {
+                "name": "project_id",
+                "type": "string",
+                "sample": "1",
+                "include": true
+              },
+              {
+                "name": "start_date",
+                "type": "string",
+                "sample": "2022-04-19T00:00:00",
+                "include": true
+              },
+              {
+                "name": "end_date",
+                "type": "string",
+                "sample": "2023-10-08T00:00:00",
+                "include": true
+              },
+              {
+                "name": "is_documented",
+                "type": "string",
+                "sample": "True",
+                "include": true
+              }
+            ]
+          },
+          "commsTo.csv": {
+            "expanded": true,
+            "fields": [
+              {
+                "name": "comm_id",
+                "type": "string",
+                "sample": "8e26270b-3535-4c9b-8048-1864a394df99",
+                "include": true
+              },
+              {
+                "name": "sent_to",
+                "type": "string",
+                "sample": "0485822c-ae1a-4695-bbb3-b5f3d982af53",
+                "include": true
+              }
+            ]
+          },
+          "companies.csv": {
+            "expanded": true,
+            "fields": [
+              {
+                "name": "company_id",
+                "type": "string",
+                "sample": "1",
+                "include": true
+              },
+              {
+                "name": "number_of_employees",
+                "type": "string",
+                "sample": "100",
+                "include": true
+              },
+              {
+                "name": "number_of_depts",
+                "type": "string",
+                "sample": "10",
+                "include": true
+              },
+              {
+                "name": "min_salary",
+                "type": "string",
+                "sample": "75000",
+                "include": true
+              },
+              {
+                "name": "max_salary",
+                "type": "string",
+                "sample": "175000",
+                "include": true
+              },
+              {
+                "name": "min_annual_hoursmax_annual_hours",
+                "type": "string",
+                "sample": "1200",
+                "include": true
+              }
+            ]
+          },
+          "people.csv": {
+            "expanded": true,
+            "fields": [
+              {
+                "name": "company_id",
+                "type": "string",
+                "sample": "1",
+                "include": true
+              },
+              {
+                "name": "employee_id",
+                "type": "string",
+                "sample": "f3c389b5-05a3-4056-8760-3dcdbf6f0a71",
+                "include": true
+              },
+              {
+                "name": "salary_monthly",
+                "type": "string",
+                "sample": "174196",
+                "include": true
+              },
+              {
+                "name": "reports_to",
+                "type": "string",
+                "sample": "",
+                "include": true
+              },
+              {
+                "name": "annual_hours",
+                "type": "string",
+                "sample": "1200",
+                "include": true
+              }
+            ]
+          },
+          "comms.csv": {
+            "expanded": true,
+            "fields": [
+              {
+                "name": "comm_id",
+                "type": "string",
+                "sample": "8e26270b-3535-4c9b-8048-1864a394df99",
+                "include": true
+              },
+              {
+                "name": "type",
+                "type": "string",
+                "sample": "email",
+                "include": true
+              },
+              {
+                "name": "project_id",
+                "type": "string",
+                "sample": "1",
+                "include": true
+              },
+              {
+                "name": "sender_id",
+                "type": "string",
+                "sample": "bff4b5d0-8b42-4599-9ace-80f0a7b5ce57",
+                "include": true
+              },
+              {
+                "name": "receiver_ids",
+                "type": "string",
+                "sample": "['0485822c-ae1a-4695-bbb3-b5f3d982af53', 'c517cf94-d4b0-4118-8075-868c4c438a71', 'd573b5f2-5438-4a3b-8faa-69b8ca0acbb7', 'db2cfa30-dc2f-437c-a5a3-9b48079da660', '2cd773b4-e4ed-49d4-8a9b-380fbcad82f1', '572d2c6b-a51c-42b3-ac50-b5828fe70333', '7687d191-4e94-46ab-bdc5-41e7f1dc9e63']",
+                "include": true
+              },
+              {
+                "name": "created_at",
+                "type": "string",
+                "sample": "2022-01-13T00:00:00",
+                "include": true
+              }
+            ]
+          }
+        }
+      },
+      "graphModel": {
+        "nodeSchemas": {
+          "n0": {
+            "label": "Comm",
+            "additionLabels": [],
+            "labelProperties": [],
+            "properties": [
+              {
+                "property": "comm_id",
+                "type": "string",
+                "identifier": "n4MV672Jo5105gOJOXgME"
+              },
+              {
+                "property": "type",
+                "type": "string",
+                "identifier": "5b7V-ytLydos3oOr61deU"
+              },
+              {
+                "property": "created_at",
+                "type": "string",
+                "identifier": "iPKRcqe61csGPoeHOAvkk"
+              }
+            ],
+            "key": {
+              "properties": [
+                "n4MV672Jo5105gOJOXgME"
+              ],
+              "name": ""
+            }
+          },
+          "n1": {
+            "label": "Project",
+            "additionLabels": [],
+            "labelProperties": [],
+            "properties": [
+              {
+                "property": "project_id",
+                "type": "string",
+                "identifier": "ijtgY1GqtCjZIXiF0Wwfk"
+              },
+              {
+                "property": "start_date",
+                "type": "string",
+                "identifier": "iq0FQRLyIKnHiV17lTuyd"
+              },
+              {
+                "property": "end_date",
+                "type": "string",
+                "identifier": "O0O2fUpY-KGcCfY6cmf_W"
+              },
+              {
+                "property": "is_documented",
+                "type": "string",
+                "identifier": "GLK5uxumAU0umQATElfJ1"
+              }
+            ],
+            "key": {
+              "properties": [
+                "ijtgY1GqtCjZIXiF0Wwfk"
+              ],
+              "name": ""
+            }
+          },
+          "n2": {
+            "label": "Person",
+            "additionLabels": [],
+            "labelProperties": [],
+            "properties": [
+              {
+                "property": "employee_id",
+                "type": "string",
+                "identifier": "eudsXa6VzRMbuRrWWllcs"
+              },
+              {
+                "property": "salary_monthly",
+                "type": "string",
+                "identifier": "pfMGXWO97wA9X-D0zmAws"
+              },
+              {
+                "property": "annual_hours",
+                "type": "string",
+                "identifier": "iWxqT0aJOMEyb3MgKOaiy"
+              }
+            ],
+            "key": {
+              "properties": [
+                "eudsXa6VzRMbuRrWWllcs"
+              ],
+              "name": ""
+            }
+          },
+          "n3": {
+            "label": "Company",
+            "additionLabels": [],
+            "labelProperties": [],
+            "properties": [
+              {
+                "property": "company_id",
+                "type": "string",
+                "identifier": "2Gzk0HUQI2t2X8QCoIfmr"
+              }
+            ],
+            "key": {
+              "properties": [
+                "2Gzk0HUQI2t2X8QCoIfmr"
+              ],
+              "name": ""
+            }
+          }
+        },
+        "relationshipSchemas": {
+          "n0": {
+            "type": "ASSOCIATED_WITH",
+            "sourceNodeSchema": "n0",
+            "targetNodeSchema": "n1",
+            "properties": [
+              {
+              "property": "created_at",
+              "type": "datetime",
+              "identifier": "Qd0FzMHkcCxGIzSnBqbhb"
+              }
+            ]
+          },
+          "n1": {
+            "type": "REPORTS_TO",
+            "sourceNodeSchema": "n2",
+            "targetNodeSchema": "n2",
+            "properties": []
+          },
+          "n2": {
+            "type": "WORKS_AT",
+            "sourceNodeSchema": "n2",
+            "targetNodeSchema": "n3",
+            "properties": []
+          },
+          "n3": {
+            "type": "SENT_BY",
+            "sourceNodeSchema": "n2",
+            "targetNodeSchema": "n0",
+            "properties": []
+          },
+          "n4": {
+            "type": "SENT_TO",
+            "sourceNodeSchema": "n0",
+            "targetNodeSchema": "n2",
+            "properties": []
+          }
+        }
+      },
+      "mappingModel": {
+        "nodeMappings": {
+          "n0": {
+            "nodeSchema": "n0",
+            "fileSchema": "comms.csv",
+            "mappings": [
+              {
+                "field": "comm_id"
+              },
+              {
+                "field": "type"
+              },
+              {
+                "field": "created_at"
+              }
+            ]
+          },
+          "n1": {
+            "nodeSchema": "n1",
+            "fileSchema": "projects.csv",
+            "mappings": [
+              {
+                "field": "project_id"
+              },
+              {
+                "field": "start_date"
+              },
+              {
+                "field": "end_date"
+              },
+              {
+                "field": "is_documented"
+              }
+            ]
+          },
+          "n2": {
+            "nodeSchema": "n2",
+            "fileSchema": "people.csv",
+            "mappings": [
+              {
+                "field": "employee_id"
+              },
+              {
+                "field": "salary_monthly"
+              },
+              {
+                "field": "annual_hours"
+              }
+            ]
+          },
+          "n3": {
+            "nodeSchema": "n3",
+            "fileSchema": "companies.csv",
+            "mappings": [
+              {
+                "field": "company_id"
+              }
+            ]
+          }
+        },
+        "relationshipMappings": {
+          "n0": {
+            "relationshipSchema": "n0",
+            "mappings": [],
+            "sourceMappings": [
+              {
+                "field": "comm_id"
+              }
+            ],
+            "targetMappings": [
+              {
+                "field": "project_id"
+              }
+            ],
+            "fileSchema": "comms.csv"
+          },
+          "n1": {
+            "relationshipSchema": "n1",
+            "mappings": [],
+            "sourceMappings": [
+              {
+                "field": "employee_id"
+              }
+            ],
+            "targetMappings": [
+              {
+                "field": "reports_to"
+              }
+            ],
+            "fileSchema": "people.csv"
+          },
+          "n2": {
+            "relationshipSchema": "n2",
+            "mappings": [],
+            "sourceMappings": [
+              {
+                "field": "employee_id"
+              }
+            ],
+            "targetMappings": [
+              {
+                "field": "company_id"
+              }
+            ],
+            "fileSchema": "people.csv"
+          },
+          "n3": {
+            "relationshipSchema": "n3",
+            "mappings": [],
+            "sourceMappings": [
+              {
+                "field": "sender_id"
+              }
+            ],
+            "targetMappings": [
+              {
+                "field": "comm_id"
+              }
+            ],
+            "fileSchema": "comms.csv"
+          },
+          "n4": {
+            "relationshipSchema": "n4",
+            "mappings": [],
+            "sourceMappings": [
+              {
+                "field": "comm_id"
+              }
+            ],
+            "targetMappings": [
+              {
+                "field": "sent_to"
+              }
+            ],
+            "fileSchema": "commsTo.csv"
+          }
+        }
+      },
+      "configurations": {
+        "idsToIgnore": []
+      }
+    }
+  }
+  

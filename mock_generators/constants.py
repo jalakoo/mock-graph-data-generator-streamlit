@@ -4,7 +4,9 @@ import streamlit as st
 DEFAULT_GENERATORS_SPEC_FILE = "mock_generators/generators.json"
 DEFAULT_GENERATORS_CODE_PATH = "mock_generators/generators"
 DEFAULT_ARROWS_SAMPLE_PATH = "mock_generators/samples/arrows.json"
-
+DEFAULT_EXPORTS_PATH = "mock_generators/export/files"
+DEFAULT_ZIPS_PATH = "mock_generators/export/zips"
+DEFAULT_CODE_TEMPLATES_FILE ="mock_generators/template_generators/generic_generator.py"
 
 # Streamlit session keys
 GENERATORS = "generators"
@@ -13,18 +15,10 @@ CODE_FILE = "code_filepath"
 IMPORTED_FILE = "uploaded_file"
 SAMPLE_ARROWS_FILE= "sample_arrows"
 NEW_ARGS = "new_args"
+EXPORTS_PATH = "exports_path"
+ZIPS_PATH = "zips_path"
+CODE_TEMPLATE_FILE = "templates_file"
+DEFAULT_DATA_IMPORTER_FILENAME = "neo4j_importer_model"
 
-
-# Default state
-if GENERATORS not in st.session_state:
-    st.session_state[GENERATORS] = None
-if SPEC_FILE not in st.session_state:
-    st.session_state[SPEC_FILE] = DEFAULT_GENERATORS_SPEC_FILE
-if CODE_FILE not in st.session_state:
-    st.session_state[CODE_FILE] = DEFAULT_GENERATORS_CODE_PATH
-if SAMPLE_ARROWS_FILE not in st.session_state:
-    st.session_state[SAMPLE_ARROWS_FILE] = DEFAULT_ARROWS_SAMPLE_PATH
-if IMPORTED_FILE not in st.session_state:
-    st.session_state[IMPORTED_FILE] = None
-if NEW_ARGS not in st.session_state:
-    st.session_state[NEW_ARGS] = []
+# TODO: Can Streamlit's cache hold all the data we'll be generating?
+MAPPINGS = "mappings"

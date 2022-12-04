@@ -1,6 +1,8 @@
 ########################################################################
 # Python - https://github.com/github/gitignore/blob/master/Python.gitignore
-########################################################################
+######################################################################## Project
+mock_generators/export/*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

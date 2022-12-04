@@ -1,12 +1,14 @@
 from enum import Enum
 import logging
+import sys
 
 class GeneratorType(Enum):
     BOOL = 1,
     INT = 2,
     FLOAT = 3,
     STRING = 4,
-    DATETIME = 5
+    DATETIME = 5,
+    RELATIONAL = 6
 
     @staticmethod
     def type_from_string(aType: str):
@@ -21,6 +23,8 @@ class GeneratorType(Enum):
             return GeneratorType.DATETIME
         elif type == "bool":
             return GeneratorType.BOOL
+        elif type == "relational":
+            return GeneratorType.RELATIONAL
         else:
             raise TypeError("Type not supported")
     
@@ -28,15 +32,18 @@ class GeneratorType(Enum):
         if self == GeneratorType.STRING:
             return "String"
         elif self == GeneratorType.INT:
-            return "Int"
+            return "Integer"
         elif self == GeneratorType.FLOAT:
             return "Float"
         elif self == GeneratorType.DATETIME:
             return "Datetime"
         elif self == GeneratorType.BOOL:
             return "Bool"
+        elif self == GeneratorType.RELATIONAL:
+            return "Relational"
         else:
             raise TypeError("Type not supported")
+
 
 class GeneratorArg():
 
@@ -79,30 +86,6 @@ class GeneratorArg():
         return [GeneratorArg.from_dict(item) for item in list]
 
 
-# class GeneratorPackage():
-#     def __init__(
-#         self, 
-#         url: str,
-#         module: str,
-#         module_import_name: str,
-#         package_names: list[str]
-#     ):
-#         self.url = url
-#         self.module = module
-#         self.module_import_name = module_import_name
-#         self.package_names = package_names
-
-# def generator_packages_from(aList : list[dict])-> list[GeneratorPackage]:
-#     result = []
-#     for item in aList:
-#         logging.info(f'generator_packages_from: {item}')
-#         result.append(GeneratorPackage(
-#             url = item["url"],
-#             module = item["module_name"],
-#             module_import_name = item["module_import_name"]
-#         ))
-#     return result
-
 def generators_from_json(json : dict) -> dict:
     result = {}
     for key in json.keys():
@@ -129,10 +112,6 @@ class Generator():
             args = []
         else :
             args = GeneratorArg.list_from(generator_dict['args'])
-        # if "packages" not in generator_dict.keys():
-        #     packages = []
-        # else:
-        #     packages = generator_packages_from(generator_dict["packages"])
         
         return Generator(
             id = id,
@@ -152,7 +131,6 @@ class Generator():
         description: str, 
         code_url: str,
         args: list[GeneratorArg],
-        # packages: list[GeneratorPackage]
         ):
         self.id = id
         self.name = name
@@ -160,7 +138,6 @@ class Generator():
         self.code_url = code_url
         self.args = args
         self.type = type
-        # self.packages = packages
     
     def import_url(self):
         trimmed = self.code_url.split("/", 1)[1]
@@ -174,6 +151,23 @@ class Generator():
             "args": [arg.to_dict() for arg in self.args],
             "type": self.type.to_string()
         }
+
+    def __str__(self):
+        return f'Generator: id: {self.id}, name: {self.name}'
+
+    def __repr__(self):
+        return self.__str__()
+
+    def generate(self, args):
+        # Args are not the same as the generator args, these are the arg inputs from user
+        module = __import__(self.import_url(), fromlist=['generate'])
+        try:
+            result = module.generate(args)
+            return result
+        except:
+            logging.error(f"Error generating data for generator {self.name}, id {self.id}: {sys.exc_info()[0]}")
+            return None
+
 
 def generators_dict_to_json(dict: dict[str, Generator]) -> str:
     return {key: value.to_dict() for key, value in dict.items()}

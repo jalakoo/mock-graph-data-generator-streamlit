@@ -20,11 +20,12 @@ def input_type(label: str, type: str, key:str) -> any:
         raise Exception("Unknown type: " + type)
 
 def argument_widget(index) -> dict:
+    # For new generator arguments
     st.write(f"Argument {index + 1}")
     type_input= st.radio("Type", ["String", "Bool", "Int", "Float","Datetime"], key=f"arg_type_{index}_type_input")
     label = st.text_input("Name", key = f"arg_type_{index}_label")
     default = input_type("Default Value", type_input, key=f"arg_type_{index}_default")
-    logging.info(f'add_arg: {type_input}, {type}, {label}, {default}')
+    # logging.info(f'add_arg: {type_input}, {type}, {label}, {default}')
 
     arg_dict = {
         "type": type_input.lower(),
