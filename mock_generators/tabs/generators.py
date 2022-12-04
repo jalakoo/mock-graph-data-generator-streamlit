@@ -13,7 +13,7 @@ def generators_tab():
     with col1:
         st.image("mock_generators/media/electric-tower.gif")
     with col2:
-        st.write("Search and test available data generators.")
+        st.write("Not sure what sort of mock data can be generated in the mapping tab?\n\nSearch and test available data generators here.")
     st.markdown("--------")
 
     generators = st.session_state[GENERATORS]

@@ -36,6 +36,8 @@ def mapping_model_node_mappings(node:NodeMapping)->list[dict[str,str]]:
 class DataImporterJson():
     # Object for converting mapping info to a JSON file that can be imported into the Data Importer
 
+    # TODO: Use constants to define the keys for the JSON file
+
     def __init__(self, version: str = "0.7.1"):
         self.data = {
             "version": version,
@@ -117,7 +119,7 @@ class DataImporterJson():
                 {
                     f"{nodeMapping.id}":{
                         "label": nodeMapping.caption,
-                        "additionalLabels":nodeMapping.labels,
+                        "additionLabels":nodeMapping.labels,
                         "labelProperties":[],
                         "properties":[
                             graph_model_property(property) for property in nodeMapping.properties.values()
@@ -152,7 +154,7 @@ class DataImporterJson():
         self,
         relationshipMappings: dict[str, RelationshipMapping]
         ):
-        for relationship_id, relationshipMapping in relationshipMappings.items():
+        for _, relationshipMapping in relationshipMappings.items():
             self.add_relationship(relationshipMapping)
 
     def add_relationship(
@@ -209,13 +211,13 @@ class DataImporterJson():
         #   "expanded": true,
         #   "fields": [
         #     {
-        #       "name": "from_node_key",
+        #       "name": "from_node_id",
         #       "type": "string",
         #       "sample": "cdab7d16-1147-4de4-8eb9-b9d3a541a617",
         #       "include": true
         #     },
         #     {
-        #       "name": "to_node_key",
+        #       "name": "to_node_id",
         #       "type": "string",
         #       "sample": "4e228111-d659-47e5-a560-d46a81ed3927",
         #       "include": true
@@ -225,7 +227,7 @@ class DataImporterJson():
         try:
             self.data['dataModel']['fileModel']['fileSchemas'].update(
                 {
-                    f'{relationship.filename()}':{
+                    f'{relationship.filename()}.csv':{
                         "expanded": True,
                         "fields": [
                             {
@@ -271,13 +273,15 @@ class DataImporterJson():
                     f"{relationship.id}":{
                         "relationshipSchema": f'{relationship.id}',
                         "mappings":[],
-                        "source_mappings": [{
-                            "field":"_from_node_key"
+                        # TODO: Change to use the source node key property name
+                        "sourceMappings": [{
+                            "field":"_from_node_id"
                         }],
-                        "target_mappings": [{
-                            "field":"_to_node_key"
+                        # TODO: Change to use the target node key property name
+                        "targetMappings": [{
+                            "field":"_to_node_id"
                         }],
-                        "fileSchema": f'relationship.filename()', 
+                        "fileSchema": f'{relationship.filename()}.csv', 
                     }
                 }
             )

@@ -13,7 +13,7 @@ def config_tab() -> list[Generator]:
     with col1:
         st.image("mock_generators/media/options.gif")
     with col2:
-        st.write("Optionally change the export path, source locations for importing and reading generator specifications and code files. Generators are code functions used to generate specific types of mock data (ie: email generator for creating mock email addresses).")
+        st.write(f"Configuration Options.\n\nOptionally change the export path, source locations for importing and reading generator specifications and code files. Generators are code functions used to generate specific types of mock data (ie: email generator for creating mock email addresses).")
     st.markdown("--------")
 
     # Load exports path

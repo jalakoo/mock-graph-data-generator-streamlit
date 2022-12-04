@@ -14,6 +14,7 @@ class RelationshipMapping():
         type: str,
         start_node_id: str, 
         end_node_id: str, 
+        # TODO: Retain key property names for source and target nodes
         properties: dict[str, PropertyMapping],
         count_generator: Generator,
         count_args: list[any] = []
@@ -25,7 +26,6 @@ class RelationshipMapping():
         self.properties = properties
         self.count_generator = count_generator
         self.count_args = count_args
-        self.generated_values = []
 
     def __str__(self):
         return f"RelationshipMapping(id={self.id}, type={self.type}, start_node_id={self.start_node_id}, end_node_id={self.end_node_id}, properties={self.properties}, count_generator={self.count_generator}, count_args={self.count_args})"
@@ -39,7 +39,7 @@ class RelationshipMapping():
             "type": self.type,
             "start_node_id": self.start_node_id,
             "end_node_id": self.end_node_id,
-            "properties": [property.to_dict() for property in self.properties.items()],
+            "properties": {key: property.to_dict() for (key,property) in self.properties.items()},
             "count_generator": self.count_generator.to_dict(),
             "count_args": self.count_args
         }
@@ -47,9 +47,10 @@ class RelationshipMapping():
     def filename(self):
         return f"{self.type.lower()}_{self.id.lower()}"
 
+    # TODO: Update to use node_mappings over values.
     def generate_values(
         self, 
-        all_node_values: dict[list[dict]]
+        all_node_values: dict[str, list[dict]]
         )-> list[dict]:
 
         # Sample incoming all_node_values:
@@ -61,6 +62,9 @@ class RelationshipMapping():
         #      }  
         #   ]
         # }
+
+        # TODO: Update way we check to see if the node ids we're looking for are in the nodes list
+
         #  This dict keys should include the node ids found in this relationship's fromId and toId properties
         if self.start_node_id not in all_node_values:
             raise Exception(f"NodeMapping with id {self.start_node_id} not found in all_node_values")
@@ -86,7 +90,7 @@ class RelationshipMapping():
         # Generate relationships
         if all_node_values is None or len(all_node_values.keys()) == 0:
             raise Exception("No node values provided to relationship mapping generator")
-        result = []
+        all_results = []
         for node_id, all_node_values in all_node_values.keys():
             try:
                 for i in range(count):
@@ -99,22 +103,28 @@ class RelationshipMapping():
                     # for property in self.properties:
                         value = property.generate_value()
                         relationship_result[property_name] = value
-                        result.append(relationship_result)
+                        all_results.append(relationship_result)
 
+                    # TODO: Replace these hidden properties with the actual key properties identified in the node mapping
+
+                    # TODO: Change this to key property name of source node
                     # Add source node
                     relationship_result['_from_node_id'] = self.start_node_id
 
+                    # TODO: Change this to key property name of the target node
                     # Add target node
                     relationship_result['_to_node_id'] = self.end_node_id
 
+                    # TODO: Remove this
                     # Add unique id to this relationship entry
                     relationship_result["_uid"] = f"{self.id}_{str(uuid.uuid4())[:8]}"
 
-                    result.append(relationship_result)
+                    all_results.append(relationship_result)
             except:
                 raise Exception(f"Relationship mapping for {self.type} could not generate values for node id: {node_id}\n\nError: {str(sys.exc_info()[0])}")
         
-        logging.info(f'Generated {len(result)} records for relationship type: {self.type}')
-        self.generated_values = result
-        return self.generated_values
+        logging.info(f'Generated {len(all_results)} records for relationship type: {self.type}')
+        return all_results
+        # self.generated_values = result
+        # return self.generated_values
         

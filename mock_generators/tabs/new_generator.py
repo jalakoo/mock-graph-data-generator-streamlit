@@ -10,7 +10,7 @@ def create_tab():
     with col1:
         st.image("mock_generators/media/blueprint.gif")
     with col2:
-        st.write("Add additional generators for creating mock data with. Currently doesnt not clear after saving a new generator. Please go to the Generator tab to check if the generator was properly added.")
+        st.write(f"Add additional generators.\n\nCreate new generators that can be used by properties in the mapping tab. WARNING! Currently doesn't not clear after saving a new generator. Please go to the Generator tab to check if the generator was properly added.")
     st.markdown("--------")
 
     # TODO: Put into a resetting st.form

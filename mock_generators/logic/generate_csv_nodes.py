@@ -37,6 +37,6 @@ def export_csv_node(
     cleaned_export_folder = export_folder.rstrip("/") 
     csv_filepath = f"{cleaned_export_folder}/{filename}"
 
-    rows = csv_rows_for_node_values(node_values)
-    header = csv_headers_for_nodes(node_values[0])
-    save_csv(filepath=csv_filepath, header=header, data=rows)
+    # rows = csv_rows_for_node_values(node_values)
+    # header = csv_headers_for_nodes(node_values[0])
+    save_csv(filepath=csv_filepath, data=node_values)

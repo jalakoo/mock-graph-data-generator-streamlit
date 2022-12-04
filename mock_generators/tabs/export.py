@@ -6,7 +6,7 @@ def export_tab():
     with col1:
         st.image("mock_generators/media/export.gif")
     with col2:
-        st.write(f"The {DEFAULT_DATA_IMPORTER_FILENAME}.zip file can be uploaded into Neo4j's Data-Import tool. It contains all the files necessary to import the generated data into Neo4j.")
+        st.write(f"Export generated data.\n\nThe downloadable zip file can be uploaded into Neo4j's Data-Import tool. It contains all the files necessary to import the generated data into Neo4j.")
     st.markdown("--------")
 
     ec1, ec2 = st.columns(2)

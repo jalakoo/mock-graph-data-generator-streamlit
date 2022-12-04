@@ -32,10 +32,12 @@ def generate_data_importer_json(
     except:
         raise Exception(f'Error adding relationships for data-importer json: {sys.exc_info()[0]}')
 
+    # TODO: Verify format of exported .json file
+
     try:
         # Generate data-importer json
         # The data-import json file is a dict made up of 4 keys:
-        export_path = f"{export_folder}/{export_filename}"
+        export_path = f"{export_folder}/{export_filename}.json"
         dij_dict = dij.to_dict()
         save_json(export_path, dij_dict)
         return True

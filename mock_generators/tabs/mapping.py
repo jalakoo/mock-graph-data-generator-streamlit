@@ -11,7 +11,7 @@ def mapping_tab():
     with col1:
         st.image("mock_generators/media/shuffle.gif")
     with col2:
-        st.write("Create and edit mock data generation options. \n\nNodes and relationships are default EXCLUDED from mapping, meaning no data will be generated for them. Expand options for each node or relationship, verify/edit labels and properties before enabling each for mock data generation by clicking on the 'Generate Data for this Node' or 'Generate Data for this Relationship' checkbox.")
+        st.write("Create and edit mock data generation options. \n\nNodes and relationships are default INCLUDED from mapping, meaning data will be generated.  Expand options for each node or relationship > verify/edit labels and properties > optionally exclude from generation.")
     uploaded_file = st.session_state[IMPORTED_FILE]
     if uploaded_file is not None:
         with st.expander("Imported File"):
@@ -75,6 +75,7 @@ def mapping_tab():
         else:
             nodes_row(None)
 
+    st.markdown("--------")
     st.write("RELATIONSHIPS:")
     num_relationships = st.number_input("Number of relationships", min_value=1, value=len(relationships), key="mapping_number_of_relationships")
     for i in range(num_relationships):

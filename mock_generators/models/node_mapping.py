@@ -31,6 +31,7 @@ class NodeMapping():
     def __repr__(self):
         return self.__str__()
 
+
     def to_dict(self):
         return {
             "id": self.id,
@@ -46,6 +47,7 @@ class NodeMapping():
     def filename(self):
         return f"{self.caption.lower()}_{self.id.lower()}"
 
+    # TODO: Reimplement node mapping retaining it's generated values
     def generate_values(self) -> list[dict]:
         # returns a list of dicts with the generated values
         # Example return:
@@ -62,7 +64,7 @@ class NodeMapping():
         #     }
         # ]
         count = 0
-        result = []
+        all_results = []
         try:
             count = self.count_generator.generate(self.count_args)
         except:
@@ -74,12 +76,13 @@ class NodeMapping():
                 for property_name, property in self.properties.items():
                     value = property.generate_value()
                     node_result[property_name] = value
-                    result.append(node_result)
                 node_result["_uid"] = f"{self.id}_{str(uuid.uuid4())[:8]}"
-                self.generate_values = result
+                all_results.append(node_result)
         except:
             raise Exception(f"Node mapping could not generate property values, error: {str(sys.exc_info()[0])}")
 
-        logging.info(f'Generated {len(result)} node records for node  {self.caption}')
-        self.generate_values = result
-        return self.generate_values
+        logging.info(f'Generated {len(all_results)} node records for node  {self.caption}')
+        
+        return all_results
+        # self.generate_values = all_results
+        # return self.generate_values
