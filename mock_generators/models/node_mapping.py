@@ -1,7 +1,6 @@
 from models.property_mapping import PropertyMapping
 from models.generator import Generator
 import sys
-import uuid
 import logging
 
 class NodeMapping():
@@ -24,6 +23,7 @@ class NodeMapping():
         self.count_generator = count_generator
         self.count_args = count_args
         self.key_property = key_property # Property to use as unique key for this node
+        self.generated_values = None
 
     def __str__(self):
         return f"NodeMapping(id={self.id}, caption={self.caption}, labels={self.labels}, properties={self.properties}, count_generator={self.count_generator}, count_args={self.count_args}, key_property={self.key_property})"
@@ -47,7 +47,6 @@ class NodeMapping():
     def filename(self):
         return f"{self.caption.lower()}_{self.id.lower()}"
 
-    # TODO: Reimplement node mapping retaining it's generated values
     def generate_values(self) -> list[dict]:
         # returns a list of dicts with the generated values
         # Example return:
@@ -76,13 +75,13 @@ class NodeMapping():
                 for property_name, property in self.properties.items():
                     value = property.generate_value()
                     node_result[property_name] = value
-                node_result["_uid"] = f"{self.id}_{str(uuid.uuid4())[:8]}"
+                # node_result["_uid"] = f"{self.id}_{str(uuid.uuid4())[:8]}"
                 all_results.append(node_result)
         except:
             raise Exception(f"Node mapping could not generate property values, error: {str(sys.exc_info()[0])}")
 
         logging.info(f'Generated {len(all_results)} node records for node  {self.caption}')
         
-        return all_results
-        # self.generate_values = all_results
-        # return self.generate_values
+        # Store and return all_results
+        self.generated_values = all_results
+        return self.generated_values

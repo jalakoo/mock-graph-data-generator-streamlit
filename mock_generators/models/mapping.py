@@ -1,7 +1,5 @@
 
 from models.node_mapping import NodeMapping
-from models.relationship_mapping import RelationshipMapping
-
 
 class Mapping():
     # For storing mapping configurations

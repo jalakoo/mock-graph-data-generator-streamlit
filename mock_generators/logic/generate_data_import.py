@@ -42,5 +42,5 @@ def generate_data_importer_json(
         save_json(export_path, dij_dict)
         return True
     except:
-        logging.error(f'Unable to export data-importer json file to export folder: {export_folder}\n\n Error: {sys.exc_info()[0]}')
+        logging.error(f'Unable to export data-importer json file to export folder: {export_folder}\n\ndata-import object: {dij_dict}\n\nError: {sys.exc_info()[0]}')
         return False

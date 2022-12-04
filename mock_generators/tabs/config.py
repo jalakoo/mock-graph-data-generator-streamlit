@@ -79,6 +79,4 @@ def config_tab() -> list[Generator]:
     # TODO: Add resest
 
 
-
-
     st.markdown("Images by Freepik from [Flaticon](https://www.flaticon.com/)")

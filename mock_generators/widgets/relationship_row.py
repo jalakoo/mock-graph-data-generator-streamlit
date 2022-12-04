@@ -4,6 +4,7 @@ import uuid
 from models.property_mapping import PropertyMapping
 from models.generator import Generator, GeneratorType
 from models.relationship_mapping import RelationshipMapping
+from models.node_mapping import NodeMapping
 import datetime
 import logging
 from widgets.property_row import property_row
@@ -20,9 +21,21 @@ def _all_node_captions()-> list[str]:
     nodes = st.session_state[MAPPINGS].nodes
     return [node.caption for _, node in nodes.items()]
 
+def _node_key_property_name(caption: str)-> str:
+    nodes = st.session_state[MAPPINGS].nodes
+    matches = [node.key_property.name for _, node in nodes.items() if node.caption == caption]
+    if len(matches) == 0:
+        logging.error(f'No node found with caption {caption}')
+        return ""
+    return matches[0]
+
 def _node_index_from(uid: str)-> int:
     nodes = st.session_state[MAPPINGS].nodes
     return list(nodes.keys()).index(uid)
+
+def node_from_id(id: str) -> NodeMapping:
+    nodes = st.session_state[MAPPINGS].nodes
+    return [node for _, node in nodes.items() if node.id == id][0]
 
 def relationship_row(relationship: dict):
 
@@ -73,8 +86,12 @@ def relationship_row(relationship: dict):
             fromId_index = _node_index_from(fromId)
             new_from_node_caption = st.selectbox("From Node", index=fromId_index, options=_all_node_captions(), key=f"relationship_{id}_fromId", help="A random node of this type will be selected as the source of the relationship")
             new_fromId = _node_uid_from(new_from_node_caption)
-            if new_fromId != fromId:
-                fromId = new_fromId
+            # if new_fromId != fromId:
+            # fromId = new_fromId
+            # fromKeyProperty = _node_key_property_name(new_from_node_caption)
+            fromNode = node_from_id(new_fromId)
+
+
         with r2:
             # Select count generator
             possible_count_generators = generators_filtered([GeneratorType.INT])
@@ -127,8 +144,10 @@ def relationship_row(relationship: dict):
             toId_index = _node_index_from(toId)
             new_to_node_caption = st.selectbox("To Node", index=toId_index, options=_all_node_captions(), key=f"relationship_{id}_toId", help="A random node of this type will be selected as the target of the relationship")
             new_toId = _node_uid_from(new_to_node_caption)
-            if new_toId != toId:
-                toId = new_toId
+            # if new_toId != toId:
+            # toId = new_toId
+            # toKeyProperty = _node_key_property_name(new_to_node_caption)
+            toNode = node_from_id(new_toId)
 
         # Relationship properties
         st.markdown('---')
@@ -167,8 +186,12 @@ def relationship_row(relationship: dict):
             relationship_mapping = RelationshipMapping(
                 id=id,
                 type=type,
-                start_node_id=fromId,
-                end_node_id=toId,
+                # start_node_id=fromId,
+                # end_node_id=toId,
+                # start_node_key_property=fromKeyProperty,
+                # end_node_key_property=toKeyProperty,
+                from_node=fromNode,
+                to_node=toNode,
                 count_generator=selected_count_generator,
                 count_args=count_arg_inputs,
                 properties=property_maps

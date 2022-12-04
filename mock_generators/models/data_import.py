@@ -3,16 +3,44 @@ from models.node_mapping import NodeMapping
 from models.relationship_mapping import RelationshipMapping
 from models.property_mapping import PropertyMapping
 import logging
+from models.generator import GeneratorType
 
+def file_schema_for_property(property: PropertyMapping)-> dict:
 
-def file_schema_node_property(property: PropertyMapping)-> dict:
     sample_value = property.generator.generate(property.args)
+
+    # Why didn't this work?
+    # if type(sample_value) is datetime:
+    #     logging.info(f'Converting datetime to string for file schema: {sample_value}')
+    #     sample_value = sample_value.isoformat()
+
+    if property.type == GeneratorType.DATETIME:
+        logging.info(f'datetime found. Generated value: {sample_value}')
+        sample_value = sample_value.isoformat()
+
     result = {
         "name": property.name,
         "type": property.type.to_string().lower(),
         "sample": sample_value,
         "include": True
     }
+    return result
+
+def file_schema_for_relationship(relationship: RelationshipMapping)-> list[dict]:
+    # A little different than nodes because we need to add the relationship properties and the from and to node information
+    result = []
+    for property in relationship.properties.values():
+        result.append(file_schema_for_property(property))
+
+
+    from_dict = file_schema_for_property(relationship.from_node.key_property)
+    # prefixing property names in case the node key names are the same. Not strictly necessary but difficult to manually follow otherwise
+    from_dict['name'] = f'_from_{from_dict["name"]}'
+    result.append(from_dict)
+
+    to_dict = file_schema_for_property(relationship.to_node.key_property)
+    to_dict['name'] = f'_to_{to_dict["name"]}'
+    result.append(to_dict)
     return result
 
 
@@ -26,7 +54,6 @@ def graph_model_property(property: PropertyMapping)-> dict:
 
 def mapping_model_node_mappings(node:NodeMapping)->list[dict[str,str]]:
     result = []
-    # TODO: Update to iterate through dict instead of list
     for property in node.properties.values():
         result.append({
             "field": property.name,
@@ -105,7 +132,7 @@ class DataImporterJson():
                     f"{nodeMapping.filename()}.csv":{
                         "expanded": True,
                         "fields":[
-                            file_schema_node_property(property) for property in nodeMapping.properties.values()
+                            file_schema_for_property(property) for property in nodeMapping.properties.values()
                         ]
                     }
                 }
@@ -134,7 +161,7 @@ class DataImporterJson():
         except:
             raise Exception(f'Error adding node {nodeMapping} to dataModel:graphModel:nodeSchemas')
 
-        # TODO: Examples of labelProperties
+        # TODO: Get Examples of labelProperties - are these even used by data importer?
 
         # Add to dataModel:mappingModel:nodeMappings
         try:
@@ -168,8 +195,8 @@ class DataImporterJson():
             self.data["graph"]["relationships"].append({
                 "id": relationship.id,
                 "type": relationship.type,
-                "fromId": relationship.start_node_id,
-                "toId": relationship.end_node_id
+                "fromId": relationship.from_node.id,
+                "toId": relationship.to_node.id
             })
         except:
             raise Exception(f'Error adding relationship {relationship} to graph:relationships')
@@ -193,8 +220,8 @@ class DataImporterJson():
                 {
                     f"{relationship.id}":{
                         "type": relationship.type,
-                        "sourceNodeSchema": relationship.start_node_id,
-                        "targetNodeSchema": relationship.end_node_id,
+                        "sourceNodeSchema": relationship.from_node.id,
+                        "targetNodeSchema": relationship.to_node.id,
                         "properties":[
                             graph_model_property(property) for property in relationship.properties.values()
                         ]
@@ -229,20 +256,7 @@ class DataImporterJson():
                 {
                     f'{relationship.filename()}.csv':{
                         "expanded": True,
-                        "fields": [
-                            {
-                                "name": "_from_node_id",
-                                "type": "string",
-                                "sample": f"{relationship.start_node_id}",
-                                "include": True
-                                },
-                            {
-                                "name": "_to_node_id",
-                                "type": "string",
-                                "sample": f"{relationship.end_node_id}",
-                                    "include": True
-                            }
-                        ]
+                        "fields": file_schema_for_relationship(relationship)
                     }
                 }
             )
@@ -273,13 +287,12 @@ class DataImporterJson():
                     f"{relationship.id}":{
                         "relationshipSchema": f'{relationship.id}',
                         "mappings":[],
-                        # TODO: Change to use the source node key property name
+                        # NOTE: The prefixing
                         "sourceMappings": [{
-                            "field":"_from_node_id"
+                            "field":f"_from_{relationship.from_node.key_property.name}"
                         }],
-                        # TODO: Change to use the target node key property name
                         "targetMappings": [{
-                            "field":"_to_node_id"
+                            "field":f"_to_{relationship.to_node.key_property.name}"
                         }],
                         "fileSchema": f'{relationship.filename()}.csv', 
                     }

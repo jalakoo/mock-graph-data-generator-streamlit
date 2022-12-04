@@ -1,10 +1,9 @@
 
-# from models.node_mapping import NodeMapping
+from models.node_mapping import NodeMapping
 from models.property_mapping import PropertyMapping
 from models.generator import Generator
-import sys
-import uuid
 import logging
+import random
 
 class RelationshipMapping():
 
@@ -12,23 +11,22 @@ class RelationshipMapping():
         self, 
         id: str,
         type: str,
-        start_node_id: str, 
-        end_node_id: str, 
-        # TODO: Retain key property names for source and target nodes
+        from_node : NodeMapping,
+        to_node : NodeMapping,
         properties: dict[str, PropertyMapping],
         count_generator: Generator,
         count_args: list[any] = []
         ):
         self.id = id
         self.type = type
-        self.start_node_id = start_node_id
-        self.end_node_id = end_node_id
+        self.from_node = from_node
+        self.to_node = to_node
         self.properties = properties
         self.count_generator = count_generator
         self.count_args = count_args
 
     def __str__(self):
-        return f"RelationshipMapping(id={self.id}, type={self.type}, start_node_id={self.start_node_id}, end_node_id={self.end_node_id}, properties={self.properties}, count_generator={self.count_generator}, count_args={self.count_args})"
+        return f"RelationshipMapping(id={self.id}, type={self.type}, from_node={self.from_node.to_dict()}, to_node={self.to_node.to_dict()}, properties={self.properties}, count_generator={self.count_generator}, count_args={self.count_args})"
 
     def __repr__(self):
         return self.__str__()
@@ -37,8 +35,8 @@ class RelationshipMapping():
         return {
             "id": self.id,
             "type": self.type,
-            "start_node_id": self.start_node_id,
-            "end_node_id": self.end_node_id,
+            "from_node": self.from_node.to_dict(),
+            "to_node": self.to_node.to_dict(),
             "properties": {key: property.to_dict() for (key,property) in self.properties.items()},
             "count_generator": self.count_generator.to_dict(),
             "count_args": self.count_args
@@ -47,15 +45,14 @@ class RelationshipMapping():
     def filename(self):
         return f"{self.type.lower()}_{self.id.lower()}"
 
-    # TODO: Update to use node_mappings over values.
     def generate_values(
         self, 
-        all_node_values: dict[str, list[dict]]
+        # all_node_values: dict[NodeMapping, list[dict]]
         )-> list[dict]:
 
         # Sample incoming all_node_values:
         # {
-        #   "<node_mapping_id>":[
+        #   "<node_mapping>":[
         #       {
         #       "first_name":"John",
         #       "last_name":"Doe"
@@ -63,68 +60,65 @@ class RelationshipMapping():
         #   ]
         # }
 
-        # TODO: Update way we check to see if the node ids we're looking for are in the nodes list
+        if self.from_node == None:
+            raise Exception(f"RelationshipMapping {self} not assigned a from_node before generating values")
+        if self.to_node == None:
+            raise Exception(f"RelationshipMapping {self} not assigned a to_node before generating values")
 
-        #  This dict keys should include the node ids found in this relationship's fromId and toId properties
-        if self.start_node_id not in all_node_values:
-            raise Exception(f"NodeMapping with id {self.start_node_id} not found in all_node_values")
-        if self.end_node_id not in all_node_values:
-            raise Exception(f"NodeMapping with id {self.end_node_id} not found in all_node_values")
+        from_node = self.from_node
+        to_node = self.to_node
 
-        # Sample exported list:
+        # Make sure from and to nodes have generated values already
+        if from_node.generated_values == None:
+            from_node.generate_values()
+        if to_node.generated_values == None:
+            to_node.generate_values()
+
+        # Sample return list:
         # [
         #  {
-        #    "_uid": "n1_abc",
+        #    "<from_node_key_property_name>": "n1_abc",
+        #    "<to_node_key_property_name>": "n2_abc",
         #    "since": "2020-01-01"
         #   }
         # ]
 
 
-        # Generate number of relationships to create
-        count = None
-        try:
-            count = self.count_generator.generate(self.count_args)
-        except:
-            raise Exception(f"Relationship mapping could not generate a count for producing values. Mapping: {self}\n\nError: {str(sys.exc_info()[0])}")
-
-        # Generate relationships
-        if all_node_values is None or len(all_node_values.keys()) == 0:
-            raise Exception("No node values provided to relationship mapping generator")
+        # Store generated relationships to return
         all_results = []
-        for node_id, all_node_values in all_node_values.keys():
-            try:
-                for i in range(count):
-                    # Generate each relationship with any optional properties
-                    relationship_result = {}
 
-                    # TODO: Update to use dict properties like nodes
-                    # Generate new relationship properties
-                    for property_name, property in self.properties.items():
-                    # for property in self.properties:
-                        value = property.generate_value()
-                        relationship_result[property_name] = value
-                        all_results.append(relationship_result)
+        # Iterate through every generated source node
+        for value_dict in from_node.generated_values:
+            # value_dict = dict of property names and generated values
 
-                    # TODO: Replace these hidden properties with the actual key properties identified in the node mapping
+            # Validate we have anything to process
+            if value_dict.keys() is None or len(value_dict.keys()) == 0:
+                raise Exception(f"No properties found for NodeMapping: {from_node}")
 
-                    # TODO: Change this to key property name of source node
-                    # Add source node
-                    relationship_result['_from_node_id'] = self.start_node_id
+            # Get the key property name and value for source node
+            from_node_key_property_name = from_node.key_property.name
+            from_node_key_property_value = value_dict[from_node_key_property_name]
 
-                    # TODO: Change this to key property name of the target node
-                    # Add target node
-                    relationship_result['_to_node_id'] = self.end_node_id
 
-                    # TODO: Remove this
-                    # Add unique id to this relationship entry
-                    relationship_result["_uid"] = f"{self.id}_{str(uuid.uuid4())[:8]}"
+            # Select a random target node
+            to_node_value_dict = random.choice(to_node.generated_values)
 
-                    all_results.append(relationship_result)
-            except:
-                raise Exception(f"Relationship mapping for {self.type} could not generate values for node id: {node_id}\n\nError: {str(sys.exc_info()[0])}")
-        
+            # Get key property name and value for target record
+            to_node_key_property_name = to_node.key_property.name
+            to_node_key_property_value = to_node_value_dict[to_node_key_property_name]
+
+            # Generate the relationship
+            result = {
+                f'_from_{from_node_key_property_name}': from_node_key_property_value,
+                f'_to_{to_node_key_property_name}': to_node_key_property_value
+            }
+
+            # Generate the properties
+            for property_name, property_mapping in self.properties.items():
+                result[property_name] = property_mapping.generate_value()
+
+            all_results.append(result)
+
         logging.info(f'Generated {len(all_results)} records for relationship type: {self.type}')
         return all_results
-        # self.generated_values = result
-        # return self.generated_values
         
