@@ -15,23 +15,31 @@ def generators_filtered(byTypes: list[GeneratorType]) -> list[Generator]:
 
 def _node_uid_from(caption: str)-> str:
     nodes = st.session_state[MAPPINGS].nodes
-    return [uid for uid, node in nodes.items() if node.caption == caption][0]
+    options = [uid for uid, node in nodes.items() if node.caption == caption]
+    if len(options) == 0:
+        logging.error(f'No node found with caption {caption} (possibly disabled)')
+        return None
+    else:
+        return options[0]
 
 def _all_node_captions()-> list[str]:
     nodes = st.session_state[MAPPINGS].nodes
     return [node.caption for _, node in nodes.items()]
 
-def _node_key_property_name(caption: str)-> str:
-    nodes = st.session_state[MAPPINGS].nodes
-    matches = [node.key_property.name for _, node in nodes.items() if node.caption == caption]
-    if len(matches) == 0:
-        logging.error(f'No node found with caption {caption}')
-        return ""
-    return matches[0]
+# def _node_key_property_name(caption: str)-> str:
+#     nodes = st.session_state[MAPPINGS].nodes
+#     matches = [node.key_property.name for _, node in nodes.items() if node.caption == caption]
+#     if len(matches) == 0:
+#         logging.error(f'No node found with caption {caption}')
+#         return ""
+#     return matches[0]
 
 def _node_index_from(uid: str)-> int:
     nodes = st.session_state[MAPPINGS].nodes
-    return list(nodes.keys()).index(uid)
+    if uid in nodes.keys():
+        return list(nodes.keys()).index(uid)
+    # If the node is not found, return index 0 as this is used by a UI widget
+    return -1
 
 def node_from_id(id: str) -> NodeMapping:
     nodes = st.session_state[MAPPINGS].nodes
@@ -84,11 +92,11 @@ def relationship_row(relationship: dict):
         with r1:
             # Relationship from
             fromId_index = _node_index_from(fromId)
+            if fromId_index == -1:
+                st.error(f'Node with id {fromId} disabled or missing')
+                fromId_index = 0
             new_from_node_caption = st.selectbox("From Node", index=fromId_index, options=_all_node_captions(), key=f"relationship_{id}_fromId", help="A random node of this type will be selected as the source of the relationship")
             new_fromId = _node_uid_from(new_from_node_caption)
-            # if new_fromId != fromId:
-            # fromId = new_fromId
-            # fromKeyProperty = _node_key_property_name(new_from_node_caption)
             fromNode = node_from_id(new_fromId)
 
 
@@ -142,6 +150,9 @@ def relationship_row(relationship: dict):
         with r5:
             # Relationship to
             toId_index = _node_index_from(toId)
+            if toId_index == -1:
+                st.error(f'Node with id {toId} disabled or missing')
+                toId_index = 0
             new_to_node_caption = st.selectbox("To Node", index=toId_index, options=_all_node_captions(), key=f"relationship_{id}_toId", help="A random node of this type will be selected as the target of the relationship")
             new_toId = _node_uid_from(new_to_node_caption)
             # if new_toId != toId:

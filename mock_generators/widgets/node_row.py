@@ -174,6 +174,8 @@ def nodes_row(
         with ncc3:
             disabled = st.checkbox("Exclude/ignore node", value=False, key=f"node_{id}_disabled")
             if disabled:
+                # TODO: Also disable any relationships dependent on this node
+
                 # Remove from mapping
                 mapping = st.session_state[MAPPINGS]
                 mapping_nodes = mapping.nodes

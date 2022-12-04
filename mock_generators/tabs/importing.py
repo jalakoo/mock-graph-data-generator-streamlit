@@ -23,6 +23,9 @@ def import_tab():
 
         # To read file as string:
         imported_file = stringio.read()
+
+        # TODO: Verfiy file is valid arrows JSON
+        
         if imported_file is not None and imported_file != st.session_state[IMPORTED_FILE]:
             st.session_state[IMPORTED_FILE] = imported_file
 
