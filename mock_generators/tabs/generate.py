@@ -8,31 +8,6 @@ import logging
 import sys
 import zipfile
 from widgets.folder_files import folder_files_expander
-# def zipdir(path, ziph):
-#     # ziph is zipfile handle
-#     for root, dirs, files in os.walk(path):
-#         for file in files:
-#             if file[0] =='.':
-#                 # Skip hidden files
-#                 continue
-#             ziph.write(os.path.join(root, file), 
-#                        os.path.relpath(os.path.join(root, file), 
-#                                        os.path.join(path, '..')))
-
-# def files_in_folder_expander(folder_path: str):
-#     try:
-#         for root, dirs, files in os.walk(str(folder_path)):
-#             for file in files:
-#                 if file[0] == ".":
-#                     # Skip hidden files
-#                     continue
-#                 # logging.info(f'Found file: {file}')
-#                 with st.expander(file):
-#                     with open(os.path.join(root, file), 'r') as f:
-#                         st.text(f.read())
-#     except:
-#         logging.error(f'Error reading files from folder {folder_path}: {sys.exc_info()[0]}')
-#         st.error(f'Could not retrieve files from export folder path: {folder_path}')
 
 def generate_tab():
     col1, col2 = st.columns([1,11])
@@ -90,7 +65,8 @@ def generate_tab():
 
             success = generate_data_importer_json(
                 mapping,
-                export_folder=export_folder)
+                export_folder=export_folder,
+                export_filename=DEFAULT_DATA_IMPORTER_FILENAME)
 
             # Check that data-import data was generated
             if success == False:
@@ -98,18 +74,25 @@ def generate_tab():
                 st.stop()
                 return
 
-            with zipfile.ZipFile(f'{zips_folder}/data_import_model_and_data.zip', 'w', zipfile.ZIP_DEFLATED) as zipf:
-                # zipdir(export_folder, zipf)
-                path = export_folder
-                for root, dirs, files in os.walk(path):
-                    for file in files:
-                        if file[0] =='.':
-                            # Skip hidden files
-                            continue
-                        zipf.write(os.path.join(root, file), 
-                                os.path.relpath(os.path.join(root, file), 
-                                                os.path.join(path, '..')))
+            try:
+                with zipfile.ZipFile(f'{zips_folder}/{DEFAULT_DATA_IMPORTER_FILENAME}.zip', 'w', zipfile.ZIP_DEFLATED) as zipf:
+                    # zipdir(export_folder, zipf)
+                    path = export_folder
+                    for root, dirs, files in os.walk(path):
+                        for file in files:
+                            if file[0] =='.':
+                                # Skip hidden files
+                                continue
+                            zipf.write(os.path.join(root, file), 
+                                    os.path.relpath(os.path.join(root, file), 
+                                                    os.path.join(path, '..')))
+            except:
+                st.error(f'Error creating zip file: {sys.exc_info()[0]}')
+                st.stop()
+                return
 
+            if success == True:
+                st.success('Data generated successfully.')
 
     with g2:
         st.write(f"GENERATED FILES:")

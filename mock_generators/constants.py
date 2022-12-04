@@ -18,6 +18,7 @@ NEW_ARGS = "new_args"
 EXPORTS_PATH = "exports_path"
 ZIPS_PATH = "zips_path"
 CODE_TEMPLATE_FILE = "templates_file"
+DEFAULT_DATA_IMPORTER_FILENAME = "neo4j_importer_model"
 
 # TODO: Can Streamlit's cache hold all the data we'll be generating?
 MAPPINGS = "mappings"

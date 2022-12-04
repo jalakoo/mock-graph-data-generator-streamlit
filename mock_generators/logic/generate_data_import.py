@@ -6,7 +6,8 @@ import sys
 
 def generate_data_importer_json(
     mapping: Mapping,
-    export_folder: str) -> bool:
+    export_folder: str,
+    export_filename: str) -> bool:
     # Returns True if files generated, False if not
 
     # Will generate .csvs and a .json file for use with Neo4j's data-importer. Returns filename of .csv file
@@ -34,7 +35,7 @@ def generate_data_importer_json(
     try:
         # Generate data-importer json
         # The data-import json file is a dict made up of 4 keys:
-        export_path = f"{export_folder}/neo4j_importer_model.json"
+        export_path = f"{export_folder}/{export_filename}"
         dij_dict = dij.to_dict()
         save_json(export_path, dij_dict)
         return True
