@@ -13,17 +13,22 @@ def config_tab() -> list[Generator]:
     with col1:
         st.image("mock_generators/media/options.gif")
     with col2:
-        st.write(f"Configuration Options.\n\nOptionally change the export path, source locations for importing and reading generator specifications and code files. Generators are code functions used to generate specific types of mock data (ie: email generator for creating mock email addresses).")
+        st.write(f"Optional Configuration Options.\n\nOptionally change the export path, source locations for importing and reading generator specifications and code files. Generators are code functions used to generate specific types of mock data (ie: email generator for creating mock email addresses).")
     st.markdown("--------")
 
-    # Load exports path
-    new_zips_path = st.text_input("Folder path for zip archives", value=st.session_state[ZIPS_PATH])
-    if new_zips_path != st.session_state[ZIPS_PATH]:
-        st.session_state[ZIPS_PATH] = new_zips_path
+    # Export configurations
+    ec1, ec2 = st.columns(2)
 
-    new_exports_filepath = st.text_input("Folder path for generated files", st.session_state[EXPORTS_PATH])
-    if new_exports_filepath != st.session_state[EXPORTS_PATH]:
-        st.session_state[EXPORTS_PATH] = new_exports_filepath
+    with ec1:
+        # Load exports path
+        new_zips_path = st.text_input("Folder path for zip archives", value=st.session_state[ZIPS_PATH], help="Folder path where generated files are zipped and placed. This .zip file can be uploaded directly to Neo4j's data-importer")
+        if new_zips_path != st.session_state[ZIPS_PATH]:
+            st.session_state[ZIPS_PATH] = new_zips_path
+
+    with ec2:
+        new_exports_filepath = st.text_input("Folder path for generated files", st.session_state[EXPORTS_PATH], help="Folder path where generated files are placed. The final .zip file for data-importer use will zip all non-hidden files from this folder.")
+        if new_exports_filepath != st.session_state[EXPORTS_PATH]:
+            st.session_state[EXPORTS_PATH] = new_exports_filepath
 
 
     # Load new generator template file

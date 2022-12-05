@@ -68,7 +68,7 @@ def mapping_tab():
         except json.decoder.JSONDecodeError:
             st.error('JSON file is not valid.')
 
-    st.write("GLOBALS:")
+    st.write("**GLOBALS:**")
     g1, g2, g3 = st.columns(3)
     should_expand = False
     with g1:
@@ -87,7 +87,7 @@ def mapping_tab():
         )
 
     st.markdown("--------")
-    st.write("NODES:")
+    st.write("**NODES:**")
     num_nodes = st.number_input("Number of nodes", min_value=1, value=len(nodes), key="mapping_number_of_nodes")
     for i in range(num_nodes):
         if i < len(nodes):
@@ -96,7 +96,7 @@ def mapping_tab():
             nodes_row(None)
 
     st.markdown("--------")
-    st.write("RELATIONSHIPS:")
+    st.write("**RELATIONSHIPS:**")
     num_relationships = st.number_input("Number of relationships", min_value=1, value=len(relationships), key="mapping_number_of_relationships")
     for i in range(num_relationships):
         if i < len(relationships):

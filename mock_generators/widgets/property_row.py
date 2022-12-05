@@ -22,7 +22,7 @@ def property_row(
     # Properties is a list of dictionaries 
 
     # Create a new propertyMapping for storing user selections
-    pc1, pc2, pc3, pc4, pc5 = st.columns(5)
+    pc1, pc2, pc3, pc4, pc5, pc6 = st.columns(6)
     
     # Property name
     with pc1:
@@ -112,5 +112,12 @@ def property_row(
         result = selected_generator.generate(property_map.args)
         st.write(f'Sample')
         st.text(f'{result}')
+    
+    with pc6:
+        st.write("Options")
+        should_ignore = st.checkbox("Exclude/ignore", value=False,  key=f"{type}_{id}_property_{index}__ignore")
 
+    if should_ignore == True:
+        return PropertyMapping.empty()
+        
     return property_map

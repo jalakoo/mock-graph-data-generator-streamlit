@@ -3,6 +3,16 @@ import logging
 
 class PropertyMapping():
 
+    @staticmethod
+    def empty():
+        return PropertyMapping(
+            id = None,
+            name = None,
+            type = None,
+            generator = None,
+            args = None
+        )
+
     def __init__(
         self, 
         id: str,
@@ -22,6 +32,9 @@ class PropertyMapping():
         
     def __repr__(self):
         return self.__str__()
+
+    def __equ__(self, other):
+        return self.id == other.id
 
     def to_dict(self):
         return {

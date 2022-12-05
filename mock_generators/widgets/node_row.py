@@ -15,7 +15,8 @@ def generators_filtered(byTypes: list[GeneratorType]) -> list[Generator]:
 
 def nodes_row(
     node: dict,
-    should_start_expanded: bool = False
+    should_start_expanded: bool = False,
+    additional_property_rows: list[any] = []
     ):
 
     #  Sample node dict from arrows.app
@@ -63,7 +64,7 @@ def nodes_row(
     with st.expander(f"NODE {id} - {caption}", expanded=should_start_expanded):
         st.markdown('---')
 
-        nc1, nc2 = st.columns(2)
+        nc1, nc2, nc3 = st.columns(3)
 
         # Display/edit Caption
         with nc1:
@@ -93,6 +94,10 @@ def nodes_row(
                     else:
                         selected_labels.append(new_label)
 
+        with nc3:
+            st.write('Options')
+            disabled = st.checkbox("Exclude/ignore node", value=False, key=f"node_{id}_disabled")
+
         # Adjust number of properties 
         st.markdown('---')
         initial_num_properties = len(properties)
@@ -115,10 +120,16 @@ def nodes_row(
                 index=i, 
                 properties= properties)
 
+            if new_property_map.id == None:
+                # Equal to an empty PropertyMapping - likely been explicitly excluded by user
+                continue
+
             if new_property_map.name in property_maps:
                 st.error(f'Property "{new_property_map.name}" already exists')
             else:
                 property_maps[new_property_map.name] = new_property_map
+
+        # TODO: Include additional property rows as rows that could be overwritten by the user
 
         st.markdown('---')
         st.write("Property value that uniquely identifies these nodes")
@@ -129,11 +140,11 @@ def nodes_row(
 
 
         st.markdown('---')
-        st.write('Number of these nodes to generate')
+        st.write(f'Number of {caption} nodes to generate')
         possible_count_generators = generators_filtered([GeneratorType.INT])
         possible_count_generator_names = [generator.name for generator in possible_count_generators]
 
-        ncc1, ncc2, ncc3 = st.columns(3)
+        ncc1, ncc2 = st.columns(2)
 
         with ncc1:
             selected_count_generator_name = st.selectbox("Int Generator to use", possible_count_generator_names, key=f"node_{id}_count_generator")
@@ -172,36 +183,34 @@ def nodes_row(
                             count_arg_inputs.append(count_arg)
                         else:
                             count_arg_inputs[count_index] = count_arg
-        # TODO: Move this to top of expandable section
-        with ncc3:
-            disabled = st.checkbox("Exclude/ignore node", value=False, key=f"node_{id}_disabled")
-            if disabled:
-                # TODO: Also disable any relationships dependent on this node
 
-                # Remove from mapping
-                mapping = st.session_state[MAPPINGS]
-                mapping_nodes = mapping.nodes
-                if id in mapping_nodes:
-                    del mapping_nodes[id]
-                    mapping.nodes = mapping_nodes
-                    st.session_state[MAPPINGS] = mapping
-                st.warning(f'Nodes EXCLUDED from mapping')
-            else:
-                # Add to mapping
-                mapping = st.session_state[MAPPINGS]
-                nodes = mapping.nodes
-                node_mapping = NodeMapping(
-                    id = id,
-                    caption = caption,
-                    position = position,
-                    labels = labels,
-                    properties=property_maps,
-                    count_generator=selected_count_generator,
-                    count_args=count_arg_inputs,
-                    key_property=selected_key_property,
-                    )
-                nodes[id] = node_mapping
-                mapping.nodes = nodes
+        # Process disabled setting from earlier
+        if disabled:
+            # TODO: Also disable any relationships dependent on this node
+
+            # Remove from mapping
+            mapping = st.session_state[MAPPINGS]
+            mapping_nodes = mapping.nodes
+            if id in mapping_nodes:
+                del mapping_nodes[id]
+                mapping.nodes = mapping_nodes
                 st.session_state[MAPPINGS] = mapping
-                st.info(f'Nodes added to mapping')
-          
+            st.error(f'{caption} Node EXCLUDED from mapping')
+        else:
+            # Add to mapping
+            mapping = st.session_state[MAPPINGS]
+            nodes = mapping.nodes
+            node_mapping = NodeMapping(
+                id = id,
+                caption = caption,
+                position = position,
+                labels = labels,
+                properties=property_maps,
+                count_generator=selected_count_generator,
+                count_args=count_arg_inputs,
+                key_property=selected_key_property,
+                )
+            nodes[id] = node_mapping
+            mapping.nodes = nodes
+            st.session_state[MAPPINGS] = mapping
+            st.success(f'{caption } Node added to mapping')

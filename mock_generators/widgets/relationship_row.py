@@ -79,10 +79,15 @@ def relationship_row(relationship: dict):
 
         # Relationship type
         st.markdown('---')
-        new_type = st.text_input("Type", value=type, key=f"relationship_{id}_type")
+        rs1, rs2 = st.columns(2)
+        with rs1:
+            new_type = st.text_input("Type", value=type, key=f"relationship_{id}_type")
+            if new_type != type:
+                type = new_type
+        with rs2:
+            st.write('Options')
+            disabled = st.checkbox("Exclude/ignore relationship", value=False, key=f"relationship_{id}_enabled")
 
-        if new_type != type:
-            type = new_type
 
         # Relationship source and target nodes
         st.markdown('---')
@@ -181,7 +186,7 @@ def relationship_row(relationship: dict):
             else:
                 property_maps[new_property_map.name] = new_property_map
         
-        disabled = st.checkbox("Exclude/ignore relationship", value=False, key=f"relationship_{id}_enabled")
+
         if disabled:
             # Remove from mapping
             mapping = st.session_state[MAPPINGS]
@@ -190,7 +195,7 @@ def relationship_row(relationship: dict):
                 del mapping_relationships[id]
                 mapping.relationships = mapping_relationships
                 st.session_state[MAPPINGS] = mapping
-            st.warning(f'Relationship EXCLUDED from mapping')
+            st.error(f'{type} relationship EXCLUDED from mapping')
         else:
             mapping = st.session_state[MAPPINGS]
             relationships = mapping.relationships
@@ -210,4 +215,4 @@ def relationship_row(relationship: dict):
             relationships[id] = relationship_mapping
             mapping.relationships = relationships
             st.session_state[MAPPINGS] = mapping
-            st.info(f'Relationship added to mapping')
+            st.success(f'{type} relationship added to mapping')
