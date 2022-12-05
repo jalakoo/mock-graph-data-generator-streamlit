@@ -90,6 +90,7 @@ def mapping_tab():
 
     st.markdown("--------")
     st.write("**NODES:**")
+    # TODO: Add ability to add ALL NODES ONLY properties
     num_nodes = st.number_input("Number of nodes", min_value=1, value=len(nodes), key="mapping_number_of_nodes")
     for i in range(num_nodes):
         if i < len(nodes):
@@ -102,6 +103,7 @@ def mapping_tab():
 
     st.markdown("--------")
     st.write("**RELATIONSHIPS:**")
+    # TODO: Add ability to add ALL RELATIONSHIPS ONLY properties
     num_relationships = st.number_input("Number of relationships", min_value=1, value=len(relationships), key="mapping_number_of_relationships")
     for i in range(num_relationships):
         if i < len(relationships):

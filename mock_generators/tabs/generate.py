@@ -28,6 +28,8 @@ def generate_tab():
     st.markdown("--------")
     # should_clear = st.checkbox("Delete all files in export folder with each Generate run", value=True)
 
+    # TODO: Add generated data report (counts and numbers?)
+    # TODO: Move generated data to export
     g1, g2, g3 = st.columns(3)
 
     with g1:

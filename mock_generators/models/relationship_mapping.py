@@ -43,7 +43,9 @@ class RelationshipMapping():
         }
 
     def filename(self):
-        return f"{self.type.lower()}_{self.id.lower()}"
+        from_node_name = self.from_node.caption
+        to_node_name = self.to_node.caption
+        return f"{from_node_name}_{self.type.lower()}_{to_node_name}_{self.id.lower()}"
 
     def generate_values(
         self, 

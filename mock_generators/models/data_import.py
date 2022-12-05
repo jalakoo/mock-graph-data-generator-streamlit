@@ -15,7 +15,7 @@ def file_schema_for_property(property: PropertyMapping)-> dict:
     #     sample_value = sample_value.isoformat()
 
     if property.type == GeneratorType.DATETIME:
-        logging.info(f'datetime found. Generated value: {sample_value}')
+        # logging.info(f'datetime found. Generated value: {sample_value}')
         sample_value = sample_value.isoformat()
 
     result = {
