@@ -45,7 +45,11 @@ def node_from_id(id: str) -> NodeMapping:
     nodes = st.session_state[MAPPINGS].nodes
     return [node for _, node in nodes.items() if node.id == id][0]
 
-def relationship_row(relationship: dict):
+def relationship_row(
+        relationship: dict,
+        should_start_expanded: bool = False,
+        additional_properties: list[PropertyMapping] = []
+    ):
 
     # Sample relationship dict from arrows.app
     # {
@@ -75,7 +79,7 @@ def relationship_row(relationship: dict):
         else:
             properties = []
 
-    with st.expander(f"relationship id: {id}, type: {type}, from: {fromId}, to: {toId}"):
+    with st.expander(f"relationship id: {id}, type: {type}, from: {fromId}, to: {toId}", expanded=should_start_expanded):
 
         # Relationship type
         st.markdown('---')
@@ -186,6 +190,10 @@ def relationship_row(relationship: dict):
             else:
                 property_maps[new_property_map.name] = new_property_map
         
+        # Load any additional properties that were passed in
+        if additional_properties != None and len(additional_properties) > 0:
+            for additional_property in additional_properties:
+                property_maps[additional_property.name] = additional_property
 
         if disabled:
             # Remove from mapping

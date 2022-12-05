@@ -16,7 +16,7 @@ def generators_filtered(byTypes: list[GeneratorType]) -> list[Generator]:
 def nodes_row(
     node: dict,
     should_start_expanded: bool = False,
-    additional_property_rows: list[any] = []
+    additional_properties: list[PropertyMapping] = []
     ):
 
     #  Sample node dict from arrows.app
@@ -112,6 +112,8 @@ def nodes_row(
         # Generate input fields for user to adjust property names, types, and generator to create mock data with
 
         property_maps = {}
+
+
         for i in range(num_properties):
 
             new_property_map = property_row(
@@ -129,7 +131,12 @@ def nodes_row(
             else:
                 property_maps[new_property_map.name] = new_property_map
 
-        # TODO: Include additional property rows as rows that could be overwritten by the user
+        # TODO: Investigate. If the below block is moved above the range block above, then the relationship.csv generated will use the first of the global properties as a key instead of the node's proper key property.
+
+        # Load any additional properties that were passed in
+        if additional_properties != None and len(additional_properties) > 0:
+            for additional_property in additional_properties:
+                property_maps[additional_property.name] = additional_property
 
         st.markdown('---')
         st.write("Property value that uniquely identifies these nodes")
