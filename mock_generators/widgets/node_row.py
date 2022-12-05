@@ -171,6 +171,7 @@ def nodes_row(
                             count_arg_inputs.append(count_arg)
                         else:
                             count_arg_inputs[count_index] = count_arg
+        # TODO: Move this to top of expandable section
         with ncc3:
             disabled = st.checkbox("Exclude/ignore node", value=False, key=f"node_{id}_disabled")
             if disabled:

@@ -4,7 +4,8 @@
         "code_url": "mock_generators/generators/05711cac.py",
         "description": "Random URI with Faker library.",
         "name": "URL",
-        "type": "String"
+        "type": "String",
+        "tags":["uri", "url"]
     },
     "05add148": {
         "args": [
@@ -17,7 +18,8 @@
         "code_url": "mock_generators/generators/05add148.py",
         "description": "Random email with Faker library.",
         "name": "Email",
-        "type": "String"
+        "type": "String",
+        "tags":["email"]
     },
     "111d38e0": {
         "args": [
@@ -30,7 +32,8 @@
         "code_url": "mock_generators/generators/111d38e0.py",
         "description": "Randomly selected float from a comma-seperated list of options.",
         "name": "Float from list",
-        "type": "Float"
+        "type": "Float",
+        "tags":["float", "list"]
     },
     "338d576e": {
         "args": [
@@ -48,7 +51,8 @@
         "code_url": "mock_generators/generators/338d576e.py",
         "description": "String generator using the lorem-text package",
         "name": "Paragraphs",
-        "type": "String"
+        "type": "String",
+        "tags":["string", "lorem", "ipsum", "paragraph", "paragraphs"]
     },
     "469b37c7": {
         "args": [
@@ -66,14 +70,16 @@
         "code_url": "mock_generators/generators/469b37c7.py",
         "description": "Random integer from a min and max value argument. Argument values are inclusive.",
         "name": "Int",
-        "type": "Int"
+        "type": "Int",
+        "tags":["int", "integer","number","num","count"]
     },
     "470ff56f": {
         "args": [],
         "code_url": "mock_generators/generators/470ff56f.py",
         "description": "Country name generator using the Faker library.",
         "name": "Country",
-        "type": "String"
+        "type": "String",
+        "tags":["country","from"]
     },
     "57f2df99": {
         "args": [
@@ -86,21 +92,24 @@
         "code_url": "mock_generators/generators/57f2df99.py",
         "description": "Bool generator using the Faker library.",
         "name": "Bool",
-        "type": "Bool"
+        "type": "Bool",
+        "tags":["bool", "boolean"]
     },
     "58e9ddbb": {
         "args": [],
         "code_url": "mock_generators/generators/58e9ddbb.py",
         "description": "First name generator using the Faker library",
         "name": "First Name",
-        "type": "String"
+        "type": "String",
+        "tags": ["first","name"]
     },
     "5929c11b": {
         "args": [],
         "code_url": "mock_generators/generators/5929c11b.py",
         "description": "Last name generator using the Faker library.",
         "name": "Last Name",
-        "type": "String"
+        "type": "String",
+        "tags":["last","name"]
     },
     "5bf1fbd6": {
         "args": [
@@ -113,14 +122,16 @@
         "code_url": "mock_generators/generators/5bf1fbd6.py",
         "description": "Randomly selected string from a comma-seperated list of options.",
         "name": "String from list",
-        "type": "String"
+        "type": "String",
+        "tags":["string", "list","word", "words","status","type"]
     },
     "5e30c30b": {
         "args": [],
         "code_url": "mock_generators/generators/5e30c30b.py",
         "description": "Company name generator using the Faker library.",
         "name": "Company Name",
-        "type": "String"
+        "type": "String",
+        "tags":["company","name"]
     },
     "78bc0765": {
         "args": [
@@ -133,14 +144,16 @@
         "code_url": "mock_generators/generators/78bc0765.py",
         "description": "Random UUID 4 hash using Faker library. 37 Characters Max.",
         "name": "UUID",
-        "type": "String"
+        "type": "String",
+        "tags":["uuid", "hash","unique","uid"]
     },
     "92eeddbb": {
         "args": [],
         "code_url": "mock_generators/generators/92eeddbb.py",
         "description": "City name generator using the Faker library.",
         "name": "City",
-        "type": "String"
+        "type": "String",
+        "tags":["city","name"]
     },
     "ab64469b": {
         "args": [
@@ -158,21 +171,24 @@
         "code_url": "mock_generators/generators/ab64469b.py",
         "description": "Generate a random date between 2 specified dates. Exclusive of days specified.",
         "name": "Date",
-        "type": "Datetime"
+        "type": "Datetime",
+        "tags":["date","datetime","created","updated","at"]
     },
     "c9a071b5": {
         "args": [],
         "code_url": "mock_generators/generators/c9a071b5.py",
         "description": "Technobabble words all lower-cased. Faker Library",
         "name": "Technical BS Phrase",
-        "type": "String"
+        "type": "String",
+        "tags":["phrase","phrases","technical","jargon","task","description"]
     },
     "d1ebdc1a": {
         "args": [],
         "code_url": "mock_generators/generators/d1ebdc1a.py",
         "description": "Phrase with first letter capitalized. Faker Library",
         "name": "Catch Phrase",
-        "type": "String"
+        "type": "String",
+        "tags":["phrase","phrases","catch","project","description"]
     },
     "e0eb78b0": {
         "args": [
@@ -185,7 +201,8 @@
         "code_url": "mock_generators/generators/e0eb78b0.py",
         "description": "Random MD5 hash using Faker library. 33 Characters max",
         "name": "MD5",
-        "type": "String"
+        "type": "String",
+        "tags":["md5", "hash","unique"]
     },
     "e56d87a3": {
         "args": [
@@ -198,7 +215,8 @@
         "code_url": "mock_generators/generators/e56d87a3.py",
         "description": "Randomly selected int from a comma-seperated list of options.",
         "name": "Int from list",
-        "type": "Int"
+        "type": "Int",
+        "tags":["int", "integer","number","num","count","list","salary","cost"]
     },
     "e8cff8c1": {
         "args": [
@@ -221,7 +239,8 @@
         "code_url": "mock_generators/generators/e8cff8c1.py",
         "description": "Random float between a range. Inclusive.",
         "name": "Float",
-        "type": "Float"
+        "type": "Float",
+        "tags":["float", "decimal","number","num","count","cost","price"]
     },
     "id1": {
         "args": [
@@ -239,7 +258,8 @@
         "code_url": "mock_generators/generators/loremtext_words.py",
         "description": "String generator using the lorem-text package",
         "name": "Words",
-        "type": "String"
+        "type": "String",
+        "tags":["words","lorem","text","description"]
     },
     "id2": {
         "args": [
@@ -257,6 +277,7 @@
         "code_url": "mock_generators/generators/loremtext_sentence.py",
         "description": "String generator using the lorem-text package",
         "name": "Sentences",
-        "type": "String"
+        "type": "String",
+        "tags":["sentence","sentences","lorem","text","description"]
     }
 }
