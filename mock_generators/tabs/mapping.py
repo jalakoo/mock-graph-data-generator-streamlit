@@ -4,6 +4,7 @@ import json
 import logging
 from widgets.node_row import nodes_row
 from widgets.relationship_row import relationship_row
+from widgets.property_row import property_row
 
 def mapping_tab():
 
@@ -11,11 +12,11 @@ def mapping_tab():
     with col1:
         st.image("mock_generators/media/shuffle.gif")
     with col2:
-        st.write("Create and edit mock data generation options. \n\nNodes and relationships are default INCLUDED from mapping, meaning data will be generated.  Expand options for each node or relationship > verify/edit labels and properties > optionally exclude from generation.")
+        st.write("Create and edit mock data generation options. \n\nNodes and relationships are default INCLUDED from mapping, meaning data will be generated for all imported nodes and relationships.  Expand options for each node or relationship > Edit labels > Edit property names > Assign generator functions to create desired mock data.\n\nAdditional Global, for all Nodes, and for all Relationship properties can also be set.")
     uploaded_file = st.session_state[IMPORTED_FILE]
-    if uploaded_file is not None:
-        with st.expander("Imported File"):
-            st.text(uploaded_file)
+    # if uploaded_file is not None:
+    #     with st.expander("Imported File"):
+    #         st.text(uploaded_file)
     st.markdown("--------")
 
     # Default options
@@ -67,11 +68,30 @@ def mapping_tab():
         except json.decoder.JSONDecodeError:
             st.error('JSON file is not valid.')
 
+    st.write("GLOBALS:")
+    g1, g2, g3 = st.columns(3)
+    should_expand = False
+    with g1:
+        num_global_properties = st.number_input("Number of Global Properties", min_value=0, value=0, help="Properties to add to ALL nodes and relationships to be generated.")
+    with g2:
+        st.checkbox("Include Global Properties", value=True, help="Include global properties in data generation.")
+    with g3:
+        should_expand = st.checkbox("Expand All Rows", value=False, help="Automatically expand all row details")
+    all_global_properties = []
+    for i in range(num_global_properties):
+        global_property = property_row(
+            type="global",
+            id = f'global_property_{i}',
+            index = i,
+            properties = []
+        )
+
+    st.markdown("--------")
     st.write("NODES:")
     num_nodes = st.number_input("Number of nodes", min_value=1, value=len(nodes), key="mapping_number_of_nodes")
     for i in range(num_nodes):
         if i < len(nodes):
-            nodes_row(nodes[i])
+            nodes_row(nodes[i], should_start_expanded=should_expand)
         else:
             nodes_row(None)
 

@@ -7,7 +7,11 @@ import datetime
 
 def generators_filtered(byTypes: list[GeneratorType]) -> list[Generator]:
     generators = st.session_state[GENERATORS]
-    return [generator for _, generator in generators.items() if generator.type in byTypes]
+    result =  [generator for _, generator in generators.items() if generator.type in byTypes]
+    def sort_by_name(generator: Generator):
+        return generator.name
+    result.sort(key=sort_by_name)
+    return result
 
 def property_row(
     type: str,
@@ -23,6 +27,7 @@ def property_row(
     # Property name
     with pc1:
         existing_name = ""
+        recommended_generator = None
         if index < len(properties):
             # Get key of uploaded property
             existing_name = properties[index][0]
@@ -35,11 +40,11 @@ def property_row(
 
     # Property type
     with pc2:
-        type_selections = ["String", "Bool", "Int", "Float", "Datetime"]
+        type_selections = ["String", "Bool", "Integer", "Float", "Datetime"]
         recommended_type_index = 0
         if recommended_generator != None:
             recommended_type_index = type_selections.index(recommended_generator.type.to_string())
-        generator_type_string = st.selectbox("Type", ["String", "Bool", "Int", "Float","Datetime"], index=recommended_type_index, key=f"{type}_{id}_property_{index}_type")
+        generator_type_string = st.selectbox("Type", type_selections, index=recommended_type_index, key=f"{type}_{id}_property_{index}_type")
         generator_type = GeneratorType.type_from_string(generator_type_string)
 
     # Generator to create property data with

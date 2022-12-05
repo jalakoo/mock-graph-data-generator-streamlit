@@ -16,7 +16,7 @@ class GeneratorType(Enum):
         type = aType.lower()
         if type == "string":
             return GeneratorType.STRING
-        elif type == "int":
+        elif type == "int" or type == "integer":
             return GeneratorType.INT
         elif type == "float":
             return GeneratorType.FLOAT

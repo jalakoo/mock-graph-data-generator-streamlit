@@ -213,7 +213,7 @@
             }
         ],
         "code_url": "mock_generators/generators/e56d87a3.py",
-        "description": "Randomly selected int from a comma-seperated list of options.",
+        "description": "Randomly selected int from a comma-seperated list of options. If no list provided, will return 0",
         "name": "Int from list",
         "type": "Int",
         "tags":["int", "integer","number","num","count","list","salary","cost"]

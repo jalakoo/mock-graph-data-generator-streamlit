@@ -14,7 +14,8 @@ def generators_filtered(byTypes: list[GeneratorType]) -> list[Generator]:
     return [generator for _, generator in generators.items() if generator.type in byTypes]
 
 def nodes_row(
-    node: dict
+    node: dict,
+    should_start_expanded: bool = False
     ):
 
     #  Sample node dict from arrows.app
@@ -59,7 +60,7 @@ def nodes_row(
         selected_labels = []
 
     # Create an expandable list item for each node
-    with st.expander(f"NODE {id} - {caption}"):
+    with st.expander(f"NODE {id} - {caption}", expanded=should_start_expanded):
         st.markdown('---')
 
         nc1, nc2 = st.columns(2)
