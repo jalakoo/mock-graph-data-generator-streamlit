@@ -13,7 +13,7 @@ def config_tab() -> list[Generator]:
     with col1:
         st.image("mock_generators/media/options.gif")
     with col2:
-        st.write(f"Optional Configuration Options.\n\nOptionally change the export path, source locations for importing and reading generator specifications and code files. Generators are code functions used to generate specific types of mock data (ie: email generator for creating mock email addresses).")
+        st.write(f"Optional Configuration Options.\n\nChange the export path, source locations for importing and reading generator specifications and code files. Generators are code functions used to generate specific types of mock data (ie: email generator for creating mock email addresses).")
     st.markdown("--------")
 
     # Export configurations
@@ -21,12 +21,12 @@ def config_tab() -> list[Generator]:
 
     with ec1:
         # Load exports path
-        new_zips_path = st.text_input("Folder path for zip archives", value=st.session_state[ZIPS_PATH], help="Folder path where generated files are zipped and placed. This .zip file can be uploaded directly to Neo4j's data-importer")
+        new_zips_path = st.text_input("Zip Archives folder path", value=st.session_state[ZIPS_PATH], help="Folder path where generated files are zipped and placed. This .zip file can be uploaded directly to Neo4j's data-importer")
         if new_zips_path != st.session_state[ZIPS_PATH]:
             st.session_state[ZIPS_PATH] = new_zips_path
 
     with ec2:
-        new_exports_filepath = st.text_input("Folder path for generated files", st.session_state[EXPORTS_PATH], help="Folder path where generated files are placed. The final .zip file for data-importer use will zip all non-hidden files from this folder.")
+        new_exports_filepath = st.text_input("Generated Files folder path", st.session_state[EXPORTS_PATH], help="Folder path where generated files are placed. The final .zip file for data-importer use will zip all non-hidden files from this folder.")
         if new_exports_filepath != st.session_state[EXPORTS_PATH]:
             st.session_state[EXPORTS_PATH] = new_exports_filepath
 
@@ -34,7 +34,7 @@ def config_tab() -> list[Generator]:
     # Load new generator template file
     cc1, cc2 = st.columns([1,2])
     with cc1:
-        new_template_filepath = st.text_input("Generator Code Template file", st.session_state[CODE_TEMPLATE_FILE])
+        new_template_filepath = st.text_input("Generator Code Template file", st.session_state[CODE_TEMPLATE_FILE], help='File path to the generator code template file. This file is used as a starting point to generate new generator code files.')
         if new_template_filepath != st.session_state[CODE_TEMPLATE_FILE]:
             st.session_state[CODE_TEMPLATE_FILE] = new_template_filepath
         with open(st.session_state[CODE_TEMPLATE_FILE], "r") as file:
@@ -48,7 +48,7 @@ def config_tab() -> list[Generator]:
     # Load generators
     gc1, gc2 = st.columns([1,2])
     with gc1:
-        new_spec_filepath = st.text_input("Generators Spec filepath", st.session_state[SPEC_FILE])
+        new_spec_filepath = st.text_input("Generators Spec filepath", st.session_state[SPEC_FILE], help="File path to the generators spec file. This file contains the specifications for all generators as JSON file.")
         if new_spec_filepath != st.session_state[SPEC_FILE]:
             st.session_state[SPEC_FILE] = new_spec_filepath
     with gc2:
@@ -70,7 +70,7 @@ def config_tab() -> list[Generator]:
     # Load generators code
     cc1, cc2 = st.columns([1,2])
     with cc1:
-        new_code_filepath = st.text_input("Generators Code filepath", st.session_state[CODE_FILE])
+        new_code_filepath = st.text_input("Generators Code folder path", st.session_state[CODE_FILE], help="Folder path to all generator code files. These Python files are loaded and ran during the data generation process.")
         if new_code_filepath != st.session_state[CODE_FILE]:
             st.session_state[CODE_FILE] = new_code_filepath
     files = ""
