@@ -47,6 +47,8 @@ class NodeMapping():
     def filename(self):
         return f"{self.caption.lower()}_{self.id.lower()}"
 
+    # TODO: Verify unique keys are respected during generation
+
     def generate_values(self) -> list[dict]:
         # returns a list of dicts with the generated values
         # Example return:

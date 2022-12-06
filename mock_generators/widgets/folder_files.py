@@ -7,7 +7,8 @@ from constants import *
 def folder_files_expander(
     folder_path: str,
     specific_extension: str = None,
-    show_hidden: bool = False,):
+    show_hidden: bool = False,
+    widget_id: str = ""):
 
     try:
         for path in os.scandir(folder_path):
@@ -33,9 +34,10 @@ def folder_files_expander(
                         # Duplicative of the export tab - but a really convenient here.
                         try:
                             with open(f"{st.session_state[ZIPS_PATH]}/{DEFAULT_DATA_IMPORTER_FILENAME}.zip", "rb") as file:
-                                st.download_button(label="Download", data=file, file_name=f"{DEFAULT_DATA_IMPORTER_FILENAME}.zip", mime="application/zip", key=f"generate_{path.name}_download_button")
+                                st.download_button(label="Download", data=file, file_name=f"{DEFAULT_DATA_IMPORTER_FILENAME}.zip", mime="application/zip", key=f"generate_{path.name}_{widget_id}_download_button")
                         except:
                             st.warning("No data-importer zip found. Please generate data first.")
+                            logging.error(f'Problem reading zip file: {path.name}: error: {sys.exc_info()[0]}')
                 else:
                     with st.expander(path.name):
                         with open(path, 'r') as f:

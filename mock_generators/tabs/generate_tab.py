@@ -29,6 +29,8 @@ def generate_tab():
     # should_clear = st.checkbox("Delete all files in export folder with each Generate run", value=True)
 
     # TODO: Add generated data report (counts and numbers?)
+    # Number of each node type generated
+    # Number of each relationship type generated
     # TODO: Move generated data to export
     g1, g2, g3 = st.columns(3)
 

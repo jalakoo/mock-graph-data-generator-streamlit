@@ -43,9 +43,11 @@ class RelationshipMapping():
         }
 
     def filename(self):
-        from_node_name = self.from_node.caption
-        to_node_name = self.to_node.caption
+        from_node_name = self.from_node.caption.lower()
+        to_node_name = self.to_node.caption.lower()
         return f"{from_node_name}_{self.type.lower()}_{to_node_name}_{self.id.lower()}"
+
+    # TODO: Verify unique keys are respected during generation
 
     def generate_values(
         self, 
