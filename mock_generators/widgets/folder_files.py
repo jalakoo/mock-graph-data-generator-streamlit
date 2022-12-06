@@ -30,7 +30,7 @@ def folder_files_expander(
                         #     st.write(f'Error: reading zip file: {e}')
 
                         # TODO: verify this is our generated file
-                        st.write(f"(Upload this file to Neo4j's data-importer)")
+                        # st.write(f"(Upload this file to Neo4j's data-importer)")
                         # Duplicative of the export tab - but a really convenient here.
                         try:
                             with open(f"{st.session_state[ZIPS_PATH]}/{DEFAULT_DATA_IMPORTER_FILENAME}.zip", "rb") as file:

@@ -8,6 +8,7 @@ import logging
 import sys
 import zipfile
 from widgets.folder_files import folder_files_expander
+from datetime import datetime
 
 def generate_tab():
     col1, col2 = st.columns([1,11])
@@ -84,7 +85,9 @@ def generate_tab():
                 return
 
             try:
-                with zipfile.ZipFile(f'{zips_folder}/{DEFAULT_DATA_IMPORTER_FILENAME}.zip', 'w', zipfile.ZIP_DEFLATED) as zipf:
+                # Create zip file, appended with time created
+                now = str(datetime.now().isoformat())
+                with zipfile.ZipFile(f'{zips_folder}/{DEFAULT_DATA_IMPORTER_FILENAME}_{now}.zip', 'w', zipfile.ZIP_DEFLATED) as zipf:
                     # zipdir(export_folder, zipf)
                     path = export_folder
                     for root, dirs, files in os.walk(path):

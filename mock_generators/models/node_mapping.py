@@ -81,8 +81,6 @@ class NodeMapping():
                 all_results.append(node_result)
         except:
             raise Exception(f"Node mapping could not generate property values, error: {str(sys.exc_info()[0])}")
-
-        logging.info(f'Generated {len(all_results)} node records for node  {self.caption}')
         
         # Store and return all_results
         self.generated_values = all_results

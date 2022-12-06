@@ -124,7 +124,6 @@ class RelationshipMapping():
 
             all_results.append(result)
 
-        logging.info(f'Generated {len(all_results)} records for relationship type: {self.type}')
         self.generated_values = all_results
         return self.generated_values
         

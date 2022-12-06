@@ -31,6 +31,6 @@ def export_tab():
         folder_files_expander(zips_folder, widget_id="export_tab")
 
     with ec3:
-        st.write(f"Upload files to Neo4j:")
+        st.write(f"Upload desired .zip file to Neo4j:")
         link = '[Neo4j Aura Console](https://console.neo4j.io)'
         st.markdown(link, unsafe_allow_html=True)
