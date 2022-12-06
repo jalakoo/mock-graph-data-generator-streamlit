@@ -27,6 +27,9 @@ if CODE_FILE not in st.session_state:
     st.session_state[CODE_FILE] = DEFAULT_GENERATORS_CODE_PATH
 if SAMPLE_ARROWS_FILE not in st.session_state:
     st.session_state[SAMPLE_ARROWS_FILE] = DEFAULT_ARROWS_SAMPLE_PATH
+if IMPORTS_PATH not in st.session_state:
+    st.session_state[IMPORTS_PATH] = DEFAULT_IMPORTS_PATH
+# TODO: Replace with reference to selected import file
 if IMPORTED_FILE not in st.session_state:
     st.session_state[IMPORTED_FILE] = None
 if EXPORTS_PATH not in st.session_state:

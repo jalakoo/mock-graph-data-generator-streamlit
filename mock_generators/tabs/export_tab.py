@@ -28,7 +28,7 @@ def export_tab():
 
     with ec2:
         st.write(f'GENERATED ZIP FILES:')
-        folder_files_expander(zips_folder, widget_id="export_tab")
+        folder_files_expander(zips_folder, widget_id="export_tab", enable_download=True)
 
     with ec3:
         st.write(f"Upload desired .zip file to Neo4j:")

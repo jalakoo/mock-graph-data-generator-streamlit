@@ -14,6 +14,7 @@ def mapping_tab():
     with col2:
         st.write("Create and edit mock data generation options. \n\nNodes and relationships are default INCLUDED from mapping, meaning data will be generated for all imported nodes and relationships.  Expand options for each node or relationship > Edit labels > Edit property names > Assign generator functions to create desired mock data.\n\nAdditional Global, for all Nodes, and for all Relationship properties can also be set.")
     uploaded_file = st.session_state[IMPORTED_FILE]
+    logging.info(f'mapping_tab: uploaded_file: {uploaded_file}')
     # if uploaded_file is not None:
     #     with st.expander("Imported File"):
     #         st.text(uploaded_file)
@@ -64,6 +65,10 @@ def mapping_tab():
             json_file = json.loads(uploaded_file)
             nodes = json_file["nodes"]
             relationships = json_file["relationships"]
+            if nodes is None:
+                nodes = []
+            if relationships is None:
+                relationships = []
             
         except json.decoder.JSONDecodeError:
             st.error('JSON file is not valid.')
@@ -91,7 +96,7 @@ def mapping_tab():
     st.markdown("--------")
     st.write("**NODES:**")
     # TODO: Add ability to add ALL NODES ONLY properties
-    num_nodes = st.number_input("Number of nodes", min_value=1, value=len(nodes), key="mapping_number_of_nodes")
+    num_nodes = st.number_input("Number of nodes", min_value=0, value=len(nodes), key="mapping_number_of_nodes")
     for i in range(num_nodes):
         if i < len(nodes):
             nodes_row(
@@ -104,7 +109,7 @@ def mapping_tab():
     st.markdown("--------")
     st.write("**RELATIONSHIPS:**")
     # TODO: Add ability to add ALL RELATIONSHIPS ONLY properties
-    num_relationships = st.number_input("Number of relationships", min_value=1, value=len(relationships), key="mapping_number_of_relationships")
+    num_relationships = st.number_input("Number of relationships", min_value=0, value=len(relationships), key="mapping_number_of_relationships")
     for i in range(num_relationships):
         if i < len(relationships):
             relationship_row(

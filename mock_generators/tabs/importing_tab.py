@@ -3,6 +3,8 @@ import json
 from constants import *
 from io import StringIO
 from widgets.folder_files import folder_files_expander
+import logging
+from file_utils import load_string
 
 def import_tab():
 
@@ -14,7 +16,7 @@ def import_tab():
 
     st.markdown("--------")
 
-    i1, i2 = st.columns(2)
+    i1, i2, i3 = st.columns(3)
 
     with i1:
         st.write("Sample Import file:")
@@ -27,42 +29,33 @@ def import_tab():
             st.text(generators_file)
 
     with i2:
+        selected_file = None
         uploaded_file = st.file_uploader("Upload an arrows JSON file", type="json")
-
         if uploaded_file is not None:
-            # To read file as bytes:
-            # bytes_data = uploaded_file.getvalue()
-            # st.write(bytes_data)
-
             # To convert to a string based IO:
-            stringio = StringIO(uploaded_file.getvalue().decode("utf-8"))
-
+            stringio = StringIO(selected_file.getvalue().decode("utf-8"))
             # To read file as string:
-            imported_file = stringio.read()
-
-            # TODO: Verfiy file is valid arrows JSON
-
-            # Write data to the imports folder
-
-
-            # TODO: Update this to read from the appropriate file from the new imports folder
-
-            # Retain the imported data for later use
-            if imported_file is not None and imported_file != st.session_state[IMPORTED_FILE]:
-                st.session_state[IMPORTED_FILE] = imported_file
-
-        imported_file = st.session_state[IMPORTED_FILE]
-        if imported_file is not None:
-            st.markdown("--------")
-            st.write("Imported file:")
-            st.text(imported_file)
-            st.session_state[IMPORTED_FILE] = imported_file
+            selected_file = stringio.read()
+            st.session_state[IMPORTED_FILE] = selected_file
 
         st.write("Or select a previously imported file:")
+        def file_selected(path):
+            selected_file = load_string(path)
+            st.session_state[IMPORTED_FILE] = selected_file
+            st.success(f"Loaded file: {path.name}")
 
-        
-        
-        # TODO: Support copy & paste json
+        folder_files_expander(folder_path=st.session_state[IMPORTS_PATH], file_selected=file_selected)
+
+        with i3:
+            # Process uploaded / selected file
+            current_file = st.session_state[IMPORTED_FILE]
+            if current_file is not None:
+                # TODO: Verfiy file is valid arrows JSON
+
+                # Write data to the imports folder
 
 
+                # TODO: Update this to read from the appropriate file from the new imports folder
 
+                st.write("Using file:")
+                st.text(current_file)
