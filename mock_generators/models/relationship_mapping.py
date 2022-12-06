@@ -24,6 +24,7 @@ class RelationshipMapping():
         self.properties = properties
         self.count_generator = count_generator
         self.count_args = count_args
+        self.generated_values = None
 
     def __str__(self):
         return f"RelationshipMapping(id={self.id}, type={self.type}, from_node={self.from_node.to_dict()}, to_node={self.to_node.to_dict()}, properties={self.properties}, count_generator={self.count_generator}, count_args={self.count_args})"
@@ -124,5 +125,6 @@ class RelationshipMapping():
             all_results.append(result)
 
         logging.info(f'Generated {len(all_results)} records for relationship type: {self.type}')
-        return all_results
+        self.generated_values = all_results
+        return self.generated_values
         

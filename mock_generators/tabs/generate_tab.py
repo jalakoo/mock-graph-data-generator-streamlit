@@ -21,20 +21,25 @@ def generate_tab():
     export_folder = st.session_state[EXPORTS_PATH]
     zips_folder = st.session_state[ZIPS_PATH]
 
-    st.write(f'CURRENT MAPPING: {len(mapping.nodes)} nodes and {len(mapping.relationships)} relationshps to generate.')
-    with st.expander("Raw Mapping Data"):
-        st.json(mapping.to_dict())
-
-    st.markdown("--------")
-    # should_clear = st.checkbox("Delete all files in export folder with each Generate run", value=True)
-
-    # TODO: Add generated data report (counts and numbers?)
-    # Number of each node type generated
-    # Number of each relationship type generated
-    # TODO: Move generated data to export
     g1, g2, g3 = st.columns(3)
 
     with g1:
+        st.write(f'CURRENT MAPPING:')
+        st.write(f'     - {len(mapping.nodes)} Nodes')
+        st.write(f'     - {len(mapping.relationships)} Relationships')
+        st.markdown("--------")
+        # For the curious
+        with st.expander("Raw Mapping Data"):
+            st.json(mapping.to_dict())
+
+        # should_clear = st.checkbox("Delete all files in export folder with each Generate run", value=True)
+
+        # TODO: Add generated data report (counts and numbers?)
+        # Number of each node type generated
+        # Number of each relationship type generated
+        # TODO: Move generated data to export
+
+    with g2:
         st.write(f'GENERATE DATA:')
         if st.button('FOR DATA-IMPORTER', key=f'generate_data_button'):
 
@@ -98,10 +103,16 @@ def generate_tab():
             if success == True:
                 st.success('Data generated successfully.')
 
-    with g2:
-        st.write(f"GENERATED FILES:")
-        folder_files_expander(export_folder)
-
     with g3:
-        st.write(f'GENERATED ZIP FILES:')
-        folder_files_expander(zips_folder)
+        st.write(f'GENERATED DATA:')
+        nodes = mapping.nodes
+        for _, node in nodes.items():
+            values = node.generated_values
+            if values is not None:
+                st.write(f'     - {len(node.generated_values)} {node.caption} nodes generated')
+
+        relationships = mapping.relationships
+        for _, relationship in relationships.items():
+            values = relationship.generated_values
+            if values is not None:
+                st.write(f'     - {len(relationship.generated_values)} {relationship.type} relationships generated')
