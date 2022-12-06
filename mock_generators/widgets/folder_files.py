@@ -54,4 +54,4 @@ def folder_files_expander(
 
     except:
         logging.error(f'Error reading files from folder {folder_path}: {sys.exc_info()[0]}')
-        st.error(f'Could not retrieve files from export folder path: {folder_path}')
+        st.error(f'Could not retrieve files from export folder path: {folder_path}. Does the folder exist?')

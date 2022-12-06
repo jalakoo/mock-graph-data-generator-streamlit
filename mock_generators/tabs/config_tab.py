@@ -16,16 +16,21 @@ def config_tab() -> list[Generator]:
         st.write(f"Optional Configuration Options.\n\nChange the export path, source locations for importing and reading generator specifications and code files. Generators are code functions used to generate specific types of mock data (ie: email generator for creating mock email addresses).")
     st.markdown("--------")
 
-    # Export configurations
-    ec1, ec2 = st.columns(2)
+    # Import/Export configurations
+    ec1, ec2, ec3 = st.columns(3)
 
     with ec1:
+        # Override default import path
+        new_imports_path = st.text_input("Import Path", value=st.session_state[IMPORTS_PATH], help="Path to import previously uploaded JSON files from.")
+        if new_imports_path != st.session_state[IMPORTS_PATH]:
+            st.session_state[IMPORTS_PATH] = new_imports_path
+    with ec2:
         # Load exports path
         new_zips_path = st.text_input("Zip Archives folder path", value=st.session_state[ZIPS_PATH], help="Folder path where generated files are zipped and placed. This .zip file can be uploaded directly to Neo4j's data-importer")
         if new_zips_path != st.session_state[ZIPS_PATH]:
             st.session_state[ZIPS_PATH] = new_zips_path
 
-    with ec2:
+    with ec3:
         new_exports_filepath = st.text_input("Generated Files folder path", st.session_state[EXPORTS_PATH], help="Folder path where generated files are placed. The final .zip file for data-importer use will zip all non-hidden files from this folder.")
         if new_exports_filepath != st.session_state[EXPORTS_PATH]:
             st.session_state[EXPORTS_PATH] = new_exports_filepath

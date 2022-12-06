@@ -25,7 +25,7 @@ def generate_tab():
     g1, g2, g3 = st.columns(3)
 
     with g1:
-        st.write(f'CURRENT MAPPING:')
+        st.write(f'(1) CURRENT MAPPING:')
         st.write(f'     - {len(mapping.nodes)} Nodes')
         st.write(f'     - {len(mapping.relationships)} Relationships')
         st.markdown("--------")
@@ -41,7 +41,7 @@ def generate_tab():
         # TODO: Move generated data to export
 
     with g2:
-        st.write(f'GENERATE DATA:')
+        st.write(f'(2) GENERATE DATA:')
         if st.button('FOR DATA-IMPORTER', key=f'generate_data_button'):
 
             # Stop if no mapping data available
@@ -107,7 +107,7 @@ def generate_tab():
                 st.success('Data generated successfully.')
 
     with g3:
-        st.write(f'GENERATED DATA:')
+        st.write(f'(3) GENERATED DATA:')
         nodes = mapping.nodes
         for _, node in nodes.items():
             values = node.generated_values
