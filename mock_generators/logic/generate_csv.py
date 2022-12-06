@@ -8,7 +8,7 @@ def generate_csv(
     mapping: Mapping,
     export_folder: str) -> bool:
     # Returns True if files generated, False if not
-    
+        
     # Generate node values    
     for _, node in mapping.nodes.items():
         # Each nodeMapping is capable of generating and retaining it's own mock list data

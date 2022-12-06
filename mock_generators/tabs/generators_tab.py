@@ -28,10 +28,10 @@ def generators_tab():
 
     # Filter by type
     st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
-    type_filter = st.radio("Filter by type", ["All", "String", "Bool", "Int", "Float","Datetime"])
+    type_filter = st.radio("Filter by type", ["All", "String", "Bool", "Integer", "Float","Datetime"])
     # logging.info(f"Generators: {generators}")
-    for key in generators:
-        generator = generators[key]
+    for _, generator in sorted(generators.items(), key=lambda gen:(gen[1].name)):
+        # generator = generators[key]
         # Filtering
         if type_filter != "All" and type_filter != generator.type.to_string():
             continue

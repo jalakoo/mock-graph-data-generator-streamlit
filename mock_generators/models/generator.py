@@ -1,6 +1,7 @@
 from enum import Enum
 import logging
 import sys
+import re
 
 class GeneratorType(Enum):
     BOOL = 1,
@@ -15,7 +16,7 @@ class GeneratorType(Enum):
         type = aType.lower()
         if type == "string":
             return GeneratorType.STRING
-        elif type == "int":
+        elif type == "int" or type == "integer":
             return GeneratorType.INT
         elif type == "float":
             return GeneratorType.FLOAT
@@ -95,6 +96,9 @@ def generators_from_json(json : dict) -> dict:
 
 class Generator():
 
+    # TODO: Support pattern generation and property based values
+
+
     @staticmethod
     def from_dict(
         id: str,
@@ -112,15 +116,19 @@ class Generator():
             args = []
         else :
             args = GeneratorArg.list_from(generator_dict['args'])
+        if 'tags' not in generator_dict.keys():
+            tags = []
+        else:
+            tags = generator_dict['tags']
         
         return Generator(
             id = id,
             type = GeneratorType.type_from_string(generator_dict['type']),
             name = generator_dict['name'],
             description = generator_dict['description'],
-            # packages = packages,
             code_url = generator_dict['code_url'],
-            args = args
+            args = args,
+            tags = tags
         )
 
     def __init__(
@@ -131,6 +139,7 @@ class Generator():
         description: str, 
         code_url: str,
         args: list[GeneratorArg],
+        tags: list[str]
         ):
         self.id = id
         self.name = name
@@ -138,6 +147,7 @@ class Generator():
         self.code_url = code_url
         self.args = args
         self.type = type
+        self.tags = tags
     
     def import_url(self):
         trimmed = self.code_url.split("/", 1)[1]
@@ -149,7 +159,8 @@ class Generator():
             "description": self.description,
             "code_url": self.code_url,
             "args": [arg.to_dict() for arg in self.args],
-            "type": self.type.to_string()
+            "type": self.type.to_string(),
+            "tags": self.tags
         }
 
     def __str__(self):
@@ -174,3 +185,31 @@ def generators_dict_to_json(dict: dict[str, Generator]) -> str:
 
 def generators_list_to_json(list: list[Generator]) -> str:
     return [generator.to_dict() for generator in list]
+
+# TODO: Move this to a separate recommendation class
+def recommended_generator_from(
+    string: str, 
+    generators: list[Generator]
+    ) -> Generator:
+    # Naive attempt to break up name into words
+    replaced_string = string.lower().replace(" ", "_")
+    possible_tags = re.split(r'[_-]', replaced_string)
+
+    # Rank generators by number of tag matches
+    highest_score = 0
+    recommended_generators = []
+    for generator in generators:
+        lowered_tags = [tag.lower() for tag in generator.tags]
+        score = len([possible_tags.index(i) for i in lowered_tags if i in possible_tags])
+        if score > highest_score:
+            highest_score = score
+            recommended_generators.append({"generator": generator, "score": score})
+        
+    if len(recommended_generators) == 0:
+        return None
+
+    # Else recommend the highest scoring generator
+    def sort_by_score(generator_dict):
+        return generator_dict["score"]
+    
+    return sorted(recommended_generators, key=sort_by_score, reverse=True)[0]["generator"]

@@ -1,12 +1,12 @@
 import streamlit as st
 from constants import *
-from tabs.config import config_tab
-from tabs.generators import generators_tab
-from tabs.new_generator import create_tab
-from tabs.mapping import mapping_tab
-from tabs.generate import generate_tab
-from tabs.export import export_tab
-from tabs.importing import import_tab
+from tabs.config_tab import config_tab
+from tabs.generators_tab import generators_tab
+from tabs.new_generator_tab import create_tab
+from tabs.mapping_tab import mapping_tab
+from tabs.generate_tab import generate_tab
+from tabs.export_tab import export_tab
+from tabs.importing_tab import import_tab
 from models.generator import Generator
 from models.mapping import Mapping
 from models.node_mapping import NodeMapping
@@ -27,10 +27,11 @@ if CODE_FILE not in st.session_state:
     st.session_state[CODE_FILE] = DEFAULT_GENERATORS_CODE_PATH
 if SAMPLE_ARROWS_FILE not in st.session_state:
     st.session_state[SAMPLE_ARROWS_FILE] = DEFAULT_ARROWS_SAMPLE_PATH
+if IMPORTS_PATH not in st.session_state:
+    st.session_state[IMPORTS_PATH] = DEFAULT_IMPORTS_PATH
+# TODO: Replace with reference to selected import file
 if IMPORTED_FILE not in st.session_state:
     st.session_state[IMPORTED_FILE] = None
-if NEW_ARGS not in st.session_state:
-    st.session_state[NEW_ARGS] = []
 if EXPORTS_PATH not in st.session_state:
     st.session_state[EXPORTS_PATH] = DEFAULT_EXPORTS_PATH
 if CODE_TEMPLATE_FILE not in st.session_state:
