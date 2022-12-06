@@ -29,8 +29,6 @@ if SAMPLE_ARROWS_FILE not in st.session_state:
     st.session_state[SAMPLE_ARROWS_FILE] = DEFAULT_ARROWS_SAMPLE_PATH
 if IMPORTED_FILE not in st.session_state:
     st.session_state[IMPORTED_FILE] = None
-# if NEW_ARGS not in st.session_state:
-#     st.session_state[NEW_ARGS] = []
 if EXPORTS_PATH not in st.session_state:
     st.session_state[EXPORTS_PATH] = DEFAULT_EXPORTS_PATH
 if CODE_TEMPLATE_FILE not in st.session_state:

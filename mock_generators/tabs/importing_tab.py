@@ -2,6 +2,7 @@ import streamlit as st
 import json
 from constants import *
 from io import StringIO
+from widgets.folder_files import folder_files_expander
 
 def import_tab():
 
@@ -45,6 +46,7 @@ def import_tab():
 
 
             # TODO: Update this to read from the appropriate file from the new imports folder
+
             # Retain the imported data for later use
             if imported_file is not None and imported_file != st.session_state[IMPORTED_FILE]:
                 st.session_state[IMPORTED_FILE] = imported_file
@@ -56,10 +58,9 @@ def import_tab():
             st.text(imported_file)
             st.session_state[IMPORTED_FILE] = imported_file
 
-        # Doesn't work as expected
-        # if st.button("Delete Imported File"):
-        #     st.session_state[IMPORTED_FILE] = None
-        #     st.experimental_rerun()
+        st.write("Or select a previously imported file:")
+
+        
         
         # TODO: Support copy & paste json
 

@@ -34,12 +34,6 @@ def create_tab():
         # Optional Arguments
         num_cols = st.number_input("Optional Number of Arguments", 0, help="Arguments that can be passed to the generator when it is called. For example, a generator that generates a random number between 0 and 1 can have optional arguments that specify lower and upper bounds of the random number.")
 
-        # Adjust saved args from prior run
-        # prior_args = st.session_state[NEW_ARGS]
-        # if len(prior_args) > num_cols:
-        #     new_args = prior_args[:num_cols]
-        #     st.session_state[NEW_ARGS] = new_args
-
         args : list[dict] = []
         if num_cols > 0:
             for i in range(num_cols):
@@ -55,7 +49,6 @@ def create_tab():
         code_filepath = st.session_state[CODE_FILE]
         spec_filepath = st.session_state[SPEC_FILE]
         generators = st.session_state[GENERATORS]
-        # args = st.session_state[NEW_ARGS]
 
         if st.form_submit_button("Save Generator"):
         # if st.button("Create Generator"):
