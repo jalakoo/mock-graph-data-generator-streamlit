@@ -18,51 +18,60 @@ def create_tab():
     # Make radio horizontal
     st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
 
-    # Generator type
-    type = st.radio("Generator Type", ["String", "Bool", "Int", "Float","Datetime"],help="Generators are grouped by the data type they generate.")
+    with st.form("New Generator", clear_on_submit=True):
+        # Generator type
+        type = st.radio("Generator Type", ["String", "Bool", "Int", "Float","Datetime"],help="Generators are grouped by the data type they generate.")
 
+        # Generator name
+        name = st.text_input("Generator Name", help="The name of the generator. This will be used to reference the generator in the mapping tab. These should be unique but are not currently enforced.")
+        description = st.text_input("Generator Description", help="A description of the generator. This will be displayed in the generator tab and the info roll-over in the mapping tab.")
+        
+        # Load example code
+        with open(st.session_state[CODE_TEMPLATE_FILE], "r") as file:
+            code_template = file.read()
+        code = st.text_area("Generator Code", placeholder = code_template, height = 200, value = code_template, help="The code that will be executed to generate the mock data. This should be a function that takes a single argument, a dictionary of arguments, and returns a single value. The function name should not be changed from 'generate()'.")
 
-    name = st.text_input("Generator Name")
-    description = st.text_input("Generator Description")
-    # code_template = generic_template()
-    with open(st.session_state[CODE_TEMPLATE_FILE], "r") as file:
-        code_template = file.read()
-    code = st.text_area("Generator Code", placeholder = code_template, height = 200, value = code_template)
+        # Optional Arguments
+        num_cols = st.number_input("Optional Number of Arguments", 0, help="Arguments that can be passed to the generator when it is called. For example, a generator that generates a random number between 0 and 1 can have optional arguments that specify lower and upper bounds of the random number.")
 
-    # Arguments
-    num_cols = st.number_input("Number of Arguments", 0)
+        # Adjust saved args from prior run
+        # prior_args = st.session_state[NEW_ARGS]
+        # if len(prior_args) > num_cols:
+        #     new_args = prior_args[:num_cols]
+        #     st.session_state[NEW_ARGS] = new_args
 
-    # Adjust saved args from prior run
-    prior_args = st.session_state[NEW_ARGS]
-    if len(prior_args) > num_cols:
-        new_args = prior_args[:num_cols]
-        st.session_state[NEW_ARGS] = new_args
+        args : list[dict] = []
+        if num_cols > 0:
+            for i in range(num_cols):
+                st.markdown("""---""")
+                args[i] = argument_widget(i)
 
-    if num_cols > 0:
-        for i in range(num_cols):
-            st.markdown("""---""")
-            argument_widget(i)
+        # logging.info(f'args: {args}')
 
-    # logging.info(f'args: {args}')
+        # Optional tags for auto-import completion
+        tags_string = st.text_input("Optional Tags (comma separated)", help="Keyword tags for auto recommending generators to imported node and relationship properties.").lower()
+        tags = tags_string.split(",")
 
-    code_filepath = st.session_state[CODE_FILE]
-    spec_filepath = st.session_state[SPEC_FILE]
-    generators = st.session_state[GENERATORS]
-    args = st.session_state[NEW_ARGS]
+        code_filepath = st.session_state[CODE_FILE]
+        spec_filepath = st.session_state[SPEC_FILE]
+        generators = st.session_state[GENERATORS]
+        # args = st.session_state[NEW_ARGS]
 
-    if st.button("Create Generator"):
-        st.write("Creating generator...")
-        success = createGenerator(
-            code_filepath=code_filepath,
-            spec_filepath=spec_filepath,
-            existing=generators, 
-            type=type, 
-            name=name, 
-            description=description, 
-            code=code,
-            args=args)
-        if success:
-            st.success("Generator created successfully")
+        if st.form_submit_button("Save Generator"):
+        # if st.button("Create Generator"):
+            st.write("Creating generator...")
+            success = createGenerator(
+                code_filepath=code_filepath,
+                spec_filepath=spec_filepath,
+                existing=generators, 
+                type=type, 
+                name=name, 
+                description=description, 
+                code=code,
+                args=args,
+                tags=tags)
+            if success:
+                st.success("Generator created successfully")
 
-        else:
-            st.error("Could not create generator")
+            else:
+                st.error("Could not create generator")

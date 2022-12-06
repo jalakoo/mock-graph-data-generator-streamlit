@@ -58,7 +58,7 @@ def property_row(
             except ValueError:
                 # This shouldn't happen since we chose the type above
                 logging.error(f'Generator {recommended_generator.name} type did not match selected generator type: {generator_type}')
-        selected_generator_name = st.selectbox("Generator", possible_generator_names, index=recommended_generator_index, key=f"{type}_{id}_property_{index}_generator")
+        selected_generator_name = st.selectbox("Generator", possible_generator_names, index=recommended_generator_index, key=f"{type}_{id}_property_{index}_generator", help="See the Generators Tab for more details on a given generator.")
 
         selected_generator = [generator for generator in possible_generators if generator.name == selected_generator_name][0]
 

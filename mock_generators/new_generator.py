@@ -12,27 +12,19 @@ def createGenerator(
     name: str,
     description: str,
     code: str,
-    args: list[dict]
+    args: list[dict],
+    tags: list[str]
 ) -> bool:
+    # Save generator entry to generators.json
 
     #  Generate new id
     id = str(uuid.uuid4())[:8]
     while id in existing.keys():
         id = str(uuid.uuid4())[:8]
 
-    # Save code to file
+    # Save code file to code folder
     filename = f"{code_filepath}/{id}.py"
     save_file(filename, code)
-
-    # Save generator entry to generators.json
-    # new_generator_dict = {
-    #     "name": name,
-    #     "description": description,
-    #     "type": type,
-    #     "code_url": filename,
-    #     "image_url": "",
-    #     "args": args,
-    # }
 
     new_generator = Generator(
         id = id,
@@ -40,11 +32,15 @@ def createGenerator(
         name = name,
         description = description,
         code_url = filename,
-        args = GeneratorArg.list_from(args)
+        args = GeneratorArg.list_from(args),
+        tags=tags
     )
+
+    # Update generators.json in memory
     existing[id] = new_generator
     json = generators_dict_to_json(existing)
 
+    # Update saved generators.json - should probably just reload after instead
     try:
         save_json(spec_filepath, json)
         return True

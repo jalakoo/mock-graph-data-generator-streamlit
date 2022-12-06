@@ -57,7 +57,7 @@ def config_tab() -> list[Generator]:
             with open(new_spec_filepath) as input:
                 generators_file = input.read()
                 generators_json = load_json(new_spec_filepath)
-                new_generators = (generators_from_json(generators_json))
+                new_generators = generators_from_json(generators_json)
                 if generators != new_generators:
                     st.session_state[GENERATORS] = new_generators
 

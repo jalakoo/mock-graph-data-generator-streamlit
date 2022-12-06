@@ -33,13 +33,14 @@ def argument_widget(index) -> dict:
         "default": default
     }
 
+    return arg_dict
     # Store arg in sessions
-    args = st.session_state[NEW_ARGS]
-    if len(args) > index:
-        args[index] = arg_dict
-    else:
-        args.append(arg_dict)
+    # args = st.session_state[NEW_ARGS]
+    # if len(args) > index:
+    #     args[index] = arg_dict
+    # else:
+    #     args.append(arg_dict)
 
-    if args != st.session_state[NEW_ARGS]:
-        st.session_state[NEW_ARGS] = args
+    # if args != st.session_state[NEW_ARGS]:
+    #     st.session_state[NEW_ARGS] = args
 
