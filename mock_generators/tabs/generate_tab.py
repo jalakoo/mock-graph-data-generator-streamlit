@@ -15,7 +15,7 @@ def generate_tab():
     with col1:
         st.image("mock_generators/media/fireworks.gif")
     with col2:
-        st.write("Generate mock graph data.\n\nBe sure you're happy with the mocking options in the Mapping tab before running.")
+        st.write("Generate mock graph data.\n\nBe sure you're happy with the mocking options in the Mapping tab before running.\n\nWhen finished, proceed to the Export tab to review and download the generated data.")
     st.markdown("--------")
 
     mapping = st.session_state[MAPPINGS]

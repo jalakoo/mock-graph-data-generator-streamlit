@@ -4,6 +4,7 @@ from models.property_mapping import PropertyMapping
 from models.generator import Generator
 import logging
 import random
+import sys
 
 class RelationshipMapping():
 
@@ -96,7 +97,14 @@ class RelationshipMapping():
         for value_dict in from_node.generated_values:
             # value_dict = dict of property names and generated values
 
-            # Validate we have anything to process
+            # Decide on how many of these relationships to generate
+            count = 0
+            try:
+                count = self.count_generator.generate(self.count_args)
+            except:
+                raise Exception(f"Relationship mapping could not generate a number of relationships to continue generation process, error: {str(sys.exc_info()[0])}")
+
+            # Validate we have anything to process for this source node
             if value_dict.keys() is None or len(value_dict.keys()) == 0:
                 raise Exception(f"No properties found for NodeMapping: {from_node}")
 
@@ -104,25 +112,27 @@ class RelationshipMapping():
             from_node_key_property_name = from_node.key_property.name
             from_node_key_property_value = value_dict[from_node_key_property_name]
 
+            # If count is zero - no relationship generated for the curent source node
+            for _ in range(count):
+                # Select a random target node
+                to_node_value_dict = random.choice(to_node.generated_values)
 
-            # Select a random target node
-            to_node_value_dict = random.choice(to_node.generated_values)
+                # Get key property name and value for target record
+                to_node_key_property_name = to_node.key_property.name
+                to_node_key_property_value = to_node_value_dict[to_node_key_property_name]
 
-            # Get key property name and value for target record
-            to_node_key_property_name = to_node.key_property.name
-            to_node_key_property_value = to_node_value_dict[to_node_key_property_name]
+                # Generate the relationship
+                result = {
+                    f'_from_{from_node_key_property_name}': from_node_key_property_value,
+                    f'_to_{to_node_key_property_name}': to_node_key_property_value
+                }
 
-            # Generate the relationship
-            result = {
-                f'_from_{from_node_key_property_name}': from_node_key_property_value,
-                f'_to_{to_node_key_property_name}': to_node_key_property_value
-            }
+                # Generate the properties
+                for property_name, property_mapping in self.properties.items():
+                    result[property_name] = property_mapping.generate_value()
 
-            # Generate the properties
-            for property_name, property_mapping in self.properties.items():
-                result[property_name] = property_mapping.generate_value()
-
-            all_results.append(result)
+                # Add the relationship to the list
+                all_results.append(result)
 
         self.generated_values = all_results
         return self.generated_values

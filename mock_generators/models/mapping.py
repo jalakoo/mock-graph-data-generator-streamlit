@@ -3,6 +3,11 @@ from models.node_mapping import NodeMapping
 
 class Mapping():
     # For storing mapping configurations
+
+    @staticmethod
+    def empty():
+        return Mapping({}, {})
+        
     def __init__(self, nodes : dict[str, NodeMapping] = {}, relationships : dict = {}):
         self.nodes = nodes
         self.relationships = relationships

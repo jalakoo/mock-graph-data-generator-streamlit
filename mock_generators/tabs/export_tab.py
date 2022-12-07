@@ -7,7 +7,7 @@ def export_tab():
     with col1:
         st.image("mock_generators/media/export.gif")
     with col2:
-        st.write(f"Export generated data.\n\nThe downloadable zip file can be uploaded into Neo4j's Data-Import tool. It contains all the files necessary to import the generated data into Neo4j.")
+        st.write(f"Export generated data.\n\nAll generated files are listed in the Generated Files section below. NOTE: These files are wiped from the export files folder whenever the generate button from the Generate Tab is clicked. The downloadable zip files from the Generated Zip Files section can be uploaded into [Neo4j's Data-Import tool](https://console.neo4j.io). It contains all the files necessary to import the generated data into Neo4j.")
     st.markdown("--------")
 
     export_folder = st.session_state[EXPORTS_PATH]
