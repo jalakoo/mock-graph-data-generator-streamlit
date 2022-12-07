@@ -14,13 +14,6 @@ def export_tab():
     zips_folder = st.session_state[ZIPS_PATH]
 
     ec1, ec2, ec3 = st.columns(3)
-    # with ec1:
-    #     st.write(f"Download generated file >")
-    #     try:
-    #         with open(f"{st.session_state[ZIPS_PATH]}/{DEFAULT_DATA_IMPORTER_FILENAME}.zip", "rb") as file:
-    #             st.download_button(label="Download", data=file, file_name=f"{DEFAULT_DATA_IMPORTER_FILENAME}.zip", mime="application/zip", key=f"export_download_button")
-    #     except:
-    #         st.warning("No data-importer zip found. Please generate data first.")
 
     with ec1:
         st.write(f"GENERATED FILES:")
@@ -28,7 +21,7 @@ def export_tab():
 
     with ec2:
         st.write(f'(1) GENERATED ZIP FILES:')
-        folder_files_expander(zips_folder, widget_id="export_tab", enable_download=True)
+        folder_files_expander(zips_folder, widget_id="export_tab", enable_download=True, enable_delete_button=True)
 
     with ec3:
         st.write(f"(2) Upload desired .zip file to Neo4j:")

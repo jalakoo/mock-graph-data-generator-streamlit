@@ -14,6 +14,7 @@ GENERATORS = "generators"
 SPEC_FILE = "spec_filepath"
 CODE_FILE = "code_filepath"
 IMPORTED_FILE = "uploaded_file" # Old key for selected import file
+IMPORTED_FILENAME = "imported_filename"
 SAMPLE_ARROWS_FILE= "sample_arrows"
 IMPORTS_PATH = "imports_path"
 EXPORTS_PATH = "exports_path"

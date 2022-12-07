@@ -21,6 +21,13 @@ def generate_tab():
     mapping = st.session_state[MAPPINGS]
     export_folder = st.session_state[EXPORTS_PATH]
     zips_folder = st.session_state[ZIPS_PATH]
+    imported_filename = st.session_state[IMPORTED_FILENAME]
+
+    # TODO: Implement better filename cleaning
+    export_zip_filename = imported_filename.lower()
+    export_zip_filename = export_zip_filename.replace(".json", "")
+    export_zip_filename.replace(" ", "_")
+    export_zip_filename.replace(".", "_")
 
     g1, g2, g3 = st.columns(3)
 
@@ -70,8 +77,8 @@ def generate_tab():
             # Check that data was generated
             if success == False:
                 st.error('Error generating data. Check console for details.')
-                st.stop()
-                return
+                # st.stop()
+                # return
 
             success = generate_data_importer_json(
                 mapping,
@@ -81,27 +88,29 @@ def generate_tab():
             # Check that data-import data was generated
             if success == False:
                 st.error('Error generating data-import json. Check console for details.')
-                st.stop()
-                return
+                # st.stop()
+                # return
 
-            try:
-                # Create zip file, appended with time created
-                now = str(datetime.now().isoformat())
-                with zipfile.ZipFile(f'{zips_folder}/{DEFAULT_DATA_IMPORTER_FILENAME}_{now}.zip', 'w', zipfile.ZIP_DEFLATED) as zipf:
-                    # zipdir(export_folder, zipf)
-                    path = export_folder
-                    for root, dirs, files in os.walk(path):
-                        for file in files:
-                            if file[0] =='.':
-                                # Skip hidden files
-                                continue
-                            zipf.write(os.path.join(root, file), 
-                                    os.path.relpath(os.path.join(root, file), 
-                                                    os.path.join(path, '..')))
-            except:
-                st.error(f'Error creating zip file: {sys.exc_info()[0]}')
-                st.stop()
-                return
+            # Only attempt to zip files if data generation was successful
+            if success:
+                try:
+                    # Create zip file, appended with time created
+                    now = str(datetime.now().isoformat())
+                    with zipfile.ZipFile(f'{zips_folder}/{export_zip_filename}_{now}.zip', 'w', zipfile.ZIP_DEFLATED) as zipf:
+                        # zipdir(export_folder, zipf)
+                        path = export_folder
+                        for root, dirs, files in os.walk(path):
+                            for file in files:
+                                if file[0] =='.':
+                                    # Skip hidden files
+                                    continue
+                                zipf.write(os.path.join(root, file), 
+                                        os.path.relpath(os.path.join(root, file), 
+                                                        os.path.join(path, '..')))
+                except:
+                    st.error(f'Error creating zip file: {sys.exc_info()[0]}')
+                    # st.stop()
+                    return
 
             if success == True:
                 st.success('Data generated successfully.')

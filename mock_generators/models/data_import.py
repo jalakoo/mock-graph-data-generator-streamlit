@@ -4,18 +4,18 @@ from models.relationship_mapping import RelationshipMapping
 from models.property_mapping import PropertyMapping
 import logging
 from models.generator import GeneratorType
+import datetime
 
 def file_schema_for_property(property: PropertyMapping)-> dict:
 
     sample_value = property.generator.generate(property.args)
 
-    # Why didn't this work?
-    # if type(sample_value) is datetime:
-    #     logging.info(f'Converting datetime to string for file schema: {sample_value}')
-    #     sample_value = sample_value.isoformat()
-
+    # Why is it so tough to catch datetime objects?
+    if isinstance(sample_value, datetime.date):
+        sample_value = sample_value.isoformat()
+    if type(sample_value) is datetime:
+        sample_value = sample_value.isoformat()
     if property.type == GeneratorType.DATETIME:
-        # logging.info(f'datetime found. Generated value: {sample_value}')
         sample_value = sample_value.isoformat()
 
     result = {

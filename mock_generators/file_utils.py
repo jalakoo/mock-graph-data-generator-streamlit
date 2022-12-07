@@ -48,9 +48,7 @@ def load_json_as_list(filepath: str, default=None) -> list[any]:
 def save_file(filepath, data):
     """
     Save a file
-
-    Saves a file.
-
+    
     Parameters:
     filepath (str): Filepath to the file to be saved.
     data (str): Data to be saved to the file.

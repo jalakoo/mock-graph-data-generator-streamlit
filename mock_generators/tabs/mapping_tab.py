@@ -12,7 +12,7 @@ def mapping_tab():
     with col1:
         st.image("mock_generators/media/shuffle.gif")
     with col2:
-        st.write("Create and edit mock data generation options. \n\nNodes and relationships are default INCLUDED from mapping, meaning data will be generated for all imported nodes and relationships.  Expand options for each node or relationship > Edit labels > Edit property names > Assign generator functions to create desired mock data.\n\nAdditional Global, for all Nodes, and for all Relationship properties can also be set.")
+        st.write("Create and edit mock data generation options. \n\nNodes and relationships are default INCLUDED from mapping, meaning data will be generated for all imported nodes and relationships.  Expand options for each node or relationship > Edit labels > Edit property names > Assign generator functions to create desired mock data.\n\nAdditional Global, for all Nodes, and for all Relationship properties can also be set. NOTE: ALL Nodes require a unique key property name to be selected. So imported node data with no properites will need to have at least one property created for it.")
     uploaded_file = st.session_state[IMPORTED_FILE]
     st.markdown("--------")
 

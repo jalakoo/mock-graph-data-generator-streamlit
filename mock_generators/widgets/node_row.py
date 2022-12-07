@@ -141,7 +141,11 @@ def nodes_row(
         st.markdown('---')
         st.write("Property value that uniquely identifies these nodes")
         key_property_name = st.selectbox("Key Property", property_maps.keys(), key=f'node_{id}_key_property')
-        selected_key_property = property_maps[key_property_name]
+        if key_property_name not in property_maps:
+            st.error(f'Property "{key_property_name}" does not exist in properties for node {caption}')
+            selected_key_property = None
+        else:
+            selected_key_property = property_maps[key_property_name]
 
         # property_maps.append(new_property_map)
 

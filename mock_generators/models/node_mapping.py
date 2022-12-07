@@ -33,16 +33,27 @@ class NodeMapping():
 
 
     def to_dict(self):
-        return {
-            "id": self.id,
-            "caption": self.caption,
-            "position": self.position,
-            "labels": self.labels,
-            "properties": {key: property.to_dict() for (key, property) in self.properties.items()},
-            "count_generator": self.count_generator.to_dict(),
-            "count_args": self.count_args,
-            "key_property" : self.key_property.to_dict()
-        }
+        if self.key_property is None:
+            return {
+                "id": self.id,
+                "caption": self.caption,
+                "position": self.position,
+                "labels": self.labels,
+                "properties": {key: property.to_dict() for (key, property) in self.properties.items()},
+                "count_generator": self.count_generator.to_dict(),
+                "count_args": self.count_args
+            }
+        else:
+            return {
+                "id": self.id,
+                "caption": self.caption,
+                "position": self.position,
+                "labels": self.labels,
+                "properties": {key: property.to_dict() for (key, property) in self.properties.items()},
+                "count_generator": self.count_generator.to_dict(),
+                "count_args": self.count_args,
+                "key_property" : self.key_property.to_dict()
+            }
 
     def filename(self):
         return f"{self.caption.lower()}_{self.id.lower()}"
