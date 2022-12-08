@@ -69,7 +69,7 @@ def mapping_tab():
         except json.decoder.JSONDecodeError:
             st.error('JSON file is not valid.')
 
-    st.write("**(1) GLOBALS:**")
+    st.write("**[1] GLOBALS:**")
     g1, g2, g3 = st.columns(3)
     should_expand = False
     with g1:
@@ -90,7 +90,7 @@ def mapping_tab():
             all_global_properties.append(global_property)
 
     st.markdown("--------")
-    st.write("**(2) NODES:**")
+    st.write("**[2] NODES:**")
     # TODO: Add ability to add ALL NODES ONLY properties
     num_nodes = st.number_input("Number of nodes", min_value=0, value=len(nodes), key="mapping_number_of_nodes")
     for i in range(num_nodes):
@@ -103,7 +103,7 @@ def mapping_tab():
             nodes_row(None)
 
     st.markdown("--------")
-    st.write("**(3) RELATIONSHIPS:**")
+    st.write("**[3] RELATIONSHIPS:**")
     # TODO: Add ability to add ALL RELATIONSHIPS ONLY properties
     num_relationships = st.number_input("Number of relationships", min_value=0, value=len(relationships), key="mapping_number_of_relationships")
     for i in range(num_relationships):

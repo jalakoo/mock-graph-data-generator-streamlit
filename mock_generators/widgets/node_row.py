@@ -64,7 +64,7 @@ def nodes_row(
     with st.expander(f"NODE {id} - {caption}", expanded=should_start_expanded):
         st.markdown('---')
 
-        nc1, nc2, nc3 = st.columns(3)
+        nc1, nc2, nc3, nc4 = st.columns(4)
 
         # Display/edit Caption
         with nc1:
@@ -77,7 +77,7 @@ def nodes_row(
 
         # Adjust number of labels
         with nc2:
-            num_labels = st.number_input("Number of Additional labels", min_value=0, value=len(labels), key=f"node_{id}_num_labels")
+            num_labels = st.number_input("Number of Additional labels", min_value=0, value=len(labels), key=f"node_{id}_num_labels", help="Nodes may have more than one label. Select the number of additional labels to add.")
         if num_labels > 0:
             label_columns = st.columns(num_labels)
             for li, x in enumerate(label_columns):
@@ -95,24 +95,24 @@ def nodes_row(
                         selected_labels.append(new_label)
 
         with nc3:
+            initial_num_properties = len(properties)
+            # All nodes should have at least one property
+            # Otherwise we're just generating a bunch of empty nodes
+            # which doesn't require a mock data generator to do. But
+            # whatever, maybe someone needs a few label only nodes
+            num_properties = st.number_input("Number of properties", value = initial_num_properties, min_value=0, key= f'node_{id}_num_properties', help="Nodes typically have one or more properties. Select the number of properties for this node.")
+
+        with nc4:
             st.write('Options')
             disabled = st.checkbox("Exclude/ignore node", value=False, key=f"node_{id}_disabled")
 
         # Adjust number of properties 
         st.markdown('---')
         initial_num_properties = len(properties)
-        # All nodes should have at least one property
-        # Otherwise we're just generating a bunch of empty nodes
-        # which doesn't require a mock data generator to do. But
-        # whatever, maybe someone needs a few label only nodes
-        # if initial_num_properties < 1:
-        #     initial_num_properties = 1
-        num_properties = st.number_input("Number of properties", value = initial_num_properties, min_value=0, key= f'node_{id}_num_properties')
 
         # Generate input fields for user to adjust property names, types, and generator to create mock data with
 
         property_maps = {}
-
 
         for i in range(num_properties):
 
@@ -139,8 +139,7 @@ def nodes_row(
                 property_maps[additional_property.name] = additional_property
 
         st.markdown('---')
-        st.write("Property value that uniquely identifies these nodes")
-        key_property_name = st.selectbox("Key Property", property_maps.keys(), key=f'node_{id}_key_property')
+        key_property_name = st.selectbox("Key Property", property_maps.keys(), key=f'node_{id}_key_property', help="Property value that uniquely identifies these nodes from other nodes")
         if key_property_name not in property_maps:
             st.error(f'Property "{key_property_name}" does not exist in properties for node {caption}')
             selected_key_property = None
@@ -151,7 +150,7 @@ def nodes_row(
 
 
         st.markdown('---')
-        st.write(f'Number of {caption} nodes to generate')
+        st.write(f'Number of {caption} records to generate')
         possible_count_generators = generators_filtered([GeneratorType.INT])
         possible_count_generator_names = [generator.name for generator in possible_count_generators]
 

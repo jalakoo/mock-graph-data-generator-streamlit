@@ -78,7 +78,7 @@ def generators_tab():
                             value=datetime.datetime.fromisoformat(arg.default),
                             key = f'{generator.id}_{arg.label}'
                         ))
-                if st.button("GenerateExample Output", key=f"run_{generator.id}"):
+                if st.button("Generate Example Output", key=f"run_{generator.id}"):
                     module = __import__(generator.import_url(), fromlist=['generate'])
                     # logging.info(f'arg_inputs: {arg_inputs}')
                     result = module.generate(arg_inputs)
