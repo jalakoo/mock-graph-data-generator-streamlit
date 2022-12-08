@@ -83,7 +83,7 @@
         ],
         "code_url": "mock_generators/generators/469b37c7.py",
         "description": "Random integer from a min and max value argument. Argument values are inclusive.",
-        "name": "Int",
+        "name": "Int Range",
         "tags": [
             "int",
             "integer",
@@ -331,6 +331,26 @@
             "price"
         ],
         "type": "Float"
+    },
+    "ecdff22c": {
+        "args": [
+            {
+                "default": 1,
+                "label": "value",
+                "type": "Integer"
+            }
+        ],
+        "code_url": "mock_generators/generators/ecdff22c.py",
+        "description": "Constant integer value",
+        "name": "Int",
+        "tags": [
+            "int",
+            " integer",
+            " num",
+            " number",
+            " count"
+        ],
+        "type": "Integer"
     },
     "id1": {
         "args": [

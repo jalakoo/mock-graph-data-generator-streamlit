@@ -83,15 +83,44 @@ def relationship_row(
 
         # Relationship type
         st.markdown('---')
-        rs1, rs2 = st.columns(2)
+        rs1, rs2, rs3 = st.columns(3)
         with rs1:
+            # Enter Type
             new_type = st.text_input("Type", value=type, key=f"relationship_{id}_type")
             if new_type != type:
                 type = new_type
         with rs2:
+            # Selecct number of properties
+            num_properties = st.number_input("Number of properties", min_value=0, value=len(properties), key=f"relationship_{id}_number_of_properties")
+        with rs3:
+            # Enable/Disable relationship
             st.write('Options')
             disabled = st.checkbox("Exclude/ignore relationship", value=False, key=f"relationship_{id}_enabled")
 
+        # Relationship properties
+        if num_properties > 0:
+            st.markdown('---')
+        property_maps = {}
+        
+        for i in range(num_properties):
+            # Create a new propertyMapping for storing user selections
+
+            new_property_map = property_row(
+                type="relationship",
+                id=id,
+                index=i,
+                properties=properties
+            )
+
+            if new_property_map.name in property_maps:
+                st.error(f'Property "{new_property_map.name}" already exists')
+            else:
+                property_maps[new_property_map.name] = new_property_map
+        
+        # Load any additional properties that were passed in
+        if additional_properties != None and len(additional_properties) > 0:
+            for additional_property in additional_properties:
+                property_maps[additional_property.name] = additional_property
 
         # Relationship source and target nodes
         st.markdown('---')
@@ -169,31 +198,6 @@ def relationship_row(
             # toKeyProperty = _node_key_property_name(new_to_node_caption)
             toNode = node_from_id(new_toId)
 
-        # Relationship properties
-        st.markdown('---')
-        num_properties = st.number_input("Number of properties", min_value=0, value=len(properties), key=f"relationship_{id}_number_of_properties")
-
-        property_maps = {}
-        
-        for i in range(num_properties):
-            # Create a new propertyMapping for storing user selections
-
-            new_property_map = property_row(
-                type="relationship",
-                id=id,
-                index=i,
-                properties=properties
-            )
-
-            if new_property_map.name in property_maps:
-                st.error(f'Property "{new_property_map.name}" already exists')
-            else:
-                property_maps[new_property_map.name] = new_property_map
-        
-        # Load any additional properties that were passed in
-        if additional_properties != None and len(additional_properties) > 0:
-            for additional_property in additional_properties:
-                property_maps[additional_property.name] = additional_property
 
         if disabled:
             # Remove from mapping

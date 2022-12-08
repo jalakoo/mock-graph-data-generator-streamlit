@@ -21,6 +21,7 @@ EXPORTS_PATH = "exports_path"
 ZIPS_PATH = "zips_path"
 CODE_TEMPLATE_FILE = "templates_file"
 DEFAULT_DATA_IMPORTER_FILENAME = "neo4j_importer_model"
+NEW_GENERATOR_ARGS = "new_generator_args"
 
 # TODO: Can Streamlit's st.session hold all the data we'll be generating?
 MAPPINGS = "mappings"
