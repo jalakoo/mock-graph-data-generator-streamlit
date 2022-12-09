@@ -14,7 +14,6 @@ def mapping_tab():
     with col2:
         st.write("Create and edit mock data generation options. \n\nNodes and relationships are default INCLUDED from mapping, meaning data will be generated for all imported nodes and relationships.  Expand options for each node or relationship to edit labels, property names, and assign generator functions that will create mock data. Additional Global properties can also be set and will overwrite any local node/relationship properties with the same name. NOTE: ALL Nodes require a unique key property name to be selected. So imported node data with no properites will need to have at least one property created for it.\n\nWhen finished, proceed to the Generate Tab to generate mock data.")
     uploaded_file = st.session_state[IMPORTED_FILE]
-    st.markdown("--------")
 
     # Default options
     # Matching arrows.json dict format
@@ -69,7 +68,13 @@ def mapping_tab():
         except json.decoder.JSONDecodeError:
             st.error('JSON file is not valid.')
 
-    st.write("**[1] GLOBALS:**")
+    # Save the converted raw json objects
+    st.session_state[IMPORTED_NODES] = nodes
+    st.session_state[IMPORTED_RELATIONSHIPS] = relationships
+
+    st.markdown("--------")
+
+    st.subheader("**[1] GLOBALS:**")
     g1, g2, g3 = st.columns(3)
     should_expand = False
     with g1:
@@ -89,27 +94,35 @@ def mapping_tab():
             )
             all_global_properties.append(global_property)
 
+    # Nodes
     st.markdown("--------")
-    st.write("**[2] NODES:**")
     # TODO: Add ability to add ALL NODES ONLY properties
-    num_nodes = st.number_input("Number of nodes", min_value=0, value=len(nodes), key="mapping_number_of_nodes")
+
+    n1, n2 = st.columns([9,1])
+    with n1:
+        st.subheader("**[2] NODES:**")
+    with n2:
+        num_nodes = st.number_input("Number:", min_value=0, value=len(nodes), key="mapping_number_of_nodes", help="Adjust the number of nodes to generate data for")
     for i in range(num_nodes):
         if i < len(nodes):
             nodes_row(
-                nodes[i], 
+                i, 
                 should_start_expanded=should_expand,
                 additional_properties=all_global_properties)
         else:
             nodes_row(None)
 
     st.markdown("--------")
-    st.write("**[3] RELATIONSHIPS:**")
+    r1, r2 = st.columns([9,1])
+    with r1:
+        st.subheader("**[3] RELATIONSHIPS:**")
     # TODO: Add ability to add ALL RELATIONSHIPS ONLY properties
-    num_relationships = st.number_input("Number of relationships", min_value=0, value=len(relationships), key="mapping_number_of_relationships")
+    with r2:
+        num_relationships = st.number_input("Number:", min_value=0, value=len(relationships), key="mapping_number_of_relationships", help="Adjust the number of relationships to generate data for")
     for i in range(num_relationships):
         if i < len(relationships):
             relationship_row(
-                relationships[i],
+                i,
                 should_start_expanded=should_expand,
                 additional_properties=all_global_properties)
         else:

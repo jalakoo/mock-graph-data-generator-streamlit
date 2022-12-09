@@ -34,6 +34,10 @@ if IMPORTS_PATH not in st.session_state:
 # TODO: Replace with reference to selected import file
 if IMPORTED_FILE not in st.session_state:
     st.session_state[IMPORTED_FILE] = None
+if IMPORTED_NODES not in st.session_state:
+    st.session_state[IMPORTED_NODES] = []
+if IMPORTED_RELATIONSHIPS not in st.session_state:
+    st.session_state[IMPORTED_RELATIONSHIPS] = []
 if EXPORTS_PATH not in st.session_state:
     st.session_state[EXPORTS_PATH] = DEFAULT_EXPORTS_PATH
 if CODE_TEMPLATE_FILE not in st.session_state:

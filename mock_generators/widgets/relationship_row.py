@@ -26,14 +26,6 @@ def _all_node_captions()-> list[str]:
     nodes = st.session_state[MAPPINGS].nodes
     return [node.caption for _, node in nodes.items()]
 
-# def _node_key_property_name(caption: str)-> str:
-#     nodes = st.session_state[MAPPINGS].nodes
-#     matches = [node.key_property.name for _, node in nodes.items() if node.caption == caption]
-#     if len(matches) == 0:
-#         logging.error(f'No node found with caption {caption}')
-#         return ""
-#     return matches[0]
-
 def _node_index_from(uid: str)-> int:
     nodes = st.session_state[MAPPINGS].nodes
     if uid in nodes.keys():
@@ -46,7 +38,8 @@ def node_from_id(id: str) -> NodeMapping:
     return [node for _, node in nodes.items() if node.id == id][0]
 
 def relationship_row(
-        relationship: dict,
+        index: int,
+        # relationship: dict,
         should_start_expanded: bool = False,
         additional_properties: list[PropertyMapping] = []
     ):
@@ -62,6 +55,8 @@ def relationship_row(
     #   "fromId": "n0",
     #   "toId": "n1"
     # }
+
+    relationship = st.session_state[IMPORTED_RELATIONSHIPS][index]
 
     if relationship is None:
         id = str(uuid.uuid4())[:8]
@@ -79,16 +74,23 @@ def relationship_row(
         else:
             properties = []
 
-    with st.expander(f"relationship id: {id}, type: {type}, from: {fromId}, to: {toId}", expanded=should_start_expanded):
+    # As a work around to (eventually) update the expander title when type changed by user.
+    saved_relationship = st.session_state[MAPPINGS].relationships.get(id) 
+    if saved_relationship is not None:
+        type = saved_relationship.type
+        
+    expander_text = f"(:{node_from_id(fromId).caption})-[:{type}]->(:{node_from_id(toId).caption})"
+    with st.expander(expander_text, expanded=should_start_expanded):
 
         # Relationship type
         st.markdown('---')
         rs1, rs2, rs3 = st.columns(3)
         with rs1:
             # Enter Type
-            new_type = st.text_input("Type", value=type, key=f"relationship_{id}_type")
+            new_type = st.text_input("Type", value=type, key=f"relationship_{id}_type", help="Change the Relationship type. Change will be reflected in the Raw Mapping Data in the Generate Tab")
             if new_type != type:
                 type = new_type
+                st.info(f"Relationship type changed to {type}. Change not reflected above until page refresh")
         with rs2:
             # Selecct number of properties
             num_properties = st.number_input("Number of properties", min_value=0, value=len(properties), key=f"relationship_{id}_number_of_properties")

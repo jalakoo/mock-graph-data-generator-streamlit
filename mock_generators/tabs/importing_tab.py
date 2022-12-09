@@ -22,8 +22,8 @@ def import_tab():
 
     with i1:
         selected_file = None
-
-        import_option = st.radio("[1]  Import", ["An Existing File", "Upload"], help="Select a previously loaded file OR upload a new .json data model file.")
+        # st.header(f'[1] Select Import Source')
+        import_option = st.radio("[1] Select Import Source", ["An Existing File", "Upload"])
 
         st.markdown("--------")
 

@@ -14,7 +14,8 @@ def generators_filtered(byTypes: list[GeneratorType]) -> list[Generator]:
     return [generator for _, generator in generators.items() if generator.type in byTypes]
 
 def nodes_row(
-    node: dict,
+    # node: dict,
+    index : int,
     should_start_expanded: bool = False,
     additional_properties: list[PropertyMapping] = []
     ):
@@ -37,6 +38,7 @@ def nodes_row(
     # "style": {}
     # }
 
+    node = st.session_state[IMPORTED_NODES][index]
     if node is not None:
         # Load node data from an imported dict
         id = node.get("id")
@@ -60,8 +62,17 @@ def nodes_row(
         properties = []
         selected_labels = []
 
-    # Create an expandable list item for each node
-    with st.expander(f"NODE {id} - {caption}", expanded=should_start_expanded):
+    # Work around to (eventually) update node caption in expander when new primary label updated by
+    saved_node = st.session_state[MAPPINGS].nodes.get(id) 
+    if saved_node is not None:
+        caption = saved_node.caption
+        labels = saved_node.labels
+
+    # Create expandable list item for each node
+
+    # Caption of node may be changed by user, so we'll hook into Streamlit's sessions to update the expander text when that happens.
+
+    with st.expander(f'{caption}', expanded=should_start_expanded):
         st.markdown('---')
 
         nc1, nc2, nc3, nc4 = st.columns(4)
@@ -71,13 +82,17 @@ def nodes_row(
             new_caption = st.text_input(
             f"Primary Label", 
             value = caption,
-            key=f"node_{id}_primary_label")
+            key=f"node_{id}_primary_label",
+            help="The primary label for this node. Changes will be reflected here and in Raw Mapping Data (but not the disclosure section title)")
             if new_caption != caption:
+                old_caption = str(caption)
                 caption = new_caption
+                st.info(f"{old_caption} changed to {caption}. Change not reflected above until page refresh")
+
 
         # Adjust number of labels
         with nc2:
-            num_labels = st.number_input("Number of Additional labels", min_value=0, value=len(labels), key=f"node_{id}_num_labels", help="Nodes may have more than one label. Select the number of additional labels to add.")
+            num_labels = st.number_input("Number of Additional labels", min_value=0, value=len(labels), key=f"node_{id}_num_labels", help="Nodes may have more than one label. Select the number of additional labels to add")
         if num_labels > 0:
             label_columns = st.columns(num_labels)
             for li, x in enumerate(label_columns):
@@ -153,6 +168,7 @@ def nodes_row(
         st.write(f'Number of {caption} records to generate')
         possible_count_generators = generators_filtered([GeneratorType.INT])
         possible_count_generator_names = [generator.name for generator in possible_count_generators]
+        possible_count_generator_names.sort(reverse=False)
 
         ncc1, ncc2 = st.columns(2)
 
