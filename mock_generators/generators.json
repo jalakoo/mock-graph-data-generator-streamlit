@@ -230,6 +230,16 @@
         ],
         "type": "Datetime"
     },
+    "bea8edcf": {
+        "args": [],
+        "code_url": "mock_generators/generators/bea8edcf.py",
+        "description": "Creates a relationship with a random target node record for every relationship record. Duplicates possible. Orphan target node records possible.",
+        "name": "Pure Random",
+        "tags": [
+            ""
+        ],
+        "type": "Relationship"
+    },
     "c9a071b5": {
         "args": [],
         "code_url": "mock_generators/generators/c9a071b5.py",
@@ -336,7 +346,7 @@
         "args": [
             {
                 "default": 1,
-                "label": "value",
+                "label": "Value",
                 "type": "Integer"
             }
         ],
@@ -345,10 +355,10 @@
         "name": "Int",
         "tags": [
             "int",
-            " integer",
-            " num",
-            " number",
-            " count"
+            "integer",
+            "num",
+            "number",
+            "count"
         ],
         "type": "Integer"
     },

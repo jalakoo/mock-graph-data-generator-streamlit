@@ -161,9 +161,7 @@ def nodes_row(
         else:
             selected_key_property = property_maps[key_property_name]
 
-        # property_maps.append(new_property_map)
-
-
+        # Select count of nodes to generate
         st.markdown('---')
         st.write(f'Number of {caption} records to generate')
         possible_count_generators = generators_filtered([GeneratorType.INT])

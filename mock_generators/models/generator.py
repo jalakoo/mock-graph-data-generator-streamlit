@@ -9,7 +9,7 @@ class GeneratorType(Enum):
     FLOAT = 3,
     STRING = 4,
     DATETIME = 5,
-    RELATIONAL = 6
+    RELATIONSHIP = 6
 
     @staticmethod
     def type_from_string(aType: str):
@@ -24,8 +24,8 @@ class GeneratorType(Enum):
             return GeneratorType.DATETIME
         elif type == "bool":
             return GeneratorType.BOOL
-        elif type == "relational":
-            return GeneratorType.RELATIONAL
+        elif type == "relationship":
+            return GeneratorType.RELATIONSHIP
         else:
             raise TypeError("Type not supported")
     
@@ -40,8 +40,8 @@ class GeneratorType(Enum):
             return "Datetime"
         elif self == GeneratorType.BOOL:
             return "Bool"
-        elif self == GeneratorType.RELATIONAL:
-            return "Relational"
+        elif self == GeneratorType.RELATIONSHIP:
+            return "Relationship"
         else:
             raise TypeError("Type not supported")
 

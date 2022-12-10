@@ -144,6 +144,7 @@ def relationship_row(
             # Select count generator
             possible_count_generators = generators_filtered([GeneratorType.INT])
             possible_count_generator_names = [generator.name for generator in possible_count_generators]
+            possible_count_generator_names.sort(reverse=False)
             selected_count_generator_name = st.selectbox("Using Generator", possible_count_generator_names, key=f"relationship_{id}_count_generator", help="This integer generator will be used for generating the number of relationships from source node to target node. For example, an output of 5 would create 5 relationships between the 'from node' to the 'to node'")
             selected_count_generator = next(generator for generator in possible_count_generators if generator.name == selected_count_generator_name)
         with r3:
@@ -183,7 +184,7 @@ def relationship_row(
                             count_arg_inputs[count_index] = count_arg
         with r4:
             # Display sample output
-            st.write("Sample # of relationships to >")
+            st.write("Sample value")
             if selected_count_generator is not None:
                 st.write(selected_count_generator.generate(count_arg_inputs))
 
@@ -200,7 +201,21 @@ def relationship_row(
             # toKeyProperty = _node_key_property_name(new_to_node_caption)
             toNode = node_from_id(new_toId)
 
+        # Relationship Randomization Mode
+        st.markdown('---')
+        st.write("Randomization Rules")
+        rr1, rr2, rr3 = st.columns([1, 1, 1])
+        with rr1:
+            st.selectbox("Mode", options=["Purely Random", "Exhaustive Repeating", "Exhuastive Once Only"], key=f"relationship_{id}_randomization_mode", help="Configure how the relationship randomizer should work")
+        with rr2:
+            st.write("Details")
+            st.write("TBD")
+        with rr3:
+            st.write("Arguments")
+            st.write("TBD")
 
+
+        # Effect enable/disable options
         if disabled:
             # Remove from mapping
             mapping = st.session_state[MAPPINGS]

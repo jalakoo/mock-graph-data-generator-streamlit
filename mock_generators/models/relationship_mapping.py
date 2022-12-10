@@ -115,7 +115,15 @@ class RelationshipMapping():
             # If count is zero - no relationship generated for the curent source node
             for _ in range(count):
                 # Select a random target node
+                # TODO: Implement variable randomization modes here
                 to_node_value_dict = random.choice(to_node.generated_values)
+
+                # Types of randomizations likely needed:
+                # - Pure Random
+                # - Random with a bias towards nodes with fewer relationships
+                # - Random with a bias towards nodes with more relationships
+                # - Random Unique (no duplicates)
+                # - Random Exhaustive (attempt to exhaust all nodes before repeating)
 
                 # Get key property name and value for target record
                 to_node_key_property_name = to_node.key_property.name

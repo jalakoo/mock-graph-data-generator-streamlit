@@ -23,7 +23,7 @@ class NodeMapping():
         self.count_generator = count_generator
         self.count_args = count_args
         self.key_property = key_property # Property to use as unique key for this node
-        self.generated_values = None
+        self.generated_values = None # Will be a list[dict] when generated
 
     def __str__(self):
         return f"NodeMapping(id={self.id}, caption={self.caption}, labels={self.labels}, properties={self.properties}, count_generator={self.count_generator}, count_args={self.count_args}, key_property={self.key_property})"
