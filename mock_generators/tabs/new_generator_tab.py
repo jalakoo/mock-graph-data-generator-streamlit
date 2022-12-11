@@ -19,7 +19,7 @@ def create_tab():
     # st.form sadly does not support dynamic widget generation internally.
     # TODO: Either create a custom way to clear all inputs after submission or reduce need to dynamically change code template / optional arg fields
 
-    
+
     # with st.form("New Generator", clear_on_submit=True):
     
     # Generator type

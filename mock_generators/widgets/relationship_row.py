@@ -8,6 +8,9 @@ from models.node_mapping import NodeMapping
 import datetime
 import logging
 from widgets.property_row import property_row
+from widgets.default_state import load_state
+
+load_state()
 
 def generators_filtered(byTypes: list[GeneratorType]) -> list[Generator]:
     generators: list[Generator] = st.session_state[GENERATORS]
@@ -38,8 +41,7 @@ def node_from_id(id: str) -> NodeMapping:
     return [node for _, node in nodes.items() if node.id == id][0]
 
 def relationship_row(
-        index: int,
-        # relationship: dict,
+        relationship: dict,
         should_start_expanded: bool = False,
         additional_properties: list[PropertyMapping] = []
     ):
@@ -56,7 +58,7 @@ def relationship_row(
     #   "toId": "n1"
     # }
 
-    relationship = st.session_state[IMPORTED_RELATIONSHIPS][index]
+    # relationship = st.session_state[IMPORTED_RELATIONSHIPS][index]
 
     if relationship is None:
         id = str(uuid.uuid4())[:8]
@@ -138,6 +140,24 @@ def relationship_row(
             new_from_node_caption = st.selectbox("From Node", index=fromId_index, options=_all_node_captions(), key=f"relationship_{id}_fromId", help="A random node of this type will be selected as the source of the relationship")
             new_fromId = _node_uid_from(new_from_node_caption)
             fromNode = node_from_id(new_fromId)
+
+            # Modal
+            # modal = Modal("Demo Modal", key=f"relationship_{id}_fromId_modal")
+            # open_modal = st.button("Open", key=f'open_relationship_{id}_fromId_modal')
+            # if open_modal:
+            #     modal.open()
+
+            # if modal.is_open():
+            #     with modal.container():
+            #         st.write("Text goes here")
+            #         html_string = '''
+            #         <h1>HTML string in RED</h1>
+
+            #         <script language="javascript">
+            #         document.querySelector("h1").style.color = "red";
+            #         </script>
+            #         '''
+            #         components.html(html_string)
 
 
         with r2:

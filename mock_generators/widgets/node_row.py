@@ -8,14 +8,22 @@ from models.property_mapping import PropertyMapping
 import uuid
 import datetime
 import logging
+from widgets.default_state import load_state
 
-def generators_filtered(byTypes: list[GeneratorType]) -> list[Generator]:
-    generators = st.session_state[GENERATORS]
-    return [generator for _, generator in generators.items() if generator.type in byTypes]
+# load_state()
+
+# def generators_filtered(byTypes: list[GeneratorType]) -> list[Generator]:
+#     generators = st.session_state[GENERATORS]
+#     if generators is None:
+#         load_state()
+#     if st.session_state[GENERATORS] is None:
+#         logging.error(f'Could not load generators. See generator file paths.')
+#         return None
+#     return [generator for _, generator in generators.items() if generator.type in byTypes]
 
 def nodes_row(
-    # node: dict,
-    index : int,
+    node : dict,
+    generators: list[Generator],
     should_start_expanded: bool = False,
     additional_properties: list[PropertyMapping] = []
     ):
@@ -38,7 +46,7 @@ def nodes_row(
     # "style": {}
     # }
 
-    node = st.session_state[IMPORTED_NODES][index]
+    # node = st.session_state[IMPORTED_NODES][index]
     if node is not None:
         # Load node data from an imported dict
         id = node.get("id")
@@ -63,10 +71,10 @@ def nodes_row(
         selected_labels = []
 
     # Work around to (eventually) update node caption in expander when new primary label updated by
-    saved_node = st.session_state[MAPPINGS].nodes.get(id) 
-    if saved_node is not None:
-        caption = saved_node.caption
-        labels = saved_node.labels
+    # saved_node = st.session_state[MAPPINGS].nodes.get(id) 
+    # if saved_node is not None:
+    #     caption = saved_node.caption
+    #     labels = saved_node.labels
 
     # Create expandable list item for each node
 
@@ -92,7 +100,7 @@ def nodes_row(
 
         # Adjust number of labels
         with nc2:
-            num_labels = st.number_input("Number of Additional labels", min_value=0, value=len(labels), key=f"node_{id}_num_labels", help="Nodes may have more than one label. Select the number of additional labels to add")
+            num_labels = st.number_input("Additional labels", min_value=0, value=len(labels), key=f"node_{id}_num_labels", help="Nodes may have more than one label. Select the number of additional labels to add")
         if num_labels > 0:
             label_columns = st.columns(num_labels)
             for li, x in enumerate(label_columns):
@@ -115,7 +123,7 @@ def nodes_row(
             # Otherwise we're just generating a bunch of empty nodes
             # which doesn't require a mock data generator to do. But
             # whatever, maybe someone needs a few label only nodes
-            num_properties = st.number_input("Number of properties", value = initial_num_properties, min_value=0, key= f'node_{id}_num_properties', help="Nodes typically have one or more properties. Select the number of properties for this node.")
+            num_properties = st.number_input("Properties", value = initial_num_properties, min_value=0, key= f'node_{id}_num_properties', help="Nodes typically have one or more properties. Select the number of properties for this node.")
 
         with nc4:
             st.write('Options')
@@ -135,7 +143,9 @@ def nodes_row(
                 type="node", 
                 id=id, 
                 index=i, 
-                properties= properties)
+                properties= properties,
+                generators=generators
+                )
 
             if new_property_map.id == None:
                 # Equal to an empty PropertyMapping - likely been explicitly excluded by user
@@ -164,7 +174,14 @@ def nodes_row(
         # Select count of nodes to generate
         st.markdown('---')
         st.write(f'Number of {caption} records to generate')
-        possible_count_generators = generators_filtered([GeneratorType.INT])
+        # possible_count_generators = generators_filtered([GeneratorType.INT])
+        if generators is None:
+            st.error("No generators passed to node row.")
+            st.stop()
+        possible_count_generators = [generator for _, generator in generators.items() if generator.type in [GeneratorType.INT]]
+        if possible_count_generators is None:
+            st.error("No possible generators found for type INT.")
+            st.stop()
         possible_count_generator_names = [generator.name for generator in possible_count_generators]
         possible_count_generator_names.sort(reverse=False)
 
@@ -172,7 +189,13 @@ def nodes_row(
 
         with ncc1:
             selected_count_generator_name = st.selectbox("Int Generator to use", possible_count_generator_names, key=f"node_{id}_count_generator")
-            selected_count_generator = next(generator for generator in possible_count_generators if generator.name == selected_count_generator_name)
+            possible_selected_count_generators =[generator for generator in possible_count_generators if generator.name == selected_count_generator_name]
+            if len(possible_selected_count_generators) == 0:
+                st.error(f'Generator "{selected_count_generator_name}" not found.')
+                st.stop()
+            else:
+                selected_count_generator = possible_selected_count_generators[0]
+            # selected_count_generator = next(generator for generator in possible_count_generators if generator.name == selected_count_generator_name)
         with ncc2:
             count_arg_inputs = []
             if selected_count_generator is not None:
