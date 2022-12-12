@@ -52,6 +52,7 @@ def property_row(
         if index < len(properties):
             # Get key of uploaded property
             existing_name = properties[index][0]
+            # TODO: Find away to pass in node labels and relationship types to this string
             recommended_generator = recommended_generator_from(existing_name, generators.values())
             if recommended_generator is None:
                 logging.warning(f'Could not find a recommended generator for property {existing_name}')

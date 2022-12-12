@@ -12,7 +12,7 @@ class NodeMapping():
         caption: str,
         labels: list[str], 
         properties: dict[str, PropertyMapping],
-        count_generator: Generator,
+        count_generator: Generator = None,
         count_args: list[any] = [],
         key_property: PropertyMapping = None):
         self.id = id
