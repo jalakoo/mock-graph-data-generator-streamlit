@@ -22,8 +22,8 @@ from widgets.default_state import load_state
 #     return [generator for _, generator in generators.items() if generator.type in byTypes]
 
 def nodes_row(
-    node : dict,
-    generators: list[Generator],
+    node_dict : dict,
+    generators: dict[str,Generator],
     should_start_expanded: bool = False,
     additional_properties: list[PropertyMapping] = []
     ):
@@ -46,20 +46,21 @@ def nodes_row(
     # "style": {}
     # }
 
+    # Extract relevant data from node dict
     # node = st.session_state[IMPORTED_NODES][index]
-    if node is not None:
+    if node_dict is not None:
         # Load node data from an imported dict
-        id = node.get("id")
-        labels = node.get("labels", [])
+        id = node_dict.get("id")
+        labels = node_dict.get("labels", [])
         position = {
-            "x": node.get("position", {}).get("x", 0),
-            "y": node.get("position", {}).get("y", 0)
+            "x": node_dict.get("position", {}).get("x", 0),
+            "y": node_dict.get("position", {}).get("y", 0)
         }
-        caption = node.get("caption", "")
-        properties = [(k,v) for k,v in node.get("properties").items()]
+        caption = node_dict.get("caption", "")
+        properties = [(k,v) for k,v in node_dict.get("properties").items()]
         selected_labels = labels
+    # Otherwise use default emtpy data
     else:
-        # Use a default empty node
         id = str(uuid.uuid4())[:8]
         labels = ["<add_label>"]
         position = {
@@ -70,6 +71,11 @@ def nodes_row(
         properties = []
         selected_labels = []
 
+    # Validation
+    if generators is None or len(generators) == 0:
+        logging.error(f'nodes_row.py: No generators received for node {caption}')
+        return None
+        
     # Work around to (eventually) update node caption in expander when new primary label updated by
     # saved_node = st.session_state[MAPPINGS].nodes.get(id) 
     # if saved_node is not None:
@@ -80,6 +86,7 @@ def nodes_row(
 
     # Caption of node may be changed by user, so we'll hook into Streamlit's sessions to update the expander text when that happens.
 
+    # Create an expander view for each node
     with st.expander(f'{caption}', expanded=should_start_expanded):
         st.markdown('---')
 

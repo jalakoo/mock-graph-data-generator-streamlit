@@ -15,6 +15,9 @@ def generators_filtered(
     ) -> list[Generator]:
 
     # generators = st.session_state[GENERATORS]
+    if generators is None or len(generators.keys()) == 0:
+        logging.warning(f'generators_filtered: no generators passed in. Passing back an empty list.')
+        return []
     result =  [generator for _, generator in generators.items() if generator.type in byTypes]
     def sort_by_name(generator: Generator):
         return generator.name
@@ -25,32 +28,33 @@ def property_row(
     type: str,
     id: str,
     index: int, 
-    properties: list,
-    generators: list[Generator]) -> PropertyMapping:
-
-    # gens = st.session_state[GENERATORS]
-    # if gens is None:
-    #     load_state()
-    # # Check again
-    # if st.session_state[GENERATORS] is None:
-    #     st.error("Could not load generators. Check generator file paths.")
-    #     return PropertyMapping.empty()
-
-    # gen_values = gens.values()
-    # Properties is a list of dictionaries 
+    properties: list[dict],
+    generators: dict[str, Generator]
+    ) -> PropertyMapping:
 
     # Create a new propertyMapping for storing user selections
+
+    if properties is None or len(properties) == 0:
+        logging.warning(f'property_row: no properties passed in. Passing back an empty PropertyMapping.')
+        return PropertyMapping.empty()
+    if generators is None or len(generators.keys()) == 0:
+        logging.warning(f'property_row: no generators passed in. Passing back an empty PropertyMapping.')
+        return PropertyMapping.empty()
+
+    existing_name = ""
+    recommended_generator = None
+
     pc1, pc2, pc3, pc4, pc5, pc6 = st.columns(6)
     
     # Property name
     with pc1:
-        existing_name = ""
-        recommended_generator = None
+
         if index < len(properties):
             # Get key of uploaded property
             existing_name = properties[index][0]
             recommended_generator = recommended_generator_from(existing_name, generators.values())
-            # logging.info(f'recommended generator for property name: {existing_name}: {recommended_generator}')
+            if recommended_generator is None:
+                logging.warning(f'Could not find a recommended generator for property {existing_name}')
         name = st.text_input("Property Name",value=existing_name, key=f"{type}_{id}_property_{index}_name")
         if name != "" and name[0] == "_":
             st.error("Property names cannot start with an underscore")
@@ -60,25 +64,29 @@ def property_row(
     with pc2:
         type_selections = ["String", "Bool", "Integer", "Float", "Datetime"]
         recommended_type_index = 0
-        if recommended_generator != None:
+        if recommended_generator is not None:
             recommended_type_index = type_selections.index(recommended_generator.type.to_string())
         generator_type_string = st.selectbox("Type", type_selections, index=recommended_type_index, key=f"{type}_{id}_property_{index}_type")
         generator_type = GeneratorType.type_from_string(generator_type_string)
+        # logging.info(f'property_row.py: generator_type selected: {generator_type}')
 
     # Generator to create property data with
     with pc3:
         recommended_generator_index = 0
         possible_generators = generators_filtered(generators,[generator_type])
+        if possible_generators is None or len(possible_generators) == 0:
+            logging.error(f'property_row.py: No generators found for type {generator_type}.')
+            return PropertyMapping.empty()
         possible_generator_names = [generator.name for generator in possible_generators]
 
         if recommended_generator is not None:
             try:
                 recommended_generator_index = possible_generator_names.index(recommended_generator.name)
-            except ValueError:
-                # This shouldn't happen since we chose the type above
-                logging.error(f'Generator {recommended_generator.name} type did not match selected generator type: {generator_type}')
+            # except ValueError:
+            #     # This shouldn't happen since we chose the type above
+            #     logging.error(f'Generator {recommended_generator.name} type ({recommended_generator.type}) did not match selected generator type: {generator_type}')
             except:
-                logging.error(f'Unexpected error while trying to find recommended generator: {recommended_generator.name}: {sys.exc_info()[0]}')
+                logging.error(f'property_row.py: Unexpected error while trying to find recommended generator: {recommended_generator.name} from possible names: {possible_generator_names} from possible generators: {possible_generators}: {sys.exc_info()[0]}')
         selected_generator_name = st.selectbox("Generator", possible_generator_names, index=recommended_generator_index, key=f"{type}_{id}_property_{index}_generator", help="See the Generators Tab for more details on a given generator.")
 
         selected_generators = [generator for generator in possible_generators if generator.name == selected_generator_name]

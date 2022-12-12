@@ -12,10 +12,10 @@ class RelationshipMapping():
         self, 
         id: str,
         type: str,
-        from_node : NodeMapping,
-        to_node : NodeMapping,
         properties: dict[str, PropertyMapping],
-        count_generator: Generator,
+        from_node : NodeMapping = None,
+        to_node : NodeMapping = None,
+        count_generator: Generator = None,
         count_args: list[any] = []
         ):
         self.id = id

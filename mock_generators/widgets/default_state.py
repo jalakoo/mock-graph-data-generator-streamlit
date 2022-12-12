@@ -9,6 +9,7 @@ import sys
 # Setup default session state if not already available
 
 def load_state():
+    # logging.info(f'default_state: loading state...')
     if ZIPS_PATH not in st.session_state:
         st.session_state[ZIPS_PATH] = DEFAULT_ZIPS_PATH
     if SPEC_FILE not in st.session_state:
@@ -42,10 +43,12 @@ def load_state():
             generators_json = load_json(spec_filepath)
             generators = generators_from_json(generators_json)
             st.session_state[GENERATORS] = generators
-            logging.info(f'default_state.py: Generators loaded: {generators}')
+            # Generators will be in a dict
+            # logging.info(f'default_state.py: Generators loaded: {generators}')
 
         except FileNotFoundError:
             st.error('No generator file found.')
             st.session_state[GENERATORS] = None
         except:
             st.error(f'Error loading generators from {spec_filepath}: {sys.exc_info()[0]}')
+    logging.info(f'default_state: loading state complete.')

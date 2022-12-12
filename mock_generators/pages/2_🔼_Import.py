@@ -33,6 +33,7 @@ import_option = st.radio("Import Type", ["An Existing File", "New Upload"], hori
 
 st.markdown("--------")
 
+# TODO: Add ability to optionally merge with existing mappings
 if import_option == "An Existing File":
     # Saved options
     st.write("Select an import file:")
@@ -75,16 +76,12 @@ else:
 
         st.success(f"Import Complete")
 
+# For displaying loaded data
 # with i2:
 #     # Process uploaded / selected file
 #     current_file = st.session_state[IMPORTED_FILE]
 #     if current_file is not None:
 #         # TODO: Verfiy file is valid arrows JSON
-
-#         # Write data to the imports folder
-
-
 #         # TODO: Update this to read from the appropriate file from the new imports folder
-
 #         st.write(f"[3]  Using {st.session_state[IMPORTED_FILENAME]} contents:")
 #         st.text(current_file)
