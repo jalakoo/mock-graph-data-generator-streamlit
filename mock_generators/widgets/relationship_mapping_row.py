@@ -36,9 +36,9 @@ def _node_index_from(uid: str)-> int:
     # If the node is not found, return index 0 as this is used by a UI widget
     return -1
 
-def node_from_id(id: str) -> NodeMapping:
-    nodes = st.session_state[MAPPINGS].nodes
-    return [node for _, node in nodes.items() if node.id == id][0]
+# def node_from_id(id: str) -> NodeMapping:
+#     nodes = st.session_state[MAPPINGS].nodes
+#     return [node for _, node in nodes.items() if node.id == id][0]
 
 def relationship_mapping_row(
         relationship_mapping: RelationshipMapping,
@@ -47,7 +47,13 @@ def relationship_mapping_row(
         additional_properties: list[PropertyMapping] = []
     ):
         
-    expander_text = f"(:{node_from_id(relationship_mapping.fromId).caption})-[:{type}]->(:{node_from_id(relationship_mapping.toId).caption})"
+    if relationship_mapping.from_node is None:
+        logging.error(f'Relationship Mapping {relationship_mapping} has no from_node')
+    if relationship_mapping.to_node is None:
+        logging.error(f'Relationship Mapping {relationship_mapping} has no to_node')
+
+    expander_text = f"(:{relationship_mapping.from_node.caption})-[:{type}]->(:{relationship_mapping.to_node.caption})"
+
     with st.expander(expander_text, expanded=should_start_expanded):
 
         # Relationship type
@@ -99,13 +105,15 @@ def relationship_mapping_row(
 
         with r1:
             # Relationship from
-            fromId_index = _node_index_from(relationship_mapping.fromId)
-            if fromId_index == -1:
-                st.error(f'Node with id {relationship_mapping.fromId} disabled or missing')
-                fromId_index = 0
-            new_from_node_caption = st.selectbox("From Node", index=fromId_index, options=_all_node_captions(), key=f"relationship_{id}_fromId", help="A random node of this type will be selected as the source of the relationship")
-            new_fromId = _node_uid_from(new_from_node_caption)
-            fromNode = node_from_id(new_fromId)
+            # fromId_index = _node_index_from(relationship_mapping.fromId)
+            # if fromId_index == -1:
+            #     st.error(f'Node with id {relationship_mapping.fromId} disabled or missing')
+            #     fromId_index = 0
+            # new_from_node_caption = st.selectbox("From Node", index=fromId_index, options=_all_node_captions(), key=f"relationship_{id}_fromId", help="A random node of this type will be selected as the source of the relationship")
+            # new_fromId = _node_uid_from(new_from_node_caption)
+            # fromNode = node_from_id(new_fromId)
+
+            st.write(f"From Node: {relationship_mapping.from_node.caption}")
 
             # Modal
             # modal = Modal("Demo Modal", key=f"relationship_{id}_fromId_modal")
@@ -132,7 +140,12 @@ def relationship_mapping_row(
             possible_count_generator_names = [generator.name for generator in possible_count_generators]
             possible_count_generator_names.sort(reverse=False)
             selected_count_generator_name = st.selectbox("Using Generator", possible_count_generator_names, key=f"relationship_{id}_count_generator", help="This integer generator will be used for generating the number of relationships from source node to target node. For example, an output of 5 would create 5 relationships between the 'from node' to the 'to node'")
-            selected_count_generator = next(generator for generator in possible_count_generators if generator.name == selected_count_generator_name)
+            matching_generators = [generator for generator in possible_count_generators if generator.name == selected_count_generator_name]
+            if matching_generators is not None and len(matching_generators) > 0:
+                selected_count_generator = matching_generators[0]
+            else:
+                st.error(f'Could not find a generator matching name: {selected_count_generator_name}')
+                st.stop()
         with r3:
             # Optional generator args
             count_arg_inputs = []
@@ -176,16 +189,17 @@ def relationship_mapping_row(
 
         with r5:
             # Relationship to
-            toId_index = _node_index_from(relationship_mapping.toId)
-            if toId_index == -1:
-                st.error(f'Node with id {relationship_mapping.toId} disabled or missing')
-                toId_index = 0
-            new_to_node_caption = st.selectbox("To Node", index=toId_index, options=_all_node_captions(), key=f"relationship_{id}_toId", help="A random node of this type will be selected as the target of the relationship")
-            new_toId = _node_uid_from(new_to_node_caption)
-            # if new_toId != toId:
-            # toId = new_toId
-            # toKeyProperty = _node_key_property_name(new_to_node_caption)
-            toNode = node_from_id(new_toId)
+            st.write(f'To Node: {relationship_mapping.to_node.caption}')
+            # toId_index = _node_index_from(relationship_mapping.toId)
+            # if toId_index == -1:
+            #     st.error(f'Node with id {relationship_mapping.toId} disabled or missing')
+            #     toId_index = 0
+            # new_to_node_caption = st.selectbox("To Node", index=toId_index, options=_all_node_captions(), key=f"relationship_{id}_toId", help="A random node of this type will be selected as the target of the relationship")
+            # new_toId = _node_uid_from(new_to_node_caption)
+            # # if new_toId != toId:
+            # # toId = new_toId
+            # # toKeyProperty = _node_key_property_name(new_to_node_caption)
+            # toNode = node_from_id(new_toId)
 
         # Relationship Randomization Mode
         st.markdown('---')

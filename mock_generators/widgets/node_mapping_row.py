@@ -43,7 +43,10 @@ def node_mapping_row(
         if generators is None:
             st.error("No generators passed to node row.")
             st.stop()
-        possible_count_generators = [generator for _, generator in generators.items() if generator.type in [GeneratorType.INT]]
+        
+        # possible_count_generators = [generator for _, generator in generators.items() if generator.type in [GeneratorType.INT]]
+        possible_count_generators = [generator for generator in generators.values()]
+
         if possible_count_generators is None or len(possible_count_generators) == 0:
             st.error(f"No possible generators found for type INT from generators arg: {generators}.")
             st.stop()

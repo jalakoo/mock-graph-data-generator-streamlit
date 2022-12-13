@@ -12,32 +12,32 @@ from widgets.default_state import load_state
 
 load_state()
 
-# def generators_filtered(
-#     generators:list[Generator],
-#     byTypes: list[GeneratorType]
-#     ) -> list[Generator]:
+def generators_filtered(
+    generators:list[Generator],
+    byTypes: list[GeneratorType]
+    ) -> list[Generator]:
 
-#     return [generator for _, generator in generators.items() if generator.type in byTypes]
+    return [generator for _, generator in generators.items() if generator.type in byTypes]
 
-# def _node_uid_from(caption: str)-> str:
-#     nodes = st.session_state[MAPPINGS].nodes
-#     options = [uid for uid, node in nodes.items() if node.caption == caption]
-#     if len(options) == 0:
-#         logging.error(f'No node found with caption {caption} (possibly disabled)')
-#         return None
-#     else:
-#         return options[0]
+def _node_uid_from(caption: str)-> str:
+    nodes = st.session_state[MAPPINGS].nodes
+    options = [uid for uid, node in nodes.items() if node.caption == caption]
+    if len(options) == 0:
+        logging.error(f'No node found with caption {caption} (possibly disabled)')
+        return None
+    else:
+        return options[0]
 
-# def _all_node_captions()-> list[str]:
-#     nodes = st.session_state[MAPPINGS].nodes
-#     return [node.caption for _, node in nodes.items()]
+def _all_node_captions()-> list[str]:
+    nodes = st.session_state[MAPPINGS].nodes
+    return [node.caption for _, node in nodes.items()]
 
-# def _node_index_from(uid: str)-> int:
-#     nodes = st.session_state[MAPPINGS].nodes
-#     if uid in nodes.keys():
-#         return list(nodes.keys()).index(uid)
-#     # If the node is not found, return index 0 as this is used by a UI widget
-#     return -1
+def _node_index_from(uid: str)-> int:
+    nodes = st.session_state[MAPPINGS].nodes
+    if uid in nodes.keys():
+        return list(nodes.keys()).index(uid)
+    # If the node is not found, return index 0 as this is used by a UI widget
+    return -1
 
 def node_from_id(id: str) -> NodeMapping:
     nodes = st.session_state[MAPPINGS].nodes
@@ -93,26 +93,45 @@ def relationship_row(
     expander_text = f"(:{node_from_id(fromId).caption})-[:{type}]->(:{node_from_id(toId).caption})"
     with st.expander(expander_text, expanded=should_start_expanded):
 
-        # Relationship type
+        # # Relationship source and target nodes
         st.markdown('---')
-        rs1, rs2, rs3 = st.columns(3)
-        with rs1:
-            # Enter Type
+        # st.write("Number of relationships to generate")
+        r1, r2, r3, r4 = st.columns([2, 2, 2, 1])
+
+        with r1:
+            # Relationship from
+            fromId_index = _node_index_from(fromId)
+            if fromId_index == -1:
+                st.error(f'Node with id {relationship_mapping.fromId} disabled or missing')
+                fromId_index = 0
+            new_from_node_caption = st.selectbox("From Node", index=fromId_index, options=_all_node_captions(), key=f"relationship_{id}_fromId", help="A random node of this type will be selected as the source of the relationship")
+            new_fromId = _node_uid_from(new_from_node_caption)
+            fromNode = node_from_id(new_fromId)
+
+        with r2:
+            # Relationship type
             new_type = st.text_input("Type", value=type, key=f"relationship_{id}_type", help="Change the Relationship type. Change will be reflected in the Raw Mapping Data in the Generate Tab")
             if new_type != type:
                 type = new_type
                 st.info(f"Relationship type changed to {type}. Change not reflected above until page refresh")
-        with rs2:
-            # Selecct number of properties
-            num_properties = st.number_input("Number of properties", min_value=0, value=len(properties), key=f"relationship_{id}_number_of_properties")
-        with rs3:
-            # Enable/Disable relationship
+ 
+        with r3:
+            # Relationship to
+            toId_index = _node_index_from(toId)
+            if toId_index == -1:
+                st.error(f'Node with id {toId} disabled or missing')
+                toId_index = 0
+            new_to_node_caption = st.selectbox("To Node", index=toId_index, options=_all_node_captions(), key=f"relationship_{id}_toId", help="A random node of this type will be selected as the target of the relationship")
+            new_toId = _node_uid_from(new_to_node_caption)
+            toNode = node_from_id(new_toId)
+        with r4:
             st.write('Options')
             disabled = st.checkbox("Exclude/ignore relationship", value=False, key=f"relationship_{id}_enabled")
 
+
         # Relationship properties
-        if num_properties > 0:
-            st.markdown('---')
+        st.markdown('---')
+        num_properties = st.number_input("Number of properties", min_value=0, value=len(properties), key=f"relationship_{id}_number_of_properties")
         property_maps = {}
         
         for i in range(num_properties):
@@ -152,7 +171,9 @@ def relationship_row(
             relationship_mapping = RelationshipMapping(
                 id=id,
                 type=type,
-                properties=property_maps
+                properties=property_maps,
+                from_node = fromNode,
+                to_node = toNode,
             )
             relationships[id] = relationship_mapping
             mapping.relationships = relationships

@@ -28,7 +28,7 @@ class RelationshipMapping():
         self.generated_values = None
 
     def __str__(self):
-        return f"RelationshipMapping(id={self.id}, type={self.type}, from_node={self.from_node.to_dict()}, to_node={self.to_node.to_dict()}, properties={self.properties}, count_generator={self.count_generator}, count_args={self.count_args})"
+        return f"RelationshipMapping(id={self.id}, type={self.type}, from_node={self.from_node}, to_node={self.to_node}, properties={self.properties}, count_generator={self.count_generator}, count_args={self.count_args})"
 
     def __repr__(self):
         return self.__str__()
@@ -37,10 +37,10 @@ class RelationshipMapping():
         return {
             "id": self.id,
             "type": self.type,
-            "from_node": self.from_node.to_dict(),
-            "to_node": self.to_node.to_dict(),
+            "from_node": self.from_node.to_dict() if self.from_node is not None else None,
+            "to_node": self.to_node.to_dict() if self.to_node is not None else None,
             "properties": {key: property.to_dict() for (key,property) in self.properties.items()},
-            "count_generator": self.count_generator.to_dict(),
+            "count_generator": self.count_generator.to_dict() if self.count_generator is not None else None,
             "count_args": self.count_args
         }
 

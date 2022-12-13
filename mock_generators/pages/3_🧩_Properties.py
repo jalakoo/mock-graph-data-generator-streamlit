@@ -21,20 +21,20 @@ node_dicts = st.session_state[IMPORTED_NODES]
 relationship_dicts = st.session_state[IMPORTED_RELATIONSHIPS]
 generators = st.session_state[GENERATORS]
 filename = st.session_state[IMPORTED_FILENAME]
-current_file = st.session_state[IMPORTED_FILE]
-if current_file is not None:
-    try:
-        json_file = json.loads(current_file)
-        # Bring in the raw import data for nodes and relationships
-        node_dicts = json_file["nodes"]
-        relationship_dicts = json_file["relationships"]
-        if node_dicts is None:
-            node_dicts = []
-        if relationship_dicts is None:
-            relationship_dicts = []
+# current_file = st.session_state[IMPORTED_FILE]
+# if current_file is not None:
+#     try:
+#         json_file = json.loads(current_file)
+#         # Bring in the raw import data for nodes and relationships
+#         node_dicts = json_file["nodes"]
+#         relationship_dicts = json_file["relationships"]
+#         if node_dicts is None:
+#             node_dicts = []
+#         if relationship_dicts is None:
+#             relationship_dicts = []
         
-    except json.decoder.JSONDecodeError:
-        st.error('JSON file is not valid.')
+#     except json.decoder.JSONDecodeError:
+#         st.error('JSON file is not valid.')
 
 if generators is None:
     logging.error(f"properties page: Generators not loaded")
