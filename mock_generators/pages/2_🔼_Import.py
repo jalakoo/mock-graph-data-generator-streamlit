@@ -69,6 +69,7 @@ header(
 
 i1, i2 = st.columns([2,1])
 with i1:
+    # Select Import Type
     selected_file = None
     import_option = st.radio("Import Type", ["An Existing File", "New Upload"], horizontal=True)
 
@@ -101,12 +102,15 @@ with i1:
             
             file_selected(selected_filepath)
 
-# TODO: Display general imported data
+    # TODO: Display general imported data
     with i2:
         nodes = st.session_state[IMPORTED_NODES]
         relationships = st.session_state[IMPORTED_RELATIONSHIPS]
-        st.write(f"- {len(nodes)} imported nodes")
-        st.write(f"- {len(relationships)} imported relationships")
+        if len(nodes) > 0 or len(relationships) > 0:
+            st.write(f"Imported Data:")
+            st.write(f"- {len(nodes)} imported nodes")
+            st.write(f"- {len(relationships)} imported relationships")
+
 
 # For displaying loaded data
 # with i2:

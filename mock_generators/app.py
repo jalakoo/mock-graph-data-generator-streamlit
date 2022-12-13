@@ -7,6 +7,7 @@ from tabs.mapping_tab import mapping_tab
 from tabs.generate_tab import generate_tab
 from tabs.export_tab import export_tab
 from tabs.importing_tab import import_tab
+from tabs.design_tab import design_tab
 from models.generator import Generator
 from models.mapping import Mapping
 from models.node_mapping import NodeMapping
@@ -54,25 +55,28 @@ st.markdown("This is a collection of tools to generate mock graph data for [Neo4
 generators = None
 imported_file = None
 
-tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(["Config >", "Import >",  "Mapping >", "Generators >", "New Generator >", "Generate >", "Export"])
+tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs(["Config >", "Design >", "Import >",  "Mapping >", "Generators >", "New Generator >", "Generate >", "Export"])
 
 with tab1:
     config_tab()
 
 with tab2:
-    import_tab()
+    design_tab()
 
 with tab3:
-    mapping_tab()
+    import_tab()
 
 with tab4:
-    generators_tab()
+    mapping_tab()
 
 with tab5:
-    create_tab()
+    generators_tab()
 
 with tab6:
-    generate_tab()
+    create_tab()
 
 with tab7:
+    generate_tab()
+
+with tab8:
     export_tab()

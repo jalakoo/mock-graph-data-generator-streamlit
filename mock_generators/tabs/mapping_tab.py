@@ -74,7 +74,7 @@ def mapping_tab():
 
     st.markdown("--------")
 
-    st.subheader("**[1] GLOBALS:**")
+    st.subheader("**GLOBALS:**")
     g1, g2, g3 = st.columns(3)
     should_expand = False
     with g1:
@@ -100,13 +100,14 @@ def mapping_tab():
 
     n1, n2 = st.columns([9,1])
     with n1:
-        st.subheader("**[2] NODES:**")
+        st.subheader("**NODES:**")
     with n2:
         num_nodes = st.number_input("Number:", min_value=0, value=len(nodes), key="mapping_number_of_nodes", help="Adjust the number of nodes to generate data for")
     for i in range(num_nodes):
         if i < len(nodes):
             nodes_row(
-                i, 
+                node_dict = nodes[i],
+                generators=st.session_state[GENERATORS], 
                 should_start_expanded=should_expand,
                 additional_properties=all_global_properties)
         else:
@@ -115,14 +116,15 @@ def mapping_tab():
     st.markdown("--------")
     r1, r2 = st.columns([9,1])
     with r1:
-        st.subheader("**[3] RELATIONSHIPS:**")
+        st.subheader("**RELATIONSHIPS:**")
     # TODO: Add ability to add ALL RELATIONSHIPS ONLY properties
     with r2:
         num_relationships = st.number_input("Number:", min_value=0, value=len(relationships), key="mapping_number_of_relationships", help="Adjust the number of relationships to generate data for")
     for i in range(num_relationships):
         if i < len(relationships):
             relationship_row(
-                i,
+                relationship = relationships[i],
+                generators=st.session_state[GENERATORS],
                 should_start_expanded=should_expand,
                 additional_properties=all_global_properties)
         else:
