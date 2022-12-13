@@ -1,7 +1,8 @@
 import streamlit as st
 from constants import *
-from models.generator import GeneratorArg, GeneratorType
+from models.generator import Generator, GeneratorArg, GeneratorType
 import logging
+import datetime
 
 def input_type(label: str, type: str, key:str) -> any:
     type = type.lower()
@@ -20,7 +21,50 @@ def input_type(label: str, type: str, key:str) -> any:
     else:
         raise Exception("Unknown type: " + type)
 
-def argument_widget(
+def generator_arguments(
+    selected_generator: Generator,
+    key: str) -> GeneratorArg:
+
+    arg_inputs = []
+
+    if selected_generator is None:
+        return arg_inputs
+
+    for index, arg in enumerate(selected_generator.args):
+        if arg.type == GeneratorType.STRING:
+            count_arg = st.text_input(
+                label=arg.label, 
+                value = arg.default,
+                key = f'{key}_{selected_generator.id}_{index}_arg_input'
+                )
+        elif arg.type == GeneratorType.INT or arg.type == GeneratorType.FLOAT:
+            count_arg = st.number_input(
+                label= arg.label,
+                value= arg.default,
+                key = f'{key}_{selected_generator.id}_{index}_arg_input'
+                )
+        elif arg.type == GeneratorType.BOOL:
+            count_arg = st.radio(
+                label=arg.label,
+                index=arg.default,
+                key = f'{key}_{selected_generator.id}_{index}_arg_input'
+            )
+        elif arg.type == GeneratorType.DATETIME:
+            count_arg = st.date_input(
+                label=arg.label,
+                value=datetime.datetime.fromisoformat(arg.default),
+                key = f'{key}_{selected_generator.id}_{index}_arg_input')
+        else:
+            count_arg = None
+        if count_arg is not None:
+            if index >= len(arg_inputs):
+                arg_inputs.append(count_arg)
+            else:
+                arg_inputs[index] = count_arg
+
+    return arg_inputs
+
+def new_generator_argument(
     index: int,
     type: str
     ) -> dict:

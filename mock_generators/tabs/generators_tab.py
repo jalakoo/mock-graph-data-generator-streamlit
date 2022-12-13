@@ -28,7 +28,7 @@ def generators_tab():
 
     # Filter by type
     st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
-    type_filter = st.radio("Filter by type", ["All", "String", "Bool", "Integer", "Float","Datetime"])
+    type_filter = st.radio("Filter by type", ["All", "String", "Bool", "Integer", "Float","Datetime", "Assignment"])
     # logging.info(f"Generators: {generators}")
     for _, generator in sorted(generators.items(), key=lambda gen:(gen[1].name)):
         # generator = generators[key]
@@ -39,7 +39,6 @@ def generators_tab():
         if search_term != "" and search_term.lower() not in generator.name.lower() and search_term.lower() not in generator.description.lower():
             continue
         
-        # logging.info(f"Generator: {generator}")
         try:
             # Check that we can load code first
             code_filepath = generator.code_url
@@ -81,6 +80,8 @@ def generators_tab():
                 if st.button("Generate Example Output", key=f"run_{generator.id}"):
                     module = __import__(generator.import_url(), fromlist=['generate'])
                     # logging.info(f'arg_inputs: {arg_inputs}')
+
+                    # TODO: Need a fake list of Node Mappings to test out assignment generators
                     result = module.generate(arg_inputs)
                     st.write(f'Output: {result}')
         except:

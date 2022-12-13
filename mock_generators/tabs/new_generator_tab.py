@@ -1,6 +1,6 @@
 import streamlit as st
 from constants import *
-from widgets.arguments import argument_widget
+from widgets.arguments import new_generator_argument
 from new_generator import createGenerator
 from models.generator import Generator
 
@@ -18,12 +18,10 @@ def create_tab():
 
     # st.form sadly does not support dynamic widget generation internally.
     # TODO: Either create a custom way to clear all inputs after submission or reduce need to dynamically change code template / optional arg fields
-
-
     # with st.form("New Generator", clear_on_submit=True):
     
     # Generator type
-    type = st.radio("Generator Type", ["String", "Bool", "Int", "Float","Datetime", "Relationship"],help="Generators are grouped by the data type they generate.")
+    type = st.radio("Generator Type", ["String", "Bool", "Int", "Float","Datetime", "Assignment"],help="Generators are grouped by the data type they generate.")
 
     ng1, ng2, ng3 = st.columns(3)
 
@@ -44,6 +42,10 @@ def create_tab():
     # Load example code
     if type == "Relationship":
         with open("mock_generators/template_generators/relationship_generator.py", "r") as file:
+            code_template = file.read()
+            st.session_state["NEW_GENERATOR_CURRENT_TEMPLATE"] = code_template
+    if type == "Assignment":
+        with open("mock_generators/template_generators/assignment_generator.py", "r") as file:
             code_template = file.read()
             st.session_state["NEW_GENERATOR_CURRENT_TEMPLATE"] = code_template
     else:  
@@ -70,7 +72,7 @@ def create_tab():
     cols = st.columns(num_args)
     for c in range(num_args):
         with cols[c]:
-            new_arg = argument_widget(index=c, type=type)
+            new_arg = new_generator_argument(index=c, type=type)
             if new_arg:
                 args.append(new_arg)
 
@@ -92,6 +94,6 @@ def create_tab():
             args=args,
             tags=tags)
         if success:
-            st.success("Generator created successfully")
+            st.success("Generator created successfully. Fields DO NOT currently clear after submission.")
         else:
             st.error("Could not create generator")

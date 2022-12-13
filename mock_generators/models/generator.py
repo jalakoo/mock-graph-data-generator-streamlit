@@ -1,16 +1,18 @@
-from enum import Enum
+from enum import Enum, unique
 import logging
 import sys
 import re
 import numbers
 
+@unique
 class GeneratorType(Enum):
     BOOL = 1,
     INT = 2,
     FLOAT = 3,
     STRING = 4,
     DATETIME = 5,
-    RELATIONSHIP = 6
+    ASSIGNMENT = 6
+    RELATIONSHIP = 7
 
     @staticmethod
     def type_from_string(aType: str):
@@ -25,6 +27,8 @@ class GeneratorType(Enum):
             return GeneratorType.DATETIME
         elif type == "bool":
             return GeneratorType.BOOL
+        elif type == "assignment":
+            return GeneratorType.ASSIGNMENT
         elif type == "relationship":
             return GeneratorType.RELATIONSHIP
         else:
@@ -41,6 +45,8 @@ class GeneratorType(Enum):
             return "Datetime"
         elif self == GeneratorType.BOOL:
             return "Bool"
+        elif self == GeneratorType.ASSIGNMENT:
+            return "Assignment"
         elif self == GeneratorType.RELATIONSHIP:
             return "Relationship"
         else:
@@ -165,7 +171,7 @@ class Generator():
         }
 
     def __str__(self):
-        return f'Generator: id: {self.id}, name: {self.name}'
+        return f'Generator: id: {self.id}, name: {self.name}, type: {self.type}, args: {self.args}'
 
     def __repr__(self):
         return self.__str__()

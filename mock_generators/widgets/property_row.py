@@ -62,22 +62,30 @@ def property_row(
         if recommended_generator is not None:
             recommended_type_index = type_selections.index(recommended_generator.type.to_string())
         generator_type_string = st.selectbox("Type", type_selections, index=recommended_type_index, key=f"{type}_{id}_property_{index}_type")
-        generator_type = GeneratorType.type_from_string(generator_type_string)
+        # generator_type = GeneratorType.type_from_string(generator_type_string)
         # logging.info(f'property_row.py: generator_type selected: {generator_type}')
+        # logging.info(f'Does generator types == work? {generator_type == GeneratorType.STRING}')
 
     # Generator to create property data with
     with pc3:
 
-        # TODO: Hot reloading breaks here - unable to properly filter generators by type
+        # TODO: Hot reloading breaks here - unable to properly filter generators by type anymore - have to do a hard refresh - WHY?
 
         recommended_generator_index = 0
-        possible_generators =  [generator for _, generator in st.session_state[GENERATORS].items() if generator.type in ([generator_type])]
+        # possible_generators =  [generator for generator in st.session_state[GENERATORS].values() if generator.type == generator_type]
+
+        possible_generators = []
+        for generator in st.session_state[GENERATORS].values():
+            if generator.type.to_string() == generator_type_string:
+                possible_generators.append(generator)
+
         def sort_by_name(generator: Generator):
             return generator.name
         possible_generators.sort(key=sort_by_name)
 
         if possible_generators is None or len(possible_generators) == 0:
-            logging.error(f'property_row.py: No generators found for type {generator_type}.')
+            generators_by_type = [{"id":generator.id, "type":generator.type} for generator in st.session_state[GENERATORS].values()]
+            logging.error(f'property_row.py: No generators found for type {generator_type_string}. List of generators by type: {generators_by_type}')
             return PropertyMapping.empty()
         possible_generator_names = [generator.name for generator in possible_generators]
 
@@ -101,6 +109,7 @@ def property_row(
 
     # Optional Property Generator arguments, if any
     with pc4:
+        # TODO: replace with generator_args widget
         args = []
         if selected_generator is not None:
             for p_index, arg in enumerate(selected_generator.args):
@@ -129,10 +138,11 @@ def property_row(
                         value=datetime.datetime.fromisoformat(arg.default),
                         key = f'{type}_{id}_property_{name}_generator_{selected_generator.id}_{arg.label}')
                 else:
-                    logging.error(f'Unknown argument type {arg.type}')
-                    arg_input = None
-
+                    raise Exception(f'property_row.py: Unknown argument type {arg.type} from generator {selected_generator}')
+                    
                 args.append(arg_input)
+
+        generator_type = GeneratorType.type_from_string(generator_type_string)
 
         property_map = PropertyMapping(
             id=f'{type}_{id}_property_{index}',

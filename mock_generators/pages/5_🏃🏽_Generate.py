@@ -10,15 +10,18 @@ import sys
 import zipfile
 from widgets.folder_files import folder_files_expander
 from datetime import datetime
+from widgets.default_state import load_state
 
 # SETUP
 st.set_page_config(
     layout="wide",
     page_title="Generate"
 )
+load_state()
 mapping = st.session_state[MAPPINGS]
 export_folder = st.session_state[EXPORTS_PATH]
 zips_folder = st.session_state[ZIPS_PATH]
+
 imported_filename = st.session_state[IMPORTED_FILENAME]
 
 # TODO: Implement better filename cleaning

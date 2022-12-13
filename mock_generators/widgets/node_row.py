@@ -9,17 +9,8 @@ import uuid
 import datetime
 import logging
 from widgets.default_state import load_state
-
-# load_state()
-
-# def generators_filtered(byTypes: list[GeneratorType]) -> list[Generator]:
-#     generators = st.session_state[GENERATORS]
-#     if generators is None:
-#         load_state()
-#     if st.session_state[GENERATORS] is None:
-#         logging.error(f'Could not load generators. See generator file paths.')
-#         return None
-#     return [generator for _, generator in generators.items() if generator.type in byTypes]
+from widgets.arguments import generator_arguments
+from widgets.generator_selector import generator_selector
 
 def nodes_row(
     node_dict : dict,
@@ -198,58 +189,19 @@ def nodes_row(
             if generators is None:
                 st.error("No generators passed to node row.")
                 st.stop()
-            possible_count_generators = [generator for _, generator in generators.items() if generator.type in [GeneratorType.INT]]
-            if possible_count_generators is None:
-                st.error("No possible generators found for type INT.")
-                st.stop()
-            possible_count_generator_names = [generator.name for generator in possible_count_generators]
-            possible_count_generator_names.sort(reverse=False)
 
             ncc1, ncc2 = st.columns(2)
 
             with ncc1:
-                selected_count_generator_name = st.selectbox("Int Generator to use", possible_count_generator_names, key=f"node_{id}_count_generator")
-                possible_selected_count_generators =[generator for generator in possible_count_generators if generator.name == selected_count_generator_name]
-                if len(possible_selected_count_generators) == 0:
-                    st.error(f'Generator "{selected_count_generator_name}" not found.')
-                    st.stop()
-                else:
-                    selected_count_generator = possible_selected_count_generators[0]
-                # selected_count_generator = next(generator for generator in possible_count_generators if generator.name == selected_count_generator_name)
+                selected_count_generator = generator_selector(
+                    label="Int Generator to use",
+                    generators=generators,
+                    types=[GeneratorType.INT],
+                    key=f"node_{id}_test_count_generator",
+                )
+
             with ncc2:
-                count_arg_inputs = []
-                if selected_count_generator is not None:
-                    for count_index, arg in enumerate(selected_count_generator.args):
-                        if arg.type == GeneratorType.STRING:
-                            count_arg = st.text_input(
-                                label=arg.label, 
-                                value = arg.default,
-                                key = f'node_{id}_count_generator_{selected_count_generator.id}_{arg.label}'
-                                )
-                        elif arg.type == GeneratorType.INT or arg.type == GeneratorType.FLOAT:
-                            count_arg = st.number_input(
-                                label= arg.label,
-                                value= arg.default,
-                                key = f'node_{id}_count_generator_{selected_count_generator.id}_{arg.label}'
-                                )
-                        elif arg.type == GeneratorType.BOOL:
-                            count_arg = st.radio(
-                                label=arg.label,
-                                index=arg.default,
-                                key = f'node_{id}_count_generator_{selected_count_generator.id}_{arg.label}'
-                            )
-                        elif arg.type == GeneratorType.DATETIME:
-                            count_arg = st.date_input(
-                                label=arg.label,
-                                value=datetime.datetime.fromisoformat(arg.default),
-                                key = f'node_{id}_count_generator_{selected_count_generator.id}_{arg.label}')
-                        else:
-                            count_arg = None
-                        if count_arg is not None:
-                            if count_index >= len(count_arg_inputs):
-                                count_arg_inputs.append(count_arg)
-                            else:
-                                count_arg_inputs[count_index] = count_arg
+                count_arg_inputs = generator_arguments(selected_count_generator, f'node_{id}_count_generator')
 
 
         # Process disabled setting from earlier

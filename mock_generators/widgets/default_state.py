@@ -44,7 +44,7 @@ def load_state():
             generators = generators_from_json(generators_json)
             st.session_state[GENERATORS] = generators # This not sticking?
             # Generators will be in a dict
-            logging.info(f'default_state.py: Generators loaded: {generators}')
+            # logging.info(f'default_state.py: Generators loaded: {generators}')
 
         except FileNotFoundError:
             st.error('No generator file found.')

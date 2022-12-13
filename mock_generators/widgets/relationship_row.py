@@ -9,6 +9,8 @@ import datetime
 import logging
 from widgets.property_row import property_row
 from widgets.default_state import load_state
+from widgets.arguments import generator_arguments
+from widgets.generator_selector import generator_selector
 
 load_state()
 
@@ -126,9 +128,9 @@ def relationship_row(
             st.write('Options')
             disabled = st.checkbox("Exclude/ignore relationship", value=False, key=f"relationship_{id}_enabled")
 
-        relationship_tab_1, relationship_tab_2 = st.tabs(["Properties", "Count"])
+        r_tab1, r_tab2, r_tab3, r_tab4 = st.tabs(["Properties", "From Conditions","Count", "To Conditions"])
 
-        with relationship_tab_1:
+        with r_tab1:
             # Relationship properties
             num_properties = st.number_input("Number of properties", min_value=0, value=len(properties), key=f"relationship_{id}_number_of_properties")
             property_maps = {}
@@ -148,63 +150,51 @@ def relationship_row(
                 else:
                     property_maps[new_property_map.name] = new_property_map
 
-        with relationship_tab_2:
+        with r_tab2:
+            # Filter from node sources for particular property values
+            st.write(f'<filter_from_node_options_tbd>')
+        with r_tab3:
+            # Count Generator Options
             r1, r2, r3 = st.columns([1, 1, 1])
 
             with r1:
                 # Select count generator
-                possible_count_generators = [generator for generator in generators.values() if generator.type in [GeneratorType.INT]]
-                # generators_filtered([GeneratorType.INT])
-                possible_count_generator_names = [generator.name for generator in possible_count_generators]
-                possible_count_generator_names.sort(reverse=False)
-                selected_count_generator_name = st.selectbox("Using Generator", possible_count_generator_names, key=f"relationship_{id}_count_generator", help="This integer generator will be used for generating the number of relationships from source node to target node. For example, an output of 5 would create 5 relationships between the 'from node' to the 'to node'")
-                matching_generators = [generator for generator in possible_count_generators if generator.name == selected_count_generator_name]
-                if matching_generators is not None and len(matching_generators) > 0:
-                    selected_count_generator = matching_generators[0]
-                else:
-                    st.error(f'Could not find a generator matching name: {selected_count_generator_name}')
-                    st.stop()
+                selected_count_generator = generator_selector(
+                    label="Using Generator",
+                    types=[GeneratorType.INT],
+                    generators=generators,
+                    key=f"relationship_{id}_count_generator",
+                )
+ 
             with r2:
                 # Optional generator args
-                count_arg_inputs = []
-                if selected_count_generator is not None:
-                    for count_index, arg in enumerate(selected_count_generator.args):
-                        if arg.type == GeneratorType.STRING:
-                            count_arg = st.text_input(
-                                label=arg.label, 
-                                value = arg.default,
-                                key = f'relationship_{id}_count_generator_{selected_count_generator.id}_{arg.label}'
-                                )
-                        elif arg.type == GeneratorType.INT or arg.type == GeneratorType.FLOAT:
-                            count_arg = st.number_input(
-                                label= arg.label,
-                                value= arg.default,
-                                key = f'relationship_{id}_count_generator_{selected_count_generator.id}_{arg.label}'
-                                )
-                        elif arg.type == GeneratorType.BOOL:
-                            count_arg = st.radio(
-                                label=arg.label,
-                                index=arg.default,
-                                key = f'relationship_{id}_count_generator_{selected_count_generator.id}_{arg.label}'
-                            )
-                        elif arg.type == GeneratorType.DATETIME:
-                            count_arg = st.date_input(
-                                label=arg.label,
-                                value=datetime.datetime.fromisoformat(arg.default),
-                                key = f'relationship_{id}_count_generator_{selected_count_generator.id}_{arg.label}')
-                        else:
-                            count_arg = None
-                        if count_arg is not None:
-                            if count_index >= len(count_arg_inputs):
-                                count_arg_inputs.append(count_arg)
-                            else:
-                                count_arg_inputs[count_index] = count_arg
+                count_arg_inputs = generator_arguments(selected_count_generator, f"relationship_{id}_count_generator")
+ 
             with r3:
                 # Display sample output
                 st.write("Sample value")
                 if selected_count_generator is not None:
                     st.write(selected_count_generator.generate(count_arg_inputs))
 
+        with r_tab4:
+            # User decides how to assign relationships to target nodes
+
+            ra1, ra2 = st.columns(2)
+
+            with ra1:
+                selected_assignment_generator = generator_selector(
+                    label="Assignment Generator",
+                    generators=generators,
+                    types = [GeneratorType.ASSIGNMENT],
+                    key=f'relationship_{id}_assignment_generator'
+                )
+            with ra2:
+                assignment_arg_inputs = generator_arguments(selected_assignment_generator, f"relationship_{id}_assignment_generator")
+            # 1. Randomly assign relationships to target nodes
+            # 1a. Randomly assign relationships to target nodes, but ensure that each target node has at least one relationship
+            # 1b. Randomly assign relationships to target nodes, but ensure that each target node has at MAX of x relationships
+            # 2. Sort target nodes by property value and assign relationships to target nodes in order
+            # 3. Sort target nodes by property value and assign relationships to target nodes in reverse order
 
 
         # Load any additional properties that were passed in
@@ -232,7 +222,9 @@ def relationship_row(
                 from_node = fromNode,
                 to_node = toNode,
                 count_generator = selected_count_generator,
-                count_args = count_arg_inputs
+                count_args = count_arg_inputs,
+                assignment_generator=selected_assignment_generator,
+                assignment_args=assignment_arg_inputs
             )
             relationships[id] = relationship_mapping
             mapping.relationships = relationships

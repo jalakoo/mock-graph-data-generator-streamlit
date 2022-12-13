@@ -104,6 +104,16 @@
         ],
         "type": "String"
     },
+    "4b0db60a": {
+        "args": [],
+        "code_url": "mock_generators/generators/4b0db60a.py",
+        "description": "Randomly assigns to a target node. Duplicates and orphan nodes possible.",
+        "name": "Pure Random",
+        "tags": [
+            "random"
+        ],
+        "type": "Assignment"
+    },
     "57f2df99": {
         "args": [
             {
@@ -229,16 +239,6 @@
             "at"
         ],
         "type": "Datetime"
-    },
-    "bea8edcf": {
-        "args": [],
-        "code_url": "mock_generators/generators/bea8edcf.py",
-        "description": "Creates a relationship with a random target node record for every relationship record. Duplicates possible. Orphan target node records possible.",
-        "name": "Pure Random",
-        "tags": [
-            ""
-        ],
-        "type": "Relationship"
     },
     "c9a071b5": {
         "args": [],

@@ -15,8 +15,16 @@ class RelationshipMapping():
         properties: dict[str, PropertyMapping],
         from_node : NodeMapping,
         to_node : NodeMapping,
+        # For determining count of relationships to generate
         count_generator: Generator,
-        count_args: list[any] = []
+        count_args: list[any] = [],
+        # TODO: Make below non-optional
+        # For filtering from nodes
+        filter_generator: Generator = None,
+        filter_args: list[any] = [],
+        # For determining how to assign relationships -> to nodes
+        assignment_generator: Generator = None,
+        assignment_args: list[any] = []
         ):
         self.id = id
         self.type = type
@@ -26,6 +34,10 @@ class RelationshipMapping():
         self.count_generator = count_generator
         self.count_args = count_args
         self.generated_values = None
+        self.filter_generator = filter_generator
+        self.filter_generator_args = filter_args
+        self.assignment_generator = assignment_generator
+        self.assignment_args = assignment_args
 
     def __str__(self):
         return f"RelationshipMapping(id={self.id}, type={self.type}, from_node={self.from_node}, to_node={self.to_node}, properties={self.properties}, count_generator={self.count_generator}, count_args={self.count_args})"
@@ -42,6 +54,7 @@ class RelationshipMapping():
             "properties": {key: property.to_dict() for (key,property) in self.properties.items()},
             "count_generator": self.count_generator.to_dict() if self.count_generator is not None else None,
             "count_args": self.count_args
+            # TODO: Add filter_generator, filter_args, assignment_generator, assignment_args
         }
 
     def filename(self):
@@ -93,6 +106,8 @@ class RelationshipMapping():
         # Store generated relationships to return
         all_results = []
 
+        # TODO: Run filter generator here to determine which source nodes to process
+
         # Iterate through every generated source node
         for value_dict in from_node.generated_values:
             # value_dict = dict of property names and generated values
@@ -113,10 +128,18 @@ class RelationshipMapping():
             from_node_key_property_value = value_dict[from_node_key_property_name]
 
             # If count is zero - no relationship generated for the curent source node
+            values = to_node.generated_values
             for _ in range(count):
                 # Select a random target node
-                # TODO: Implement variable randomization modes here
-                to_node_value_dict = random.choice(to_node.generated_values)
+
+                # TODO: Implement assignment generator here
+                
+                # to_node_value_dict = random.choice(to_node.generated_values)
+
+                if len(values) == 0:
+                    break
+
+                to_node_value_dict, values = self.assignment_generator.generate(values)
 
                 # Types of randomizations likely needed:
                 # - Pure Random
