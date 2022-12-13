@@ -12,12 +12,12 @@ from widgets.default_state import load_state
 
 load_state()
 
-def generators_filtered(
-    generators:list[Generator],
-    byTypes: list[GeneratorType]
-    ) -> list[Generator]:
+# def generators_filtered(
+#     generators:list[Generator],
+#     byTypes: list[GeneratorType]
+#     ) -> list[Generator]:
 
-    return [generator for _, generator in generators.items() if generator.type in byTypes]
+#     return [generator for _, generator in generators.items() if generator.type in byTypes]
 
 def _node_uid_from(caption: str)-> str:
     nodes = st.session_state[MAPPINGS].nodes
@@ -94,15 +94,13 @@ def relationship_row(
     with st.expander(expander_text, expanded=should_start_expanded):
 
         # # Relationship source and target nodes
-        st.markdown('---')
-        # st.write("Number of relationships to generate")
         r1, r2, r3, r4 = st.columns([2, 2, 2, 1])
 
         with r1:
             # Relationship from
             fromId_index = _node_index_from(fromId)
             if fromId_index == -1:
-                st.error(f'Node with id {relationship_mapping.fromId} disabled or missing')
+                st.error(f'Node with id {fromId} disabled or missing')
                 fromId_index = 0
             new_from_node_caption = st.selectbox("From Node", index=fromId_index, options=_all_node_captions(), key=f"relationship_{id}_fromId", help="A random node of this type will be selected as the source of the relationship")
             new_fromId = _node_uid_from(new_from_node_caption)
@@ -128,28 +126,87 @@ def relationship_row(
             st.write('Options')
             disabled = st.checkbox("Exclude/ignore relationship", value=False, key=f"relationship_{id}_enabled")
 
+        relationship_tab_1, relationship_tab_2 = st.tabs(["Properties", "Count"])
 
-        # Relationship properties
-        st.markdown('---')
-        num_properties = st.number_input("Number of properties", min_value=0, value=len(properties), key=f"relationship_{id}_number_of_properties")
-        property_maps = {}
-        
-        for i in range(num_properties):
-            # Create a new propertyMapping for storing user selections
+        with relationship_tab_1:
+            # Relationship properties
+            num_properties = st.number_input("Number of properties", min_value=0, value=len(properties), key=f"relationship_{id}_number_of_properties")
+            property_maps = {}
+            
+            for i in range(num_properties):
+                # Create a new propertyMapping for storing user selections
 
-            new_property_map = property_row(
-                type="relationship",
-                id=id,
-                index=i,
-                properties=properties,
-                generators=generators
-            )
+                new_property_map = property_row(
+                    type="relationship",
+                    id=id,
+                    index=i,
+                    properties=properties
+                )
 
-            if new_property_map.name in property_maps:
-                st.error(f'Property "{new_property_map.name}" already exists')
-            else:
-                property_maps[new_property_map.name] = new_property_map
-        
+                if new_property_map.name in property_maps:
+                    st.error(f'Property "{new_property_map.name}" already exists')
+                else:
+                    property_maps[new_property_map.name] = new_property_map
+
+        with relationship_tab_2:
+            r1, r2, r3 = st.columns([1, 1, 1])
+
+            with r1:
+                # Select count generator
+                possible_count_generators = [generator for generator in generators.values() if generator.type in [GeneratorType.INT]]
+                # generators_filtered([GeneratorType.INT])
+                possible_count_generator_names = [generator.name for generator in possible_count_generators]
+                possible_count_generator_names.sort(reverse=False)
+                selected_count_generator_name = st.selectbox("Using Generator", possible_count_generator_names, key=f"relationship_{id}_count_generator", help="This integer generator will be used for generating the number of relationships from source node to target node. For example, an output of 5 would create 5 relationships between the 'from node' to the 'to node'")
+                matching_generators = [generator for generator in possible_count_generators if generator.name == selected_count_generator_name]
+                if matching_generators is not None and len(matching_generators) > 0:
+                    selected_count_generator = matching_generators[0]
+                else:
+                    st.error(f'Could not find a generator matching name: {selected_count_generator_name}')
+                    st.stop()
+            with r2:
+                # Optional generator args
+                count_arg_inputs = []
+                if selected_count_generator is not None:
+                    for count_index, arg in enumerate(selected_count_generator.args):
+                        if arg.type == GeneratorType.STRING:
+                            count_arg = st.text_input(
+                                label=arg.label, 
+                                value = arg.default,
+                                key = f'relationship_{id}_count_generator_{selected_count_generator.id}_{arg.label}'
+                                )
+                        elif arg.type == GeneratorType.INT or arg.type == GeneratorType.FLOAT:
+                            count_arg = st.number_input(
+                                label= arg.label,
+                                value= arg.default,
+                                key = f'relationship_{id}_count_generator_{selected_count_generator.id}_{arg.label}'
+                                )
+                        elif arg.type == GeneratorType.BOOL:
+                            count_arg = st.radio(
+                                label=arg.label,
+                                index=arg.default,
+                                key = f'relationship_{id}_count_generator_{selected_count_generator.id}_{arg.label}'
+                            )
+                        elif arg.type == GeneratorType.DATETIME:
+                            count_arg = st.date_input(
+                                label=arg.label,
+                                value=datetime.datetime.fromisoformat(arg.default),
+                                key = f'relationship_{id}_count_generator_{selected_count_generator.id}_{arg.label}')
+                        else:
+                            count_arg = None
+                        if count_arg is not None:
+                            if count_index >= len(count_arg_inputs):
+                                count_arg_inputs.append(count_arg)
+                            else:
+                                count_arg_inputs[count_index] = count_arg
+            with r3:
+                # Display sample output
+                st.write("Sample value")
+                if selected_count_generator is not None:
+                    st.write(selected_count_generator.generate(count_arg_inputs))
+
+
+
         # Load any additional properties that were passed in
         if additional_properties != None and len(additional_properties) > 0:
             for additional_property in additional_properties:
@@ -174,6 +231,8 @@ def relationship_row(
                 properties=property_maps,
                 from_node = fromNode,
                 to_node = toNode,
+                count_generator = selected_count_generator,
+                count_args = count_arg_inputs
             )
             relationships[id] = relationship_mapping
             mapping.relationships = relationships

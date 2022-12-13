@@ -9,37 +9,31 @@ import sys
 
 load_state()
 
-def generators_filtered(
-    generators: list[Generator],
-    byTypes: list[GeneratorType]
-    ) -> list[Generator]:
+# def generators_filtered(
+#     byTypes: list[GeneratorType]
+#     ) -> list[Generator]:
 
-    # generators = st.session_state[GENERATORS]
-    if generators is None or len(generators.keys()) == 0:
-        logging.warning(f'generators_filtered: no generators passed in. Passing back an empty list.')
-        return []
-    result =  [generator for _, generator in generators.items() if generator.type in byTypes]
-    def sort_by_name(generator: Generator):
-        return generator.name
-    result.sort(key=sort_by_name)
-    return result
+#     # generators = st.session_state[GENERATORS]
+#     # if generators is None or len(generators.keys()) == 0:
+#     #     logging.warning(f'generators_filtered: no generators passed in. Passing back an empty list.')
+#     #     return []
+#     # else:
+#     #     logging.info(f'property_row.py: generators_filtered: {len(generators.keys())} generators passed in.')
+#     result =  [generator for _, generator in st.session_state[GENERATORS].items() if generator.type in (byTypes)]
+#     def sort_by_name(generator: Generator):
+#         return generator.name
+#     result.sort(key=sort_by_name)
+#     return result
 
 def property_row(
     type: str,
     id: str,
     index: int, 
     properties: list[dict],
-    generators: dict[str, Generator]
+    # generators: dict[str, Generator]
     ) -> PropertyMapping:
 
     # Create a new propertyMapping for storing user selections
-
-    if properties is None or len(properties) == 0:
-        logging.warning(f'property_row: no properties passed in. Passing back an empty PropertyMapping.')
-        return PropertyMapping.empty()
-    if generators is None or len(generators.keys()) == 0:
-        logging.warning(f'property_row: no generators passed in. Passing back an empty PropertyMapping.')
-        return PropertyMapping.empty()
 
     existing_name = ""
     recommended_generator = None
@@ -53,7 +47,7 @@ def property_row(
             # Get key of uploaded property
             existing_name = properties[index][0]
             # TODO: Find away to pass in node labels and relationship types to this string
-            recommended_generator = recommended_generator_from(existing_name, generators.values())
+            recommended_generator = recommended_generator_from(existing_name, st.session_state[GENERATORS].values())
             if recommended_generator is None:
                 logging.warning(f'Could not find a recommended generator for property {existing_name}')
         name = st.text_input("Property Name",value=existing_name, key=f"{type}_{id}_property_{index}_name")
@@ -73,8 +67,15 @@ def property_row(
 
     # Generator to create property data with
     with pc3:
+
+        # TODO: Hot reloading breaks here - unable to properly filter generators by type
+
         recommended_generator_index = 0
-        possible_generators = generators_filtered(generators,[generator_type])
+        possible_generators =  [generator for _, generator in st.session_state[GENERATORS].items() if generator.type in ([generator_type])]
+        def sort_by_name(generator: Generator):
+            return generator.name
+        possible_generators.sort(key=sort_by_name)
+
         if possible_generators is None or len(possible_generators) == 0:
             logging.error(f'property_row.py: No generators found for type {generator_type}.')
             return PropertyMapping.empty()

@@ -12,9 +12,9 @@ class NodeMapping():
         caption: str,
         labels: list[str], 
         properties: dict[str, PropertyMapping],
-        count_generator: Generator = None,
-        count_args: list[any] = [],
-        key_property: PropertyMapping = None):
+        count_generator: Generator,
+        count_args: list[any],
+        key_property: PropertyMapping):
         self.id = id
         self.position = position
         self.caption = caption

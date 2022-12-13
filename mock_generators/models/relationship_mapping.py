@@ -13,9 +13,9 @@ class RelationshipMapping():
         id: str,
         type: str,
         properties: dict[str, PropertyMapping],
-        from_node : NodeMapping = None,
-        to_node : NodeMapping = None,
-        count_generator: Generator = None,
+        from_node : NodeMapping,
+        to_node : NodeMapping,
+        count_generator: Generator,
         count_args: list[any] = []
         ):
         self.id = id

@@ -30,7 +30,7 @@ def file_selected(path):
     # Import
     sucessful_import = import_file(selected_file)
     if sucessful_import:
-        st.success(f"Import Complete. Proceed to the Properties page")
+        st.success(f"Import Complete. Proceed to the Mapping page")
     else:
         st.error(f"Import Failed. Please try again.")
 
@@ -64,7 +64,7 @@ header(
     description=f'Load or import an arrows.json file to use as a starting point for creating interconnected mock graph data.',
     color_name="Orange",
     prior_page="Design",
-    next_page="Properties"
+    next_page="Mapping"
 )
 
 i1, i2 = st.columns([2,1])

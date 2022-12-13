@@ -2,6 +2,7 @@ from enum import Enum
 import logging
 import sys
 import re
+import numbers
 
 class GeneratorType(Enum):
     BOOL = 1,
