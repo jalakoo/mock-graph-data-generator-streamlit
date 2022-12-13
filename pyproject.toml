@@ -13,6 +13,7 @@ lorem-text = "^2.1"
 faker = "^15.3.3"
 streamlit-extras = "^0.2.4"
 streamlit-toggle-switch = "^1.0.2"
+hydralit-components = "^1.0.10"
 
 
 [build-system]

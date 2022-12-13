@@ -30,19 +30,21 @@ MAPPINGS = "mappings"
 
 # TODO: Add page titles
 OVERVIEW_PAGE_TITLE = "🏠 Overview"
-# OVERVIEW_PAGE_FILE = "🏠_Overview"
-
 DESIGN_PAGE_TITLE = "✍️ Design"
-# DESIGN_PAGE_FILE = "design"
-
 IMPORT_PAGE_TITLE = "🔼 Import"
-# IMPORT_PAGE_FILE = "2_🔼_Import"
-
 SETTINGS_PAGE_TITLE = "⚙️ Settings"
-# CONFIG_PAGE_FILE = "7_⚙️_Settings"
-
 MAPPINGS_PAGE_TITLE = "🔀 Mapping"
 GENERATORS_PAGE_TITLE = "👨‍👩‍👧‍👦 Generators"
 GENERATE_PAGE_TITLE = "🏃‍♂️ Generate"
 EXPORT_PAGE_TITLE = "🔽 Export"
 PROPERTIES_PAGE_TITLE = "🧩 Properties"
+
+OVERVIEW_SHORT_TITLE = "Overview"
+DESIGN_SHORT_TITLE = "Design"
+IMPORT_SHORT_TITLE = "Import"
+PROPERTIES_SHORT_TITLE = "Properties"
+MAPPINGS_SHORT_TITLE = "Mapping"
+GENERATE_SHORT_TITLE = "Generate"
+EXPORT_SHORT_TITLE = "Export"
+SETTINGS_SHORT_TITLE = "Settings"
+GENERATORS_SHORT_TITLE = "Generators"
