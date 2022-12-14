@@ -20,10 +20,10 @@ def export_tab():
         folder_files_expander(export_folder, widget_id="export_tab")
 
     with ec2:
-        st.write(f'[1] GENERATED ZIP FILES:')
+        st.write(f'DOWNLOAD ZIP FILES:')
         folder_files_expander(zips_folder, widget_id="export_tab", enable_download=True, enable_delete_button=True)
 
     with ec3:
-        st.write(f"[2] Upload desired .zip file to Neo4j:")
-        link = '[Neo4j Aura Console](https://console.neo4j.io)'
+        st.write(f"UPLOAD TO:")
+        link = '[Neo4j Data Import Tool](https://console.neo4j.io)'
         st.markdown(link, unsafe_allow_html=True)
