@@ -117,7 +117,7 @@ def generate_tab():
 
     with g3:
         st.write(f'[3] GENERATED DATA:')
-        nodes = mapping.nodes
+        nodes = st.session_state[MAPPINGS].nodes
         for _, node in nodes.items():
             values = node.generated_values
             if values is not None:

@@ -185,6 +185,16 @@
         ],
         "type": "String"
     },
+    "73853311": {
+        "args": [],
+        "code_url": "mock_generators/generators/73853311.py",
+        "description": "Assigns each source node to a random target node, until target node records are exhausted. No duplicates, no orphan to nodes.",
+        "name": "Exhaustive Random",
+        "tags": [
+            "exhaustive"
+        ],
+        "type": "Assignment"
+    },
     "78bc0765": {
         "args": [
             {

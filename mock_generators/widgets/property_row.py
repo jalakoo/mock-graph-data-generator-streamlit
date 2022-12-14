@@ -4,10 +4,10 @@ import logging
 from models.generator import Generator, GeneratorType, recommended_generator_from
 from models.property_mapping import PropertyMapping
 import datetime
-from widgets.default_state import load_state
+# from widgets.default_state import load_state
 import sys
 
-load_state()
+# load_state()
 
 # def generators_filtered(
 #     byTypes: list[GeneratorType]

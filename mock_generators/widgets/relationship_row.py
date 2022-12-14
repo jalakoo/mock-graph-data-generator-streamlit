@@ -8,11 +8,11 @@ from models.node_mapping import NodeMapping
 import datetime
 import logging
 from widgets.property_row import property_row
-from widgets.default_state import load_state
+# from widgets.default_state import load_state
 from widgets.arguments import generator_arguments
 from widgets.generator_selector import generator_selector
 
-load_state()
+# load_state()
 
 # def generators_filtered(
 #     generators:list[Generator],
@@ -128,7 +128,7 @@ def relationship_row(
             st.write('Options')
             disabled = st.checkbox("Exclude/ignore relationship", value=False, key=f"relationship_{id}_enabled")
 
-        r_tab1, r_tab2, r_tab3, r_tab4 = st.tabs(["Properties", "From Conditions","Count", "To Conditions"])
+        r_tab1, r_tab2, r_tab3 = st.tabs(["Properties","Count", "To Conditions"])
 
         with r_tab1:
             # Relationship properties
@@ -150,10 +150,10 @@ def relationship_row(
                 else:
                     property_maps[new_property_map.name] = new_property_map
 
-        with r_tab2:
+        # with r_tab2:
             # Filter from node sources for particular property values
-            st.write(f'<filter_from_node_options_tbd>')
-        with r_tab3:
+            # st.write(f'<filter_from_node_options_tbd>')
+        with r_tab2:
             # Count Generator Options
             r1, r2, r3 = st.columns([1, 1, 1])
 
@@ -176,7 +176,7 @@ def relationship_row(
                 if selected_count_generator is not None:
                     st.write(selected_count_generator.generate(count_arg_inputs))
 
-        with r_tab4:
+        with r_tab3:
             # User decides how to assign relationships to target nodes
 
             ra1, ra2 = st.columns(2)
