@@ -13,64 +13,71 @@ def mapping_tab():
         st.image("mock_generators/media/shuffle.gif")
     with col2:
         st.write("Create and edit mock data generation options. \n\nNodes and relationships are default INCLUDED from mapping, meaning data will be generated for all imported nodes and relationships.  Expand options for each node or relationship to edit labels, property names, and assign generator functions that will create mock data. Additional Global properties can also be set and will overwrite any local node/relationship properties with the same name. NOTE: ALL Nodes require a unique key property name to be selected. So imported node data with no properites will need to have at least one property created for it.\n\nWhen finished, proceed to the Generate Tab to generate mock data.")
-    uploaded_file = st.session_state[IMPORTED_FILE]
+    # uploaded_file = st.session_state[IMPORTED_FILE]
 
-    # Default options
-    # Matching arrows.json dict format
-    nodes = [
-        {
-        "id": "n0",
-        "position":{
-            "x": 0,
-            "y": 0
-        },
-        "caption": "Person",
-        "labels": [],
-        "properties": {
-            "uuid": "string",
-            "name": "string",
-        }
-    },
-    {
-        "id": "n1",
-        "position":{
-            "x": 200,
-            "y": 200
-        },
-        "caption": "Company",
-        "labels": [],
-        "properties": {
-            "uuid":"string",
-            "name": "string",
-        }
-    }]
-    relationships = [{
-        "id": "n0",
-        "type": "WORKS_AT",
-        "fromId": "n0",
-        "toId": "n1",
-        "properties": {
-        }
-    }]
+    # # Default options
+    # # Matching arrows.json dict format
+    # nodes = [
+    #     {
+    #     "id": "n0",
+    #     "position":{
+    #         "x": 0,
+    #         "y": 0
+    #     },
+    #     "caption": "Person",
+    #     "labels": [],
+    #     "properties": {
+    #         "uuid": "string",
+    #         "name": "string",
+    #     }
+    # },
+    # {
+    #     "id": "n1",
+    #     "position":{
+    #         "x": 200,
+    #         "y": 200
+    #     },
+    #     "caption": "Company",
+    #     "labels": [],
+    #     "properties": {
+    #         "uuid":"string",
+    #         "name": "string",
+    #     }
+    # }]
+    # relationships = [{
+    #     "id": "n0",
+    #     "type": "WORKS_AT",
+    #     "fromId": "n0",
+    #     "toId": "n1",
+    #     "properties": {
+    #     }
+    # }]
 
-    # Convert uploaded file (if available) to json
-    # Supporting arrows 0.5.4
-    if uploaded_file is not None:
-        try:
-            json_file = json.loads(uploaded_file)
-            nodes = json_file["nodes"]
-            relationships = json_file["relationships"]
-            if nodes is None:
-                nodes = []
-            if relationships is None:
-                relationships = []
+    # # Convert uploaded file (if available) to json
+    # # Supporting arrows 0.5.4
+    # if uploaded_file is not None:
+    #     try:
+    #         json_file = json.loads(uploaded_file)
+    #         nodes = json_file["nodes"]
+    #         relationships = json_file["relationships"]
+    #         if nodes is None:
+    #             nodes = []
+    #         if relationships is None:
+    #             relationships = []
             
-        except json.decoder.JSONDecodeError:
-            st.error('JSON file is not valid.')
+    #     except json.decoder.JSONDecodeError:
+    #         st.error('JSON file is not valid.')
 
-    # Save the converted raw json objects
-    st.session_state[IMPORTED_NODES] = nodes
-    st.session_state[IMPORTED_RELATIONSHIPS] = relationships
+    # # Save the converted raw json objects
+    # st.session_state[IMPORTED_NODES] = nodes
+    # st.session_state[IMPORTED_RELATIONSHIPS] = relationships
+
+    nodes = st.session_state[IMPORTED_NODES]
+    relationships = st.session_state[IMPORTED_RELATIONSHIPS]
+    if nodes is None:
+        nodes = []
+    if relationships is None:
+        relationships = []
 
     st.markdown("--------")
 
