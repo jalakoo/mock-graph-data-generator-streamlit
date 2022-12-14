@@ -65,28 +65,50 @@ class GeneratorArg():
             default = None
         else: 
             default = dict["default"]
+        if "hint" not in dict.keys():
+            hint = ""
+        else:   
+            hint = dict["hint"]
+        if "description" not in dict.keys():
+            description = ""
+        else:
+            description = dict["description"]
 
         return GeneratorArg(
             type = GeneratorType.type_from_string(dict["type"]),
             label = dict["label"],
-            default= default
+            default= default,
+            hint = hint,
+            description=description
         )
 
     def __init__(
         self, 
         type: GeneratorType, 
         label: str,
-        default: any = None
+        default: any = None,
+        hint : str = None,
+        description : str = None
     ):
         self.type = type
         self.label = label
         self.default = default
+        self.hint = hint
+        self.description = description
+
+    def __str__(self):
+        return f'GeneratorArg: type: {self.type}, label: {self.label}, default: {self.default}, hint: {self.hint}, description: {self.description}'
+
+    def __repr__(self):
+        return self.__str__()
 
     def to_dict(self):
         return {
             "type": self.type.to_string(),
             "label": self.label,
-            "default": self.default
+            "default": self.default,
+            "hint": self.hint,
+            "description": self.description
         }
 
     @staticmethod

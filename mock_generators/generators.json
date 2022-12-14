@@ -279,6 +279,33 @@
         ],
         "type": "String"
     },
+    "df2bbd43": {
+        "args": [
+            {
+                "default": "",
+                "label": "CSV Filepath",
+                "type": "String",
+                "hint": "mock_generators/datasets/tech_companies.csv",
+                "description":""
+            },
+            {
+                "default": "",
+                "label": "Header Column Field",
+                "type": "String",
+                "hint": "Company Name",
+                "description":""
+            }
+        ],
+        "code_url": "mock_generators/generators/df2bbd43.py",
+        "description": "Random string row value from a specified csv file. Be certain field contains string values.",
+        "name": "String from CSV",
+        "tags": [
+            "csv",
+            " string",
+            " random"
+        ],
+        "type": "String"
+    },
     "e0eb78b0": {
         "args": [
             {

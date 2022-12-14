@@ -1,0 +1,1 @@
+These files used as base classes in original schema to make generators subclasses.

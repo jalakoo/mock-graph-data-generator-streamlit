@@ -10,5 +10,5 @@ def generate(
     node_values = args
     shuffle(node_values)
     choice = node_values.pop(0)
-    logging.info(f'73853311: choice: {choice}, values remaining: {len(node_values)}')
+    # logging.info(f'73853311: choice: {choice}, values remaining: {len(node_values)}')
     return (choice, node_values)
