@@ -38,10 +38,11 @@ def nodes_row(
     # }
 
     # Extract relevant data from node dict
-    # node = st.session_state[IMPORTED_NODES][index]
     if node_dict is not None:
         # Load node data from an imported dict
         id = node_dict.get("id")
+
+        # Otherwise, use the imported dict info
         labels = node_dict.get("labels", [])
         position = {
             "x": node_dict.get("position", {}).get("x", 0),
@@ -50,22 +51,26 @@ def nodes_row(
         caption = node_dict.get("caption", "")
         properties = [(k,v) for k,v in node_dict.get("properties").items()]
         selected_labels = labels
-    # Otherwise use default emtpy data
     else:
-        id = str(uuid.uuid4())[:8]
-        labels = ["<add_label>"]
-        position = {
-            "x": 0,
-            "y": 0
-        }
-        caption = "<new_node>"
-        properties = []
-        selected_labels = []
+        # Or crash - default data, which needs to contain enough differentiating content from other nodes, should have been passed in by calling code
+        raise Exception(f'nodes_row.py: No node data received')
+
+    # Node might have already been mapped, if so, use that
+    mapped_nodes = st.session_state[MAPPINGS].nodes
+    if id in mapped_nodes.keys():
+        node = mapped_nodes[id]
+        labels = node.labels
+        position = node.position
+        caption = node.caption
+        # NodeMapping properties are PropertyMapping objects instead of the dict found in the imported node dict, so we're not going to convert these back as streamlit is already holding onto the new property rows through soft page refreshes
+        # properties = node.properties
+        # selected_labels not retained in node mapping
 
     # Validation
     if generators is None or len(generators) == 0:
         logging.error(f'nodes_row.py: No generators received for node {caption}')
         return None
+
 
     # Work around to (eventually) update node caption in expander when new primary label updated by
     # saved_node = st.session_state[MAPPINGS].nodes.get(id) 
@@ -175,7 +180,10 @@ def nodes_row(
 
             st.markdown('---')
             key_property_name = st.selectbox("Key Property", property_maps.keys(), key=f'node_{id}_key_property', help="Property value that uniquely identifies these nodes from other nodes")
-            if key_property_name not in property_maps:
+            if len(property_maps.keys()) == 0:
+                st.info(f'Add properties before selecting a key property for node {caption}')
+                selected_key_property = None
+            elif key_property_name not in property_maps:
                 st.error(f'Property "{key_property_name}" does not exist in properties for node {caption}')
                 selected_key_property = None
             else:

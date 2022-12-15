@@ -1,0 +1,1 @@
+This folder contains sample and previously imported arrows.app-compatible .json files.

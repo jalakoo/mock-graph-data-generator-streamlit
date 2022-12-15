@@ -9,3 +9,9 @@ The app uses [Streamlit](https://streamlit.io/) to create and manage the UI inte
 ## Running
 Locally
 `poetry run streamlit run mock_generators/app.py`
+
+
+## Testing
+Locally
+`poetry run pytest`
+

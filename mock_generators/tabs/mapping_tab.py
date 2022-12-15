@@ -56,6 +56,20 @@ def mapping_tab():
         node_dict = None
         if i < len(nodes):
             node_dict = nodes[1]
+        else:
+            # Default new node option, generated here because we have access to indexes. This system NOT ideal because adding and removing nodes by count this way is clunky.
+            node_dict = {
+                'id' : f'new_node_{i}',
+                'labels' : [],
+                'properties' : {
+                    "uuid":"string"
+                },
+                'caption' : f'new_node_{i}',
+                'position':{
+                    'x': 0,
+                    'y': 0
+                }
+            }
         nodes_row(
             node_dict = node_dict,
             generators=st.session_state[GENERATORS], 
