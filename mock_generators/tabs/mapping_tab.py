@@ -87,6 +87,14 @@ def mapping_tab():
         relationship_dict = None
         if i < len(relationships):
             relationship_dict = relationships[i]
+        else:
+            # Default new
+            relationship_dict = {
+                'id' : f'new_relationship_{i}',
+                'type' : '',
+                'fromId': '',
+                'toId': '',
+            }
         relationship_row(
             relationship = relationship_dict,
             generators=st.session_state[GENERATORS],

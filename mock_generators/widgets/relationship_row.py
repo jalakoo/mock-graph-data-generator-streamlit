@@ -8,18 +8,9 @@ from models.node_mapping import NodeMapping
 import datetime
 import logging
 from widgets.property_row import property_row
-# from widgets.default_state import load_state
 from widgets.arguments import generator_arguments
 from widgets.generator_selector import generator_selector
 
-# load_state()
-
-# def generators_filtered(
-#     generators:list[Generator],
-#     byTypes: list[GeneratorType]
-#     ) -> list[Generator]:
-
-#     return [generator for _, generator in generators.items() if generator.type in byTypes]
 
 def _node_uid_from(caption: str)-> str:
     nodes = st.session_state[MAPPINGS].nodes
@@ -68,15 +59,14 @@ def relationship_row(
     #   "toId": "n1"
     # }
 
-    # relationship = st.session_state[IMPORTED_RELATIONSHIPS][index]
 
-    if relationship is None:
-        id = str(uuid.uuid4())[:8]
-        type = "<new_relationship>"
-        properties = []
-        fromId = ""
-        toId = ""
-    else:
+    if relationship is not None:
+    #     id = str(uuid.uuid4())[:8]
+    #     type = "<new_relationship>"
+    #     properties = []
+    #     fromId = ""
+    #     toId = ""
+    # else:
         id = relationship.get("id", str(uuid.uuid4())[:8])
         type = relationship.get("type","")
         fromId = relationship.get("fromId")
@@ -85,6 +75,19 @@ def relationship_row(
             properties = [(k,v) for k,v in relationship.get("properties").items()]
         else:
             properties = []
+    else:
+        raise Exception(f'relationship_row: No relationship data received')
+
+    # Use existing mapped relationship if it exists. Has to be called after the relationship dict is processed for the id
+    mapped_relationships = st.session_state[MAPPINGS].relationships
+    if id in mapped_relationships.keys():
+        mapped_relationship = mapped_relationships[id]
+        if mapped_relationship is not None:
+            type = mapped_relationship.type
+            # properties = [(k,v) for k,v in mapped_relationship.properties.items()]
+            fromId = mapped_relationship.from_node.id
+            toId = mapped_relationship.to_node.id
+
 
     # Validation
     if generators is None or len(generators) == 0:
