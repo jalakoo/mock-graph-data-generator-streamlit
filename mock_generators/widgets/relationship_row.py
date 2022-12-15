@@ -59,14 +59,7 @@ def relationship_row(
     #   "toId": "n1"
     # }
 
-
     if relationship is not None:
-    #     id = str(uuid.uuid4())[:8]
-    #     type = "<new_relationship>"
-    #     properties = []
-    #     fromId = ""
-    #     toId = ""
-    # else:
         id = relationship.get("id", str(uuid.uuid4())[:8])
         type = relationship.get("type","")
         fromId = relationship.get("fromId")
@@ -84,20 +77,14 @@ def relationship_row(
         mapped_relationship = mapped_relationships[id]
         if mapped_relationship is not None:
             type = mapped_relationship.type
-            # properties = [(k,v) for k,v in mapped_relationship.properties.items()]
             fromId = mapped_relationship.from_node.id
             toId = mapped_relationship.to_node.id
-
 
     # Validation
     if generators is None or len(generators) == 0:
         logging.error(f'relationship_row: No generators received for relationship {type}')
         return
 
-    # As a work around to (eventually) update the expander title when type changed by user.
-    saved_relationship = st.session_state[MAPPINGS].relationships.get(id) 
-    if saved_relationship is not None:
-        type = saved_relationship.type
 
     from_node = NodeMapping.empty()
     to_node = NodeMapping.empty()
@@ -123,6 +110,7 @@ def relationship_row(
             new_from_node_caption = st.selectbox("From Node", index=fromId_index, options=_all_node_captions(), key=f"relationship_{id}_fromId", help="A random node of this type will be selected as the source of the relationship")
             new_fromId = _node_uid_from(new_from_node_caption)
             fromNode = node_from_id(new_fromId)
+            # TODO: Notice that change may not be reflected until refresh
 
         with r2:
             # Relationship type

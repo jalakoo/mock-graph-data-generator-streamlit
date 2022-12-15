@@ -71,13 +71,6 @@ def nodes_row(
         logging.error(f'nodes_row.py: No generators received for node {caption}')
         return None
 
-
-    # Work around to (eventually) update node caption in expander when new primary label updated by
-    # saved_node = st.session_state[MAPPINGS].nodes.get(id) 
-    # if saved_node is not None:
-    #     caption = saved_node.caption
-    #     labels = saved_node.labels
-
     # Create expandable list item for each node
 
     # Caption of node may be changed by user, so we'll hook into Streamlit's sessions to update the expander text when that happens.
