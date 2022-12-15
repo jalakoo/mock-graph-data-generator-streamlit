@@ -8,6 +8,7 @@ from file_utils import load_string, save_file
 from models.mapping import Mapping
 import sys
 import datetime
+import os
 
 # Convenience functions
 def import_file(file) -> bool:
@@ -36,10 +37,11 @@ def import_file(file) -> bool:
 def file_selected(path):
     selected_file = load_string(path)
     # TODO: Should really check if it's a path object instead
-    if isinstance(selected_file, str) == False:
+    try:
         selected_filename = path.name
-    else:
-        selected_filename = path
+    except:
+        head, tail = os.path.split(path)
+        selected_filename = tail
     # Clear existing Mappings
     st.session_state[MAPPINGS] = Mapping.empty()
     # Update selected file data
@@ -66,7 +68,7 @@ def import_tab():
 
     with i1:
         selected_file = None
-        import_option = st.radio("Select Import Source", ["An Existing File", "Upload", "Copy & Paste"], horizontal=True)
+        import_option = st.radio("Select Import Source", ["An Existing File", "Upload"], horizontal=True)
 
         st.markdown("--------")
 
@@ -75,7 +77,7 @@ def import_tab():
             st.write("Select an import file:")
 
             folder_files_expander(
-                folder_path=st.session_state[IMPORTS_PATH], file_selected=file_selected, file_selection_button_text="Select this file")
+                folder_path=st.session_state[IMPORTS_PATH], file_selected=file_selected, file_selection_button_text="Load this file")
 
         elif import_option == "Upload":
             # Upload a new file
@@ -98,22 +100,24 @@ def import_tab():
                 
                 file_selected(selected_filepath)
         else:
-            # Copy & Paste
-            pasted_json = st.text_area("Paste an arrows JSON file here", height=300)
-            logging.info(f'pasted_json: {pasted_json}')
-            if pasted_json is not None and pasted_json != "":
-                temp_filename = f'pasted_file.json'
-                selected_filepath = f"{st.session_state[IMPORTS_PATH]}/{temp_filename}"
-                # data = json.dumps(pasted_json, indent=4)
-                try:
-                    save_file(
-                        filepath=selected_filepath,
-                        data=pasted_json)
-                except:
-                    st.error(f"Error saving file to {st.session_state[IMPORTS_PATH]}")
-                    logging.error(f'Error saving file: {sys.exc_info()[0]}')
+            logging.info(f'Copy & Paste Option disabled') 
+        # else:
+            # # Copy & Paste
+            # pasted_json = st.text_area("Paste an arrows JSON file here", height=300)
+            # # logging.info(f'pasted_json: {pasted_json}')
+            # if pasted_json is not None and pasted_json != "":
+            #     temp_filename = f'pasted_file.json'
+            #     selected_filepath = f"{st.session_state[IMPORTS_PATH]}/{temp_filename}"
+            #     # data = json.dumps(pasted_json, indent=4)
+            #     try:
+            #         save_file(
+            #             filepath=selected_filepath,
+            #             data=pasted_json)
+            #     except:
+            #         st.error(f"Error saving file to {st.session_state[IMPORTS_PATH]}")
+            #         logging.error(f'Error saving file: {sys.exc_info()[0]}')
                 
-                file_selected(selected_filepath)
+            #     file_selected(selected_filepath)
 
     with i2:
         # Process uploaded / selected file

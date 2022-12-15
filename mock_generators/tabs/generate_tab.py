@@ -24,7 +24,8 @@ def generate_tab():
     imported_filename = st.session_state[IMPORTED_FILENAME]
 
     # TODO: Implement better filename cleaning
-    export_zip_filename = imported_filename.lower()
+    # TODO: Breaks when using a copy and pasted file
+    export_zip_filename = f'{imported_filename}'.lower()
     export_zip_filename = export_zip_filename.replace(".json", "")
     export_zip_filename.replace(" ", "_")
     export_zip_filename.replace(".", "_")
@@ -96,7 +97,9 @@ def generate_tab():
                 try:
                     # Create zip file, appended with time created
                     now = str(datetime.now().isoformat())
-                    with zipfile.ZipFile(f'{zips_folder}/{export_zip_filename}_{now}.zip', 'w', zipfile.ZIP_DEFLATED) as zipf:
+                    zip_path = f'{zips_folder}/{export_zip_filename}_{now}.zip'
+                    logging.info(f'generate_tab: Creating zip file: {zip_path}')
+                    with zipfile.ZipFile(f'{zip_path}', 'w', zipfile.ZIP_DEFLATED) as zipf:
                         # zipdir(export_folder, zipf)
                         path = export_folder
                         for root, dirs, files in os.walk(path):

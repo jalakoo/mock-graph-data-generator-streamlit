@@ -9,6 +9,22 @@ from copy import deepcopy
 
 class RelationshipMapping():
 
+    @staticmethod
+    def empty():
+        return RelationshipMapping(
+            id = "",
+            type = "",
+            from_node = None,
+            to_node = None,
+            properties = {},
+            count_generator = None,
+            count_args = [],
+            filter_generator = None,
+            filter_args = [],
+            assignment_generator = None,
+            assignment_args = []
+        )
+        
     def __init__(
         self, 
         id: str,

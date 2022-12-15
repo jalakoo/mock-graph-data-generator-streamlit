@@ -5,6 +5,19 @@ import logging
 
 class NodeMapping():
 
+    @staticmethod
+    def empty():
+        return NodeMapping(
+            id = "",
+            position = {"x": 0, "y": 0},
+            caption = "",
+            labels = [],
+            properties = {},
+            count_generator = None,
+            count_args = [],
+            key_property = None
+        )
+
     def __init__(
         self, 
         id: str,

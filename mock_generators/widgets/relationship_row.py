@@ -43,7 +43,11 @@ def _node_index_from(uid: str)-> int:
 
 def node_from_id(id: str) -> NodeMapping:
     nodes = st.session_state[MAPPINGS].nodes
-    return [node for _, node in nodes.items() if node.id == id][0]
+    possible_nodes = [node for _, node in nodes.items() if node.id == id]
+    if len(possible_nodes) == 0:
+        return NodeMapping.empty()
+    else:
+        return possible_nodes[0]
 
 def relationship_row(
         relationship: dict,
@@ -68,7 +72,7 @@ def relationship_row(
 
     if relationship is None:
         id = str(uuid.uuid4())[:8]
-        type = ""
+        type = "<new_relationship>"
         properties = []
         fromId = ""
         toId = ""
@@ -91,8 +95,17 @@ def relationship_row(
     saved_relationship = st.session_state[MAPPINGS].relationships.get(id) 
     if saved_relationship is not None:
         type = saved_relationship.type
-        
-    expander_text = f"(:{node_from_id(fromId).caption})-[:{type}]->(:{node_from_id(toId).caption})"
+
+    from_node = NodeMapping.empty()
+    to_node = NodeMapping.empty()
+    if fromId is not None:
+        from_node = node_from_id(fromId)
+    if toId is not None:
+        to_node = node_from_id(toId) 
+
+       
+    expander_text = f"(:{from_node.caption})-[:{type}]->(:{to_node.caption})"
+
     with st.expander(expander_text, expanded=should_start_expanded):
 
         # # Relationship source and target nodes

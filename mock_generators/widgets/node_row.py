@@ -58,7 +58,7 @@ def nodes_row(
             "x": 0,
             "y": 0
         }
-        caption = ""
+        caption = "<new_node>"
         properties = []
         selected_labels = []
 

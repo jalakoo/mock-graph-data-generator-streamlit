@@ -12,65 +12,7 @@ def mapping_tab():
     with col1:
         st.image("mock_generators/media/shuffle.gif")
     with col2:
-        st.write("Create and edit mock data generation options. \n\nNodes and relationships are default INCLUDED from mapping, meaning data will be generated for all imported nodes and relationships.  Expand options for each node or relationship to edit labels, property names, and assign generator functions that will create mock data. Additional Global properties can also be set and will overwrite any local node/relationship properties with the same name. NOTE: ALL Nodes require a unique key property name to be selected. So imported node data with no properites will need to have at least one property created for it.\n\nWhen finished, proceed to the Generate Tab to generate mock data.")
-    # uploaded_file = st.session_state[IMPORTED_FILE]
-
-    # # Default options
-    # # Matching arrows.json dict format
-    # nodes = [
-    #     {
-    #     "id": "n0",
-    #     "position":{
-    #         "x": 0,
-    #         "y": 0
-    #     },
-    #     "caption": "Person",
-    #     "labels": [],
-    #     "properties": {
-    #         "uuid": "string",
-    #         "name": "string",
-    #     }
-    # },
-    # {
-    #     "id": "n1",
-    #     "position":{
-    #         "x": 200,
-    #         "y": 200
-    #     },
-    #     "caption": "Company",
-    #     "labels": [],
-    #     "properties": {
-    #         "uuid":"string",
-    #         "name": "string",
-    #     }
-    # }]
-    # relationships = [{
-    #     "id": "n0",
-    #     "type": "WORKS_AT",
-    #     "fromId": "n0",
-    #     "toId": "n1",
-    #     "properties": {
-    #     }
-    # }]
-
-    # # Convert uploaded file (if available) to json
-    # # Supporting arrows 0.5.4
-    # if uploaded_file is not None:
-    #     try:
-    #         json_file = json.loads(uploaded_file)
-    #         nodes = json_file["nodes"]
-    #         relationships = json_file["relationships"]
-    #         if nodes is None:
-    #             nodes = []
-    #         if relationships is None:
-    #             relationships = []
-            
-    #     except json.decoder.JSONDecodeError:
-    #         st.error('JSON file is not valid.')
-
-    # # Save the converted raw json objects
-    # st.session_state[IMPORTED_NODES] = nodes
-    # st.session_state[IMPORTED_RELATIONSHIPS] = relationships
+        st.write("Create and edit mock data generation options. \n\nExpand options for each node or relationship to edit labels, property names, and assign generator functions that will create mock property data. NOTE: ALL Nodes require a unique key property name to be selected.\n\nWhen finished, proceed to the Generate Tab to generate mock data.")
 
     nodes = st.session_state[IMPORTED_NODES]
     relationships = st.session_state[IMPORTED_RELATIONSHIPS]
@@ -82,14 +24,14 @@ def mapping_tab():
     st.markdown("--------")
 
     st.subheader("**GLOBALS:**")
-    g1, g2, g3 = st.columns(3)
+    g1, g2, g3 = st.columns([3,3,1])
     should_expand = False
     with g1:
-        num_global_properties = st.number_input("Number of Global Properties", min_value=0, value=0, help="Properties to add to ALL nodes and relationships to be generated.")
-    with g2:
         include_globals = st.checkbox("Include Global Properties", value=False, help="Include global properties in data generation. These will currently overwrite any node local properties with the same property name.")
-    with g3:
+    with g2:
         should_expand = st.checkbox("Expand All Rows", value=False, help="Automatically expand all row details")
+    with g3:
+        num_global_properties = st.number_input("Number of Global Properties", min_value=0, value=0, help="Optional Properties added to ALL nodes and relationships. Will overwrite locally assigned Node or Relationship properties of the same name.")
     all_global_properties = []
     if include_globals == True:
         for i in range(num_global_properties):
@@ -105,34 +47,34 @@ def mapping_tab():
     st.markdown("--------")
     # TODO: Add ability to add ALL NODES ONLY properties
 
-    n1, n2 = st.columns([9,1])
+    n1, n2 = st.columns([6,1])
     with n1:
         st.subheader("**NODES:**")
     with n2:
-        num_nodes = st.number_input("Number:", min_value=0, value=len(nodes), key="mapping_number_of_nodes", help="Adjust the number of nodes to generate data for")
+        num_nodes = st.number_input("Number:", min_value=0, value=len(nodes), key="mapping_number_of_nodes", help="Adjust the number of nodes to generate")
     for i in range(num_nodes):
+        node_dict = None
         if i < len(nodes):
-            nodes_row(
-                node_dict = nodes[i],
-                generators=st.session_state[GENERATORS], 
-                should_start_expanded=should_expand,
-                additional_properties=all_global_properties)
-        else:
-            nodes_row(None)
+            node_dict = nodes[1]
+        nodes_row(
+            node_dict = node_dict,
+            generators=st.session_state[GENERATORS], 
+            should_start_expanded=should_expand,
+            additional_properties=all_global_properties)
 
     st.markdown("--------")
-    r1, r2 = st.columns([9,1])
+    r1, r2 = st.columns([6,1])
     with r1:
         st.subheader("**RELATIONSHIPS:**")
     # TODO: Add ability to add ALL RELATIONSHIPS ONLY properties
     with r2:
-        num_relationships = st.number_input("Number:", min_value=0, value=len(relationships), key="mapping_number_of_relationships", help="Adjust the number of relationships to generate data for")
+        num_relationships = st.number_input("Number:", min_value=0, value=len(relationships), key="mapping_number_of_relationships", help="Adjust the number of relationships to generate")
     for i in range(num_relationships):
+        relationship_dict = None
         if i < len(relationships):
-            relationship_row(
-                relationship = relationships[i],
-                generators=st.session_state[GENERATORS],
-                should_start_expanded=should_expand,
-                additional_properties=all_global_properties)
-        else:
-            relationship_row(None)
+            relationship_dict = relationships[i]
+        relationship_row(
+            relationship = relationship_dict,
+            generators=st.session_state[GENERATORS],
+            should_start_expanded=should_expand,
+            additional_properties=all_global_properties)
