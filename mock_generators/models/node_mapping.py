@@ -62,7 +62,7 @@ class NodeMapping():
                 "caption": self.caption,
                 "position": self.position,
                 "labels": self.labels,
-                "properties": {key: property.to_dict() for (key, property) in self.properties.items()},
+                "properties": {key: property.to_dict() for (key, property) in self.properties.items() if property.type is not None},
                 "count_generator": self.count_generator.to_dict(),
                 "count_args": self.count_args,
                 "key_property" : self.key_property.to_dict()

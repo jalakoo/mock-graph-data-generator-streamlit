@@ -10,7 +10,7 @@ import logging
 from widgets.property_row import property_row
 from widgets.arguments import generator_arguments
 from widgets.generator_selector import generator_selector
-
+from collections.abc import Callable
 
 def _node_uid_from(caption: str)-> str:
     nodes = st.session_state[MAPPINGS].nodes
@@ -44,20 +44,11 @@ def relationship_row(
         relationship: dict,
         should_start_expanded: bool = False,
         generators = dict[str,Generator],
-        additional_properties: list[PropertyMapping] = []
+        additional_properties: list[PropertyMapping] = [],
+        add_relationship: Callable[[RelationshipMapping], bool] = None,
+        delete_relationship: Callable[[RelationshipMapping], bool] = None,
+        ignore_relationship: Callable[[str], bool] = None,
     ):
-
-    # Sample relationship dict from arrows.app
-    # {
-    #   "id": "n0",
-    #   "type": "WORKS_AT",
-    #   "style": {},
-    #   "properties": {
-    #     "created_at": "datetime"
-    #   },
-    #   "fromId": "n0",
-    #   "toId": "n1"
-    # }
 
     if relationship is not None:
         id = relationship.get("id", str(uuid.uuid4())[:8])
@@ -131,6 +122,11 @@ def relationship_row(
         with r4:
             st.write('Options')
             disabled = st.checkbox("Exclude/ignore relationship", value=False, key=f"relationship_{id}_enabled")
+            if disabled:
+                ignore_relationship(id)
+            delete = st.button("Delete relationship", key=f"relationship_{id}_delete")
+            if delete:
+                delete_relationship(id)
 
         r_tab1, r_tab2, r_tab3 = st.tabs(["Properties","Count", "To Conditions"])
 
@@ -206,31 +202,46 @@ def relationship_row(
             for additional_property in additional_properties:
                 property_maps[additional_property.name] = additional_property
 
+        relationship_mapping = RelationshipMapping(
+            id=id,
+            type=type,
+            properties=property_maps,
+            from_node = fromNode,
+            to_node = toNode,
+            count_generator = selected_count_generator,
+            count_args = count_arg_inputs,
+            assignment_generator=selected_assignment_generator,
+            assignment_args=assignment_arg_inputs
+        )
+        # Auto add to mapping
+        add_relationship(relationship_mapping)
+
+        
         # Effect enable/disable options
-        if disabled:
-            # Remove from mapping
-            mapping = st.session_state[MAPPINGS]
-            mapping_relationships = mapping.relationships
-            if id in mapping_relationships:
-                del mapping_relationships[id]
-                mapping.relationships = mapping_relationships
-                st.session_state[MAPPINGS] = mapping
-            st.error(f'{type} relationship EXCLUDED from mapping')
-        else:
-            mapping = st.session_state[MAPPINGS]
-            relationships = mapping.relationships
-            relationship_mapping = RelationshipMapping(
-                id=id,
-                type=type,
-                properties=property_maps,
-                from_node = fromNode,
-                to_node = toNode,
-                count_generator = selected_count_generator,
-                count_args = count_arg_inputs,
-                assignment_generator=selected_assignment_generator,
-                assignment_args=assignment_arg_inputs
-            )
-            relationships[id] = relationship_mapping
-            mapping.relationships = relationships
-            st.session_state[MAPPINGS] = mapping
-            st.success(f'{type} relationship added to mapping')
+        # if disabled:
+        #     # Remove from mapping
+        #     mapping = st.session_state[MAPPINGS]
+        #     mapping_relationships = mapping.relationships
+        #     if id in mapping_relationships:
+        #         del mapping_relationships[id]
+        #         mapping.relationships = mapping_relationships
+        #         st.session_state[MAPPINGS] = mapping
+        #     st.error(f'{type} relationship EXCLUDED from mapping')
+        # else:
+        #     mapping = st.session_state[MAPPINGS]
+        #     relationships = mapping.relationships
+        #     relationship_mapping = RelationshipMapping(
+        #         id=id,
+        #         type=type,
+        #         properties=property_maps,
+        #         from_node = fromNode,
+        #         to_node = toNode,
+        #         count_generator = selected_count_generator,
+        #         count_args = count_arg_inputs,
+        #         assignment_generator=selected_assignment_generator,
+        #         assignment_args=assignment_arg_inputs
+        #     )
+        #     relationships[id] = relationship_mapping
+        #     mapping.relationships = relationships
+        #     st.session_state[MAPPINGS] = mapping
+        #     st.success(f'{type} relationship added to mapping')

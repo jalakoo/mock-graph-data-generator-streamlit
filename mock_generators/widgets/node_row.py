@@ -19,7 +19,7 @@ def nodes_row(
     additional_properties: list[PropertyMapping] = []
     ):
 
-    #  Sample node dict from arrows.app
+    #  Sample node dict from arrows.app expected as node_dict arg
     # {
     # "id": "n0",
     # "position": {
@@ -78,6 +78,19 @@ def nodes_row(
     # Create an expander view for each node
     with st.expander(f'{caption}', expanded=should_start_expanded):
 
+        st.markdown(f'---------')
+
+        # TODO: Put high level node options here:
+        # Enable/disable
+        # Delete node button
+        # Primary label - change labels tab to 'Additional Labels'
+
+        delete_node = st.button(f"Delete Node", key=f"delete_node_{id}")
+        # TODO: We can delete from mappings from here, but need callback to delete from higher level count
+        # if delete_node:
+        #     st.session_state[MAPPINGS].nodesdelete_node(id)
+        #     st.experimental_rerun()
+
         node_tab_1, node_tab_2, node_tab_3 = st.tabs(["Labels", "Properties", "Count"])
 
         with node_tab_1:
@@ -126,7 +139,7 @@ def nodes_row(
 
             with labels3:
                 st.write('Options')
-                disabled = st.checkbox("Exclude/ignore node", value=False, key=f"node_{id}_disabled")
+                should_disable = st.checkbox("Exclude/ignore node", value=False, key=f"node_{id}_disabled")
 
 
         with node_tab_2:
@@ -205,8 +218,9 @@ def nodes_row(
                 count_arg_inputs = generator_arguments(selected_count_generator, f'node_{id}_count_generator')
 
 
+        # TODO: Move all this to mapping tab?
         # Process disabled setting from earlier
-        if disabled:
+        if should_disable:
             # TODO: Also disable any relationships dependent on this node
 
             # Remove from mapping
@@ -217,6 +231,9 @@ def nodes_row(
                 mapping.nodes = mapping_nodes
                 st.session_state[MAPPINGS] = mapping
             st.error(f'{caption} Node EXCLUDED from mapping')
+        
+        # TODO: Add a delete feature here
+
         else:
             # Add to mapping
             mapping = st.session_state[MAPPINGS]
