@@ -8,7 +8,7 @@ class NodeMapping():
     @staticmethod
     def empty():
         return NodeMapping(
-            id = "",
+            nid = "",
             position = {"x": 0, "y": 0},
             caption = "",
             labels = [],
@@ -20,7 +20,7 @@ class NodeMapping():
 
     def __init__(
         self, 
-        id: str,
+        nid: str,
         position: dict,   # ie: {x: 0, y: 0}
         caption: str,
         labels: list[str], 
@@ -28,7 +28,7 @@ class NodeMapping():
         count_generator: Generator,
         count_args: list[any],
         key_property: PropertyMapping):
-        self.id = id
+        self.nid = nid
         self.position = position
         self.caption = caption
         self.labels = labels
@@ -39,39 +39,37 @@ class NodeMapping():
         self.generated_values = None # Will be a list[dict] when generated
 
     def __str__(self):
-        return f"NodeMapping(id={self.id}, caption={self.caption}, labels={self.labels}, properties={self.properties}, count_generator={self.count_generator}, count_args={self.count_args}, key_property={self.key_property})"
+        return f"NodeMapping(nid={self.nid}, caption={self.caption}, labels={self.labels}, properties={self.properties}, count_generator={self.count_generator}, count_args={self.count_args}, key_property={self.key_property})"
 
     def __repr__(self):
         return self.__str__()
 
 
     def to_dict(self):
-        if self.key_property is None:
             return {
-                "id": self.id,
-                "caption": self.caption,
-                "position": self.position,
-                "labels": self.labels,
-                "properties": {key: property.to_dict() for (key, property) in self.properties.items()},
-                "count_generator": self.count_generator.to_dict(),
-                "count_args": self.count_args
-            }
-        else:
-            return {
-                "id": self.id,
+                "nid": self.nid,
                 "caption": self.caption,
                 "position": self.position,
                 "labels": self.labels,
                 "properties": {key: property.to_dict() for (key, property) in self.properties.items() if property.type is not None},
-                "count_generator": self.count_generator.to_dict(),
+                "count_generator": self.count_generator.to_dict() if self.count_generator is not None else None,
                 "count_args": self.count_args,
-                "key_property" : self.key_property.to_dict()
+                "key_property" : self.key_property.to_dict() if self.key_property is not None else None
             }
 
     def filename(self):
-        return f"{self.caption.lower()}_{self.id.lower()}"
+        return f"{self.caption.lower()}_{self.nid.lower()}"
 
     # TODO: Verify unique keys are respected during generation
+
+    def ready_to_generate(self):
+        if self.caption is None:
+            return False
+        if self.count_generator is None:
+            return False
+        if self.key_property is None:
+            return False
+        return True
 
     def generate_values(self) -> list[dict]:
         # returns a list of dicts with the generated values

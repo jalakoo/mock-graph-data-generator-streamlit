@@ -11,12 +11,17 @@ import logging
 from widgets.default_state import load_state
 from widgets.arguments import generator_arguments
 from widgets.generator_selector import generator_selector
+from collections.abc import Callable
+import sys
 
 def nodes_row(
     node_dict : dict,
     generators: dict[str,Generator],
     should_start_expanded: bool = False,
-    additional_properties: list[PropertyMapping] = []
+    additional_properties: list[PropertyMapping] = [],
+    on_add: Callable[[NodeMapping], bool] = None,
+    on_delete: Callable[[str], bool] = None,
+    on_ignore: Callable[[str], bool] = None,
     ):
 
     #  Sample node dict from arrows.app expected as node_dict arg
@@ -40,7 +45,7 @@ def nodes_row(
     # Extract relevant data from node dict
     if node_dict is not None:
         # Load node data from an imported dict
-        id = node_dict.get("id")
+        nid = node_dict.get("id")
 
         # Otherwise, use the imported dict info
         labels = node_dict.get("labels", [])
@@ -48,7 +53,7 @@ def nodes_row(
             "x": node_dict.get("position", {}).get("x", 0),
             "y": node_dict.get("position", {}).get("y", 0)
         }
-        caption = node_dict.get("caption", "")
+        caption = node_dict.get("caption", None)
         properties = [(k,v) for k,v in node_dict.get("properties").items()]
         selected_labels = labels
     else:
@@ -57,12 +62,13 @@ def nodes_row(
 
     # Node might have already been mapped, if so, use that
     mapped_nodes = st.session_state[MAPPINGS].nodes
-    if id in mapped_nodes.keys():
-        node = mapped_nodes[id]
+    if nid in mapped_nodes.keys():
+        logging.info(f'nodes_row.py: Node {nid} already mapped, using existing mapping')
+        node = mapped_nodes[nid]
         labels = node.labels
         position = node.position
         caption = node.caption
-        # NodeMapping properties are PropertyMapping objects instead of the dict found in the imported node dict, so we're not going to convert these back as streamlit is already holding onto the new property rows through soft page refreshes
+        # NodeMapping properties are PropertyMapping objects instead of the dict found in the imported node dict, so we're not going to convert these back as streamlit is already holding onto the new property rows through page refreshes
         # properties = node.properties
         # selected_labels not retained in node mapping
 
@@ -71,25 +77,10 @@ def nodes_row(
         logging.error(f'nodes_row.py: No generators received for node {caption}')
         return None
 
-    # Create expandable list item for each node
-
-    # Caption of node may be changed by user, so we'll hook into Streamlit's sessions to update the expander text when that happens.
+    should_enable = True
 
     # Create an expander view for each node
-    with st.expander(f'{caption}', expanded=should_start_expanded):
-
-        st.markdown(f'---------')
-
-        # TODO: Put high level node options here:
-        # Enable/disable
-        # Delete node button
-        # Primary label - change labels tab to 'Additional Labels'
-
-        delete_node = st.button(f"Delete Node", key=f"delete_node_{id}")
-        # TODO: We can delete from mappings from here, but need callback to delete from higher level count
-        # if delete_node:
-        #     st.session_state[MAPPINGS].nodesdelete_node(id)
-        #     st.experimental_rerun()
+    with st.expander(f'{caption if caption is not None else "<new_node>"}', expanded=should_start_expanded):
 
         node_tab_1, node_tab_2, node_tab_3 = st.tabs(["Labels", "Properties", "Count"])
 
@@ -99,20 +90,27 @@ def nodes_row(
 
             # Display/edit Caption
             with labels1:
-                new_caption = st.text_input(
-                f"Primary Label", 
-                value = caption,
-                key=f"node_{id}_primary_label",
-                help="The primary label for this node. Changes will be reflected here and in Raw Mapping Data (but not the disclosure section title)")
+                # st.text_input will convert None to "None"
+                if caption is None:
+                    new_caption = st.text_input(
+                    f"Primary Label", 
+                    key=f"node_{nid}_primary_label",
+                    help="The primary label for this node. Changes will be reflected here and in Raw Mapping Data (but not the disclosure section title)")
+                else:
+                    new_caption = st.text_input(
+                    f"Primary Label", 
+                    value = caption,
+                    key=f"node_{nid}_primary_label",
+                    help="The primary label for this node. Changes will be reflected here and in Raw Mapping Data (but not the disclosure section title)")
                 if new_caption != caption:
-                    old_caption = str(caption)
+                    old_caption = caption
                     caption = new_caption
                     st.info(f"{old_caption} changed to {caption}. Change not reflected above until page refresh")
 
 
             # Adjust number of labels
             with labels2:
-                num_labels = st.number_input("Additional labels", min_value=0, value=len(labels), key=f"node_{id}_num_labels", help="Nodes may have more than one label. Select the number of additional labels to add")
+                num_labels = st.number_input("Additional labels", min_value=0, value=len(labels), key=f"node_{nid}_num_labels", help="Nodes may have more than one label. Select the number of additional labels to add")
             if num_labels > 0:
                 label_columns = st.columns(num_labels)
                 for li, x in enumerate(label_columns):
@@ -122,25 +120,22 @@ def nodes_row(
                     new_label = x.text_input(
                         f"Label {li + 1}", 
                         value = loaded_label,
-                        key=f"node_{id}_label_{li}")
+                        key=f"node_{nid}_label_{li}")
                     if new_label != "" and new_label not in labels and new_label is not None:
                         if li < len(labels):
                             selected_labels[li] = new_label
                         else:
                             selected_labels.append(new_label)
 
-            # with labels3:
-            #     initial_num_properties = len(properties)
-            #     # All nodes should have at least one property
-            #     # Otherwise we're just generating a bunch of empty nodes
-            #     # which doesn't require a mock data generator to do. But
-            #     # whatever, maybe someone needs a few label only nodes
-            #     num_properties = st.number_input("Properties", value = initial_num_properties, min_value=0, key= f'node_{id}_num_properties', help="Nodes typically have one or more properties. Select the number of properties for this node.")
-
-            with labels3:
-                st.write('Options')
-                should_disable = st.checkbox("Exclude/ignore node", value=False, key=f"node_{id}_disabled")
-
+            with labels4:
+                st.write('Other options')
+                should_disable = st.checkbox("Exclude/ignore node", value=False, key=f"node_{nid}_disabled")
+                # Oof this is ugly
+                if should_disable == True:
+                    should_enable = False
+                    if on_ignore is not None:
+                        on_ignore(nid)
+                    
 
         with node_tab_2:
             # Adjust properties
@@ -149,10 +144,12 @@ def nodes_row(
             # Otherwise we're just generating a bunch of empty nodes
             # which doesn't require a mock data generator to do. But
             # whatever, maybe someone needs a few label only nodes
-            num_properties = st.number_input("Properties", value = initial_num_properties, min_value=0, key= f'node_{id}_num_properties', help="Nodes typically have one or more properties. Select the number of properties for this node.")
+            num_properties = st.number_input("Properties", value = initial_num_properties, min_value=0, key= f'node_{nid}_num_properties', help="Nodes typically have one or more properties. Select the number of properties for this node.")
+
+            if num_properties > 0:
+                st.markdown('---')
 
             # Adjust number of properties 
-            st.markdown('---')
             initial_num_properties = len(properties)
 
             # Generate input fields for user to adjust property names, types, and generator to create mock data with
@@ -163,17 +160,17 @@ def nodes_row(
 
                 new_property_map = property_row(
                     type="node", 
-                    id=id, 
+                    pid=nid, 
                     index=i, 
                     properties= properties
                 )
 
-                if new_property_map.id == None:
+                if new_property_map.pid == None:
                     # Equal to an empty PropertyMapping - likely been explicitly excluded by user
                     continue
 
                 if new_property_map.name in property_maps:
-                    st.error(f'Property "{new_property_map.name}" already exists')
+                    st.error(f'Property names should be unique: "{new_property_map.name}" already exists')
                 else:
                     property_maps[new_property_map.name] = new_property_map
 
@@ -185,7 +182,7 @@ def nodes_row(
                     property_maps[additional_property.name] = additional_property
 
             st.markdown('---')
-            key_property_name = st.selectbox("Key Property", property_maps.keys(), key=f'node_{id}_key_property', help="Property value that uniquely identifies these nodes from other nodes")
+            key_property_name = st.selectbox("Key Property", property_maps.keys(), key=f'node_{nid}_key_property', help="Property value that uniquely identifies these nodes from other nodes")
             if len(property_maps.keys()) == 0:
                 st.info(f'Add properties before selecting a key property for node {caption}')
                 selected_key_property = None
@@ -211,44 +208,45 @@ def nodes_row(
                     label="Int Generator to use",
                     generators=generators,
                     types=[GeneratorType.INT],
-                    key=f"node_{id}_test_count_generator",
+                    key=f"node_{nid}_test_count_generator",
                 )
 
             with ncc2:
-                count_arg_inputs = generator_arguments(selected_count_generator, f'node_{id}_count_generator')
+                count_arg_inputs = generator_arguments(selected_count_generator, f'node_{nid}_count_generator')
+
+        # with node_tab_4:
+        #     nt4a, nt4b, nt4c = st.columns([2,1,1])
+        #     with nt4a:
+        #         st.markdown('')
+        #     with nt4b:
+        #         delete_node = st.button(f"Delete Node", key=f"delete_node_{id}")
+        #         if delete_node and on_delete is not None:
+        #             on_delete(id)
+        #     with nt4c:
+        #         should_disable = st.checkbox("Exclude/ignore node", value=False, key=f"node_{id}_disabled")
+        #         if should_disable and on_ignore is not None:
+        #             on_ignore(id)
 
 
-        # TODO: Move all this to mapping tab?
-        # Process disabled setting from earlier
-        if should_disable:
-            # TODO: Also disable any relationships dependent on this node
-
-            # Remove from mapping
-            mapping = st.session_state[MAPPINGS]
-            mapping_nodes = mapping.nodes
-            if id in mapping_nodes:
-                del mapping_nodes[id]
-                mapping.nodes = mapping_nodes
-                st.session_state[MAPPINGS] = mapping
-            st.error(f'{caption} Node EXCLUDED from mapping')
-        
-        # TODO: Add a delete feature here
+        if on_add is not None and should_enable == True:
+            if selected_key_property is None or selected_key_property.name == "":
+                st.error(f'Key property needed for node {caption}')
+                return
+            try:
+                node_mapping = NodeMapping(
+                    nid = nid,
+                    caption = caption,
+                    position = position,
+                    labels = labels,
+                    properties=property_maps,
+                    count_generator=selected_count_generator,
+                    count_args=count_arg_inputs,
+                    key_property=selected_key_property,
+                    )
+                if on_add(node_mapping) == True:
+                    st.success(f'{node_mapping.caption} Node INCLUDED in mapping')
+            except:
+                logging.error(f'Problem trying to add node {caption} to mapping: ERROR: {sys.exc_info()}')
 
         else:
-            # Add to mapping
-            mapping = st.session_state[MAPPINGS]
-            nodes = mapping.nodes
-            node_mapping = NodeMapping(
-                id = id,
-                caption = caption,
-                position = position,
-                labels = labels,
-                properties=property_maps,
-                count_generator=selected_count_generator,
-                count_args=count_arg_inputs,
-                key_property=selected_key_property,
-                )
-            nodes[id] = node_mapping
-            mapping.nodes = nodes
-            st.session_state[MAPPINGS] = mapping
-            st.success(f'{caption } Node added to mapping')
+            st.error(f'{caption} Node EXCLUDED from mapping')

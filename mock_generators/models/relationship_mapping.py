@@ -12,7 +12,7 @@ class RelationshipMapping():
     @staticmethod
     def empty():
         return RelationshipMapping(
-            id = "",
+            rid = "",
             type = "",
             from_node = None,
             to_node = None,
@@ -24,10 +24,10 @@ class RelationshipMapping():
             assignment_generator = None,
             assignment_args = []
         )
-        
+
     def __init__(
         self, 
-        id: str,
+        rid: str,
         type: str,
         properties: dict[str, PropertyMapping],
         from_node : NodeMapping,
@@ -44,7 +44,7 @@ class RelationshipMapping():
         filter_args: list[any] = [],
 
         ):
-        self.id = id
+        self.rid = rid
         self.type = type
         self.from_node = from_node
         self.to_node = to_node
@@ -58,14 +58,14 @@ class RelationshipMapping():
         self.assignment_args = assignment_args
 
     def __str__(self):
-        return f"RelationshipMapping(id={self.id}, type={self.type}, from_node={self.from_node}, to_node={self.to_node}, properties={self.properties}, count_generator={self.count_generator}, count_args={self.count_args})"
+        return f"RelationshipMapping(rid={self.rid}, type={self.type}, from_node={self.from_node}, to_node={self.to_node}, properties={self.properties}, count_generator={self.count_generator}, count_args={self.count_args})"
 
     def __repr__(self):
         return self.__str__()
 
     def to_dict(self):
         return {
-            "id": self.id,
+            "rid": self.rid,
             "type": self.type,
             "from_node": self.from_node.to_dict() if self.from_node is not None else None,
             "to_node": self.to_node.to_dict() if self.to_node is not None else None,
@@ -78,9 +78,20 @@ class RelationshipMapping():
     def filename(self):
         from_node_name = self.from_node.caption.lower()
         to_node_name = self.to_node.caption.lower()
-        return f"{from_node_name}_{self.type.lower()}_{to_node_name}_{self.id.lower()}"
+        return f"{from_node_name}_{self.type.lower()}_{to_node_name}_{self.rid.lower()}"
 
     # TODO: Verify unique keys are respected during generation
+
+    def ready_to_generate(self):
+        if self.type is None:
+            return False
+        if self.from_node is None:
+            return False
+        if self.to_node is None:
+            return False
+        if self.count_generator is None:
+            return False
+        return True
 
     def generate_values(
         self, 

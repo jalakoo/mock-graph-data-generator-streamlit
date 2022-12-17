@@ -34,7 +34,7 @@ def _node_index_from(uid: str)-> int:
 
 def node_from_id(id: str) -> NodeMapping:
     nodes = st.session_state[MAPPINGS].nodes
-    possible_nodes = [node for _, node in nodes.items() if node.id == id]
+    possible_nodes = [node for _, node in nodes.items() if node.nid == id]
     if len(possible_nodes) == 0:
         return NodeMapping.empty()
     else:
@@ -45,14 +45,14 @@ def relationship_row(
         should_start_expanded: bool = False,
         generators = dict[str,Generator],
         additional_properties: list[PropertyMapping] = [],
-        add_relationship: Callable[[RelationshipMapping], bool] = None,
-        delete_relationship: Callable[[RelationshipMapping], bool] = None,
-        ignore_relationship: Callable[[str], bool] = None,
+        on_add: Callable[[RelationshipMapping], bool] = None,
+        on_delete: Callable[[RelationshipMapping], bool] = None,
+        on_ignore: Callable[[str], bool] = None,
     ):
 
     if relationship is not None:
         id = relationship.get("id", str(uuid.uuid4())[:8])
-        type = relationship.get("type","")
+        type = relationship.get("type",None)
         fromId = relationship.get("fromId")
         toId = relationship.get("toId")
         if 'properties' in relationship:
@@ -68,8 +68,8 @@ def relationship_row(
         mapped_relationship = mapped_relationships[id]
         if mapped_relationship is not None:
             type = mapped_relationship.type
-            fromId = mapped_relationship.from_node.id
-            toId = mapped_relationship.to_node.id
+            fromId = mapped_relationship.from_node.nid
+            toId = mapped_relationship.to_node.nid
 
     # Validation
     if generators is None or len(generators) == 0:
@@ -81,11 +81,12 @@ def relationship_row(
     to_node = NodeMapping.empty()
     if fromId is not None:
         from_node = node_from_id(fromId)
+        logging.info(f'relationship_row: from_node: {from_node}')
     if toId is not None:
         to_node = node_from_id(toId) 
-
+    should_enable = True
        
-    expander_text = f"(:{from_node.caption})-[:{type}]->(:{to_node.caption})"
+    expander_text = f"(:{from_node.caption})-[:{type if type is not None else  '<new_relationship>'}]->(:{to_node.caption})"
 
     with st.expander(expander_text, expanded=should_start_expanded):
 
@@ -109,6 +110,8 @@ def relationship_row(
             if new_type != type:
                 type = new_type
                 st.info(f"Relationship type changed to {type}. Change not reflected above until page refresh")
+            if new_type is None or new_type == "":
+                st.error("Relationship type cannot be empty")
  
         with r3:
             # Relationship to
@@ -122,11 +125,14 @@ def relationship_row(
         with r4:
             st.write('Options')
             disabled = st.checkbox("Exclude/ignore relationship", value=False, key=f"relationship_{id}_enabled")
-            if disabled:
-                ignore_relationship(id)
-            delete = st.button("Delete relationship", key=f"relationship_{id}_delete")
-            if delete:
-                delete_relationship(id)
+            if disabled == True:
+                should_enable = False
+                if on_ignore is not None:
+                    on_ignore(id)
+            # Not currently working as expected
+            # delete = st.button("Delete relationship", key=f"relationship_{id}_delete")
+            # if delete and on_delete is not None:
+            #     on_delete(id)
 
         r_tab1, r_tab2, r_tab3 = st.tabs(["Properties","Count", "To Conditions"])
 
@@ -140,7 +146,7 @@ def relationship_row(
 
                 new_property_map = property_row(
                     type="relationship",
-                    id=id,
+                    pid=id,
                     index=i,
                     properties=properties
                 )
@@ -202,46 +208,35 @@ def relationship_row(
             for additional_property in additional_properties:
                 property_maps[additional_property.name] = additional_property
 
-        relationship_mapping = RelationshipMapping(
-            id=id,
-            type=type,
-            properties=property_maps,
-            from_node = fromNode,
-            to_node = toNode,
-            count_generator = selected_count_generator,
-            count_args = count_arg_inputs,
-            assignment_generator=selected_assignment_generator,
-            assignment_args=assignment_arg_inputs
-        )
-        # Auto add to mapping
-        add_relationship(relationship_mapping)
 
-        
-        # Effect enable/disable options
-        # if disabled:
-        #     # Remove from mapping
-        #     mapping = st.session_state[MAPPINGS]
-        #     mapping_relationships = mapping.relationships
-        #     if id in mapping_relationships:
-        #         del mapping_relationships[id]
-        #         mapping.relationships = mapping_relationships
-        #         st.session_state[MAPPINGS] = mapping
-        #     st.error(f'{type} relationship EXCLUDED from mapping')
-        # else:
-        #     mapping = st.session_state[MAPPINGS]
-        #     relationships = mapping.relationships
-        #     relationship_mapping = RelationshipMapping(
-        #         id=id,
-        #         type=type,
-        #         properties=property_maps,
-        #         from_node = fromNode,
-        #         to_node = toNode,
-        #         count_generator = selected_count_generator,
-        #         count_args = count_arg_inputs,
-        #         assignment_generator=selected_assignment_generator,
-        #         assignment_args=assignment_arg_inputs
-        #     )
-        #     relationships[id] = relationship_mapping
-        #     mapping.relationships = relationships
-        #     st.session_state[MAPPINGS] = mapping
-        #     st.success(f'{type} relationship added to mapping')
+
+        if fromNode is None:
+            return
+        if toNode is None:
+            return
+        if type is None:
+            return
+        if selected_count_generator is None:
+            return
+        if selected_assignment_generator is None:
+            return
+
+        if should_enable:
+            relationship_mapping = RelationshipMapping(
+                rid=id,
+                type=type,
+                properties=property_maps,
+                from_node = fromNode,
+                to_node = toNode,
+                count_generator = selected_count_generator,
+                count_args = count_arg_inputs,
+                assignment_generator=selected_assignment_generator,
+                assignment_args=assignment_arg_inputs
+            )
+            # Auto add to mapping
+            if on_add is not None:
+                if on_add(relationship_mapping) == True:
+                    st.success(f'{type} relationship INCLUDED in mapping')
+                    # Error display will be handled by callback function
+        else:
+            st.error(f'{type} relationship EXCLUDED from mapping')

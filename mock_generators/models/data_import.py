@@ -48,7 +48,7 @@ def graph_model_property(property: PropertyMapping)-> dict:
     result = {
         "property": property.name,
         "type": property.type.to_string().lower(),
-        "identifier": property.id
+        "identifier": property.pid
         }
     return result
 
@@ -120,7 +120,7 @@ class DataImporterJson():
 
         # Add to graph:nodes
         self.data["graph"]["nodes"].append({
-            "id": nodeMapping.id,
+            "id": nodeMapping.nid,
             "position": nodeMapping.position,
             "caption": caption
         })
@@ -144,7 +144,7 @@ class DataImporterJson():
         try: 
             self.data["dataModel"]["graphModel"]["nodeSchemas"].update(
                 {
-                    f"{nodeMapping.id}":{
+                    f"{nodeMapping.nid}":{
                         "label": nodeMapping.caption,
                         "additionLabels":nodeMapping.labels,
                         "labelProperties":[],
@@ -152,7 +152,7 @@ class DataImporterJson():
                             graph_model_property(property) for property in nodeMapping.properties.values()
                         ],
                         "key":{
-                            "properties":[nodeMapping.key_property.id],
+                            "properties":[nodeMapping.key_property.pid],
                             "name":""
                         }
                     }
@@ -167,9 +167,9 @@ class DataImporterJson():
         try:
             self.data["dataModel"]["mappingModel"]["nodeMappings"].update(
                 {
-                    f"{nodeMapping.id}":{
+                    f"{nodeMapping.nid}":{
                         "fileSchema": f'{nodeMapping.filename()}.csv',
-                        "nodeSchema": nodeMapping.id,
+                        "nodeSchema": nodeMapping.nid,
                         "mappings":mapping_model_node_mappings(nodeMapping)
                     }
                 }
@@ -193,10 +193,10 @@ class DataImporterJson():
         # Add to graph:relationships
         try: 
             self.data["graph"]["relationships"].append({
-                "id": relationship.id,
+                "id": relationship.rid,
                 "type": relationship.type,
-                "fromId": relationship.from_node.id,
-                "toId": relationship.to_node.id
+                "fromId": relationship.from_node.nid,
+                "toId": relationship.to_node.nid
             })
         except:
             raise Exception(f'Error adding relationship {relationship} to graph:relationships')
@@ -218,10 +218,10 @@ class DataImporterJson():
         try:
             self.data['dataModel']['graphModel']['relationshipSchemas'].update(
                 {
-                    f"{relationship.id}":{
+                    f"{relationship.rid}":{
                         "type": relationship.type,
-                        "sourceNodeSchema": relationship.from_node.id,
-                        "targetNodeSchema": relationship.to_node.id,
+                        "sourceNodeSchema": relationship.from_node.nid,
+                        "targetNodeSchema": relationship.to_node.nid,
                         "properties":[
                             graph_model_property(property) for property in relationship.properties.values()
                         ]
@@ -284,8 +284,8 @@ class DataImporterJson():
         try:
             self.data['dataModel']['mappingModel']['relationshipMappings'].update(
             {
-                    f"{relationship.id}":{
-                        "relationshipSchema": f'{relationship.id}',
+                    f"{relationship.rid}":{
+                        "relationshipSchema": f'{relationship.rid}',
                         "mappings":[],
                         # NOTE: The prefixing
                         "sourceMappings": [{

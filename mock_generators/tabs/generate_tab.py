@@ -9,6 +9,7 @@ import sys
 import zipfile
 from widgets.folder_files import folder_files_expander
 from datetime import datetime
+import json
 
 def generate_tab():
     col1, col2 = st.columns([1,11])
@@ -30,25 +31,33 @@ def generate_tab():
     export_zip_filename.replace(" ", "_")
     export_zip_filename.replace(".", "_")
 
-    g1, g2, g3 = st.columns(3)
+    g1, g2, g3, g4 = st.columns(4)
 
     with g1:
-        st.write(f'READY FOR GENERATION:')
-        st.write(f'     - {len(mapping.nodes)} Nodes')
-        st.write(f'     - {len(mapping.relationships)} Relationships')
-        st.markdown("--------")
+        st.write('MAPPING DATA:')
+        if MAPPINGS not in st.session_state:
+            # Why hasn't mappings been preloaded by now?
+            st.error(f'Mappings data was not preloaded')
+        elif st.session_state[MAPPINGS] is None:
+            st.error(f'Mappping option not valid for generation. Please configure mapping options below.')
+        elif st.session_state[MAPPINGS].is_empty() == True:
+            st.error(f'No data currently mapped. Please configure in Mapping tab.')
+        elif st.session_state[MAPPINGS].is_valid() == False:
+            st.error(f'Mappping option not valid for generation. Please configure in Mapping tab.')
+        else:
+            st.success(f'Mappping options valid for generation.')
+
         # For the curious
         with st.expander("Raw Mapping Data"):
             st.json(mapping.to_dict())
 
         # should_clear = st.checkbox("Delete all files in export folder with each Generate run", value=True)
 
-        # TODO: Add generated data report (counts and numbers?)
-        # Number of each node type generated
-        # Number of each relationship type generated
-        # TODO: Move generated data to export
-
     with g2:
+        st.write(f'READY FOR GENERATION:')
+        st.write(f'     - {len(mapping.nodes)} Nodes')
+        st.write(f'     - {len(mapping.relationships)} Relationships')
+    with g3:
         st.write(f'GENERATE DATA:')
         if st.button('FOR DATA-IMPORTER', key=f'generate_data_button'):
 
@@ -118,7 +127,7 @@ def generate_tab():
             if success == True:
                 st.success('Data generated successfully.')
 
-    with g3:
+    with g4:
         st.write(f'GENERATED DATA SUMMARY:')
         # TODO: Why do these disappear when returning to tab?
         nodes = st.session_state[MAPPINGS].nodes

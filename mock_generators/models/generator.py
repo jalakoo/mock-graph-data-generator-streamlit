@@ -3,6 +3,8 @@ import logging
 import sys
 import re
 import numbers
+# TODO: replace with dataclasses
+# from dataclasses import dataclass
 
 @unique
 class GeneratorType(Enum):
@@ -126,8 +128,6 @@ def generators_from_json(json : dict) -> dict:
 class Generator():
 
     # TODO: Support pattern generation and property based values
-
-
     @staticmethod
     def from_dict(
         id: str,
