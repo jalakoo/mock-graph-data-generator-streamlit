@@ -1,4 +1,7 @@
 {
+    "README":{
+        "content": "This is the default list of all generators used by the app. If you add new generators they will be added to this file. The default_generators.json file contains a copy of this from the repo maintainer(s)"
+    },
     "05711cac": {
         "args": [],
         "code_url": "mock_generators/generators/05711cac.py",
@@ -83,7 +86,7 @@
         ],
         "code_url": "mock_generators/generators/469b37c7.py",
         "description": "Random integer from a min and max value argument. Argument values are inclusive.",
-        "name": "Int",
+        "name": "Int Range",
         "tags": [
             "int",
             "integer",
@@ -103,6 +106,16 @@
             "from"
         ],
         "type": "String"
+    },
+    "4b0db60a": {
+        "args": [],
+        "code_url": "mock_generators/generators/4b0db60a.py",
+        "description": "Randomly assigns to a target node. Duplicates and orphan nodes possible.",
+        "name": "Pure Random",
+        "tags": [
+            "random"
+        ],
+        "type": "Assignment"
     },
     "57f2df99": {
         "args": [
@@ -174,6 +187,16 @@
             "name"
         ],
         "type": "String"
+    },
+    "73853311": {
+        "args": [],
+        "code_url": "mock_generators/generators/73853311.py",
+        "description": "Assigns each source node to a random target node, until target node records are exhausted. No duplicates, no orphan to nodes.",
+        "name": "Exhaustive Random",
+        "tags": [
+            "exhaustive"
+        ],
+        "type": "Assignment"
     },
     "78bc0765": {
         "args": [
@@ -259,6 +282,33 @@
         ],
         "type": "String"
     },
+    "df2bbd43": {
+        "args": [
+            {
+                "default": "",
+                "label": "CSV Filepath",
+                "type": "String",
+                "hint": "mock_generators/datasets/tech_companies.csv",
+                "description":""
+            },
+            {
+                "default": "",
+                "label": "Header Column Field",
+                "type": "String",
+                "hint": "Company Name",
+                "description":""
+            }
+        ],
+        "code_url": "mock_generators/generators/df2bbd43.py",
+        "description": "Random string row value from a specified csv file. Be certain field contains string values.",
+        "name": "String from CSV",
+        "tags": [
+            "csv",
+            " string",
+            " random"
+        ],
+        "type": "String"
+    },
     "e0eb78b0": {
         "args": [
             {
@@ -331,6 +381,26 @@
             "price"
         ],
         "type": "Float"
+    },
+    "ecdff22c": {
+        "args": [
+            {
+                "default": 1,
+                "label": "Value",
+                "type": "Integer"
+            }
+        ],
+        "code_url": "mock_generators/generators/ecdff22c.py",
+        "description": "Constant integer value",
+        "name": "Int",
+        "tags": [
+            "int",
+            "integer",
+            "num",
+            "number",
+            "count"
+        ],
+        "type": "Integer"
     },
     "id1": {
         "args": [

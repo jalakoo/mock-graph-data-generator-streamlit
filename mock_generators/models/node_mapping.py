@@ -3,19 +3,33 @@ from models.generator import Generator
 import sys
 import logging
 
+# TODO: Should have made these dataclasses
 class NodeMapping():
+
+    @staticmethod
+    def empty():
+        return NodeMapping(
+            nid = "",
+            position = {"x": 0, "y": 0},
+            caption = "",
+            labels = [],
+            properties = {},
+            count_generator = None,
+            count_args = [],
+            key_property = None
+        )
 
     def __init__(
         self, 
-        id: str,
+        nid: str,
         position: dict,   # ie: {x: 0, y: 0}
         caption: str,
         labels: list[str], 
         properties: dict[str, PropertyMapping],
         count_generator: Generator,
-        count_args: list[any] = [],
-        key_property: PropertyMapping = None):
-        self.id = id
+        count_args: list[any],
+        key_property: PropertyMapping):
+        self.nid = nid
         self.position = position
         self.caption = caption
         self.labels = labels
@@ -23,42 +37,40 @@ class NodeMapping():
         self.count_generator = count_generator
         self.count_args = count_args
         self.key_property = key_property # Property to use as unique key for this node
-        self.generated_values = None
+        self.generated_values = None # Will be a list[dict] when generated
 
     def __str__(self):
-        return f"NodeMapping(id={self.id}, caption={self.caption}, labels={self.labels}, properties={self.properties}, count_generator={self.count_generator}, count_args={self.count_args}, key_property={self.key_property})"
+        return f"NodeMapping(nid={self.nid}, caption={self.caption}, labels={self.labels}, properties={self.properties}, count_generator={self.count_generator}, count_args={self.count_args}, key_property={self.key_property})"
 
     def __repr__(self):
         return self.__str__()
 
 
     def to_dict(self):
-        if self.key_property is None:
             return {
-                "id": self.id,
+                "nid": self.nid,
                 "caption": self.caption,
                 "position": self.position,
                 "labels": self.labels,
-                "properties": {key: property.to_dict() for (key, property) in self.properties.items()},
-                "count_generator": self.count_generator.to_dict(),
-                "count_args": self.count_args
-            }
-        else:
-            return {
-                "id": self.id,
-                "caption": self.caption,
-                "position": self.position,
-                "labels": self.labels,
-                "properties": {key: property.to_dict() for (key, property) in self.properties.items()},
-                "count_generator": self.count_generator.to_dict(),
+                "properties": {key: property.to_dict() for (key, property) in self.properties.items() if property.type is not None},
+                "count_generator": self.count_generator.to_dict() if self.count_generator is not None else None,
                 "count_args": self.count_args,
-                "key_property" : self.key_property.to_dict()
+                "key_property" : self.key_property.to_dict() if self.key_property is not None else None
             }
 
     def filename(self):
-        return f"{self.caption.lower()}_{self.id.lower()}"
+        return f"{self.caption.lower()}_{self.nid.lower()}"
 
     # TODO: Verify unique keys are respected during generation
+
+    def ready_to_generate(self):
+        if self.caption is None:
+            return False
+        if self.count_generator is None:
+            return False
+        if self.key_property is None:
+            return False
+        return True
 
     def generate_values(self) -> list[dict]:
         # returns a list of dicts with the generated values
@@ -95,4 +107,5 @@ class NodeMapping():
         
         # Store and return all_results
         self.generated_values = all_results
+        logging.info(f'node_mapping.py: NodeMapping.generate_values() generated {len(self.generated_values)} values for node mapping {self.caption}')
         return self.generated_values

@@ -5,20 +5,46 @@ from models.generator import Generator
 import logging
 import random
 import sys
+from copy import deepcopy
 
 class RelationshipMapping():
 
+    @staticmethod
+    def empty():
+        return RelationshipMapping(
+            rid = "",
+            type = "",
+            from_node = None,
+            to_node = None,
+            properties = {},
+            count_generator = None,
+            count_args = [],
+            filter_generator = None,
+            filter_args = [],
+            assignment_generator = None,
+            assignment_args = []
+        )
+
     def __init__(
         self, 
-        id: str,
+        rid: str,
         type: str,
+        properties: dict[str, PropertyMapping],
         from_node : NodeMapping,
         to_node : NodeMapping,
-        properties: dict[str, PropertyMapping],
+        # For determining count of relationships to generate
         count_generator: Generator,
-        count_args: list[any] = []
+        # For determining how to assign relationships -> to nodes
+        assignment_generator: Generator,
+        assignment_args: list[any] = [],
+        count_args: list[any] = [],
+        # TODO: Make below non-optional
+        # For filtering from nodes
+        filter_generator: Generator = None,
+        filter_args: list[any] = [],
+
         ):
-        self.id = id
+        self.rid = rid
         self.type = type
         self.from_node = from_node
         self.to_node = to_node
@@ -26,34 +52,49 @@ class RelationshipMapping():
         self.count_generator = count_generator
         self.count_args = count_args
         self.generated_values = None
+        self.filter_generator = filter_generator
+        self.filter_generator_args = filter_args
+        self.assignment_generator = assignment_generator
+        self.assignment_args = assignment_args
 
     def __str__(self):
-        return f"RelationshipMapping(id={self.id}, type={self.type}, from_node={self.from_node.to_dict()}, to_node={self.to_node.to_dict()}, properties={self.properties}, count_generator={self.count_generator}, count_args={self.count_args})"
+        return f"RelationshipMapping(rid={self.rid}, type={self.type}, from_node={self.from_node}, to_node={self.to_node}, properties={self.properties}, count_generator={self.count_generator}, count_args={self.count_args})"
 
     def __repr__(self):
         return self.__str__()
 
     def to_dict(self):
         return {
-            "id": self.id,
+            "rid": self.rid,
             "type": self.type,
-            "from_node": self.from_node.to_dict(),
-            "to_node": self.to_node.to_dict(),
+            "from_node": self.from_node.to_dict() if self.from_node is not None else None,
+            "to_node": self.to_node.to_dict() if self.to_node is not None else None,
             "properties": {key: property.to_dict() for (key,property) in self.properties.items()},
-            "count_generator": self.count_generator.to_dict(),
+            "count_generator": self.count_generator.to_dict() if self.count_generator is not None else None,
             "count_args": self.count_args
+            # TODO: Add filter_generator, filter_args, assignment_generator, assignment_args
         }
 
     def filename(self):
         from_node_name = self.from_node.caption.lower()
         to_node_name = self.to_node.caption.lower()
-        return f"{from_node_name}_{self.type.lower()}_{to_node_name}_{self.id.lower()}"
+        return f"{from_node_name}_{self.type.lower()}_{to_node_name}_{self.rid.lower()}"
 
     # TODO: Verify unique keys are respected during generation
 
+    def ready_to_generate(self):
+        if self.type is None:
+            return False
+        if self.from_node is None:
+            return False
+        if self.to_node is None:
+            return False
+        if self.count_generator is None:
+            return False
+        return True
+
     def generate_values(
         self, 
-        # all_node_values: dict[NodeMapping, list[dict]]
         )-> list[dict]:
 
         # Sample incoming all_node_values:
@@ -66,19 +107,11 @@ class RelationshipMapping():
         #   ]
         # }
 
-        if self.from_node == None:
-            raise Exception(f"RelationshipMapping {self} not assigned a from_node before generating values")
-        if self.to_node == None:
-            raise Exception(f"RelationshipMapping {self} not assigned a to_node before generating values")
-
-        from_node = self.from_node
-        to_node = self.to_node
-
         # Make sure from and to nodes have generated values already
-        if from_node.generated_values == None:
-            from_node.generate_values()
-        if to_node.generated_values == None:
-            to_node.generate_values()
+        if self.from_node.generated_values == None:
+            self.from_node.generate_values()
+        if self.to_node.generated_values == None:
+            self.to_node.generate_values()
 
         # Sample return list:
         # [
@@ -93,32 +126,59 @@ class RelationshipMapping():
         # Store generated relationships to return
         all_results = []
 
+        # TODO: Run filter generator here to determine which source nodes to process
+
+        # Make a copy of the generated list
+        values = deepcopy(self.to_node.generated_values)
+
         # Iterate through every generated source node
-        for value_dict in from_node.generated_values:
-            # value_dict = dict of property names and generated values
+        for value_dict in self.from_node.generated_values:
+            # dict of property names and generated values
 
             # Decide on how many of these relationships to generate
             count = 0
             try:
                 count = self.count_generator.generate(self.count_args)
             except:
+                # Generator not found or other code error
                 raise Exception(f"Relationship mapping could not generate a number of relationships to continue generation process, error: {str(sys.exc_info()[0])}")
 
-            # Validate we have anything to process for this source node
+            # Validate something to process for this source node
             if value_dict.keys() is None or len(value_dict.keys()) == 0:
-                raise Exception(f"No properties found for NodeMapping: {from_node}")
+                # Data importer requires at least one property-value
+                raise Exception(f"No properties found for NodeMapping: {self.from_node}")
 
-            # Get the key property name and value for source node
-            from_node_key_property_name = from_node.key_property.name
+            # Get the key property name and value for the source node record
+            from_node_key_property_name = self.from_node.key_property.name
             from_node_key_property_value = value_dict[from_node_key_property_name]
 
-            # If count is zero - no relationship generated for the curent source node
-            for _ in range(count):
+            # If count is zero - no relationship to generate for the curent source node
+
+            # Generate a new relationship for each count
+            for i in range(count):
                 # Select a random target node
-                to_node_value_dict = random.choice(to_node.generated_values)
+
+                if values is None or len(values) == 0:
+                    # TODO: This appears to break the randomization
+                    logging.info(f'relationship_mapping.py: values exhausted at index {i} before count of {count} reached. Values: {len(values)}')
+                    continue
+
+                # Extract results. Values will be passed back through the next iteration in case the generator returns a modified list
+
+                # TODO: values does not change after this call
+                to_node_value_dict, new_values = self.assignment_generator.generate(values)
+
+                values = new_values
+
+                # Types of randomization generators to consider:
+                # - Pure Random
+                # - Random with a bias towards nodes with fewer relationships
+                # - Random with a bias towards nodes with more relationships
+                # - Random Unique (no duplicates)
+                # - Random Exhaustive (attempt to exhaust all nodes before repeating)
 
                 # Get key property name and value for target record
-                to_node_key_property_name = to_node.key_property.name
+                to_node_key_property_name = self.to_node.key_property.name
                 to_node_key_property_value = to_node_value_dict[to_node_key_property_name]
 
                 # Generate the relationship
@@ -134,6 +194,7 @@ class RelationshipMapping():
                 # Add the relationship to the list
                 all_results.append(result)
 
+        # Store results for reference
         self.generated_values = all_results
         return self.generated_values
         

@@ -1,15 +1,20 @@
-from enum import Enum
+from enum import Enum, unique
 import logging
 import sys
 import re
+import numbers
+# TODO: replace with dataclasses
+# from dataclasses import dataclass
 
+@unique
 class GeneratorType(Enum):
     BOOL = 1,
     INT = 2,
     FLOAT = 3,
     STRING = 4,
     DATETIME = 5,
-    RELATIONAL = 6
+    ASSIGNMENT = 6
+    RELATIONSHIP = 7
 
     @staticmethod
     def type_from_string(aType: str):
@@ -24,8 +29,10 @@ class GeneratorType(Enum):
             return GeneratorType.DATETIME
         elif type == "bool":
             return GeneratorType.BOOL
-        elif type == "relational":
-            return GeneratorType.RELATIONAL
+        elif type == "assignment":
+            return GeneratorType.ASSIGNMENT
+        elif type == "relationship":
+            return GeneratorType.RELATIONSHIP
         else:
             raise TypeError("Type not supported")
     
@@ -40,8 +47,10 @@ class GeneratorType(Enum):
             return "Datetime"
         elif self == GeneratorType.BOOL:
             return "Bool"
-        elif self == GeneratorType.RELATIONAL:
-            return "Relational"
+        elif self == GeneratorType.ASSIGNMENT:
+            return "Assignment"
+        elif self == GeneratorType.RELATIONSHIP:
+            return "Relationship"
         else:
             raise TypeError("Type not supported")
 
@@ -58,28 +67,50 @@ class GeneratorArg():
             default = None
         else: 
             default = dict["default"]
+        if "hint" not in dict.keys():
+            hint = ""
+        else:   
+            hint = dict["hint"]
+        if "description" not in dict.keys():
+            description = ""
+        else:
+            description = dict["description"]
 
         return GeneratorArg(
             type = GeneratorType.type_from_string(dict["type"]),
             label = dict["label"],
-            default= default
+            default= default,
+            hint = hint,
+            description=description
         )
 
     def __init__(
         self, 
         type: GeneratorType, 
         label: str,
-        default: any = None
+        default: any = None,
+        hint : str = None,
+        description : str = None
     ):
         self.type = type
         self.label = label
         self.default = default
+        self.hint = hint
+        self.description = description
+
+    def __str__(self):
+        return f'GeneratorArg: type: {self.type}, label: {self.label}, default: {self.default}, hint: {self.hint}, description: {self.description}'
+
+    def __repr__(self):
+        return self.__str__()
 
     def to_dict(self):
         return {
             "type": self.type.to_string(),
             "label": self.label,
-            "default": self.default
+            "default": self.default,
+            "hint": self.hint,
+            "description": self.description
         }
 
     @staticmethod
@@ -90,6 +121,10 @@ class GeneratorArg():
 def generators_from_json(json : dict) -> dict:
     result = {}
     for key in json.keys():
+        if key == "README":
+            # Special key for embedding notes in the json 
+            # Hacky but whatever
+            continue
         generator = Generator.from_dict(key, json[key])
         result[key] = generator
     return result
@@ -97,8 +132,6 @@ def generators_from_json(json : dict) -> dict:
 class Generator():
 
     # TODO: Support pattern generation and property based values
-
-
     @staticmethod
     def from_dict(
         id: str,
@@ -164,7 +197,7 @@ class Generator():
         }
 
     def __str__(self):
-        return f'Generator: id: {self.id}, name: {self.name}'
+        return f'Generator: id: {self.id}, name: {self.name}, type: {self.type}, args: {self.args}'
 
     def __repr__(self):
         return self.__str__()

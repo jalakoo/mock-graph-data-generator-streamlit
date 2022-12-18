@@ -11,6 +11,11 @@ python = "^3.11"
 streamlit = "^1.15.1"
 lorem-text = "^2.1"
 faker = "^15.3.3"
+streamlit-extras = "^0.2.4"
+streamlit-toggle-switch = "^1.0.2"
+hydralit-components = "^1.0.10"
+pytest = "^7.2.0"
+dataclasses-json = "^0.5.7"
 
 
 [build-system]

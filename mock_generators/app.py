@@ -7,11 +7,10 @@ from tabs.mapping_tab import mapping_tab
 from tabs.generate_tab import generate_tab
 from tabs.export_tab import export_tab
 from tabs.importing_tab import import_tab
-from models.generator import Generator
+from tabs.design_tab import design_tab
+from tabs.data_importer import data_importer_tab
 from models.mapping import Mapping
-from models.node_mapping import NodeMapping
-from models.relationship_mapping import RelationshipMapping
-from models.property_mapping import PropertyMapping
+
 
 # SETUP
 st.set_page_config(layout="wide")
@@ -34,6 +33,10 @@ if IMPORTS_PATH not in st.session_state:
 # TODO: Replace with reference to selected import file
 if IMPORTED_FILE not in st.session_state:
     st.session_state[IMPORTED_FILE] = None
+if IMPORTED_NODES not in st.session_state:
+    st.session_state[IMPORTED_NODES] = []
+if IMPORTED_RELATIONSHIPS not in st.session_state:
+    st.session_state[IMPORTED_RELATIONSHIPS] = []
 if EXPORTS_PATH not in st.session_state:
     st.session_state[EXPORTS_PATH] = DEFAULT_EXPORTS_PATH
 if CODE_TEMPLATE_FILE not in st.session_state:
@@ -50,25 +53,32 @@ st.markdown("This is a collection of tools to generate mock graph data for [Neo4
 generators = None
 imported_file = None
 
-tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(["Config >", "Import >",  "Mapping >", "Generators >", "New Generator >", "Generate >", "Export"])
+# Streamlit runs from top-to-bottom from tabs 1 through 8. This is essentially one giant single page app.  Earlier attempt to use Streamlit's multi-page app functionality resulted in an inconsistent state between pages.
+tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9 = st.tabs(["Config >", "Design >", "Import >",  "Mapping >", "Search Generators >", "Add New Generator >", "Generate >", "Export >", "Data Importer"])
 
 with tab1:
     config_tab()
 
 with tab2:
-    import_tab()
+    design_tab()
 
 with tab3:
-    mapping_tab()
+    import_tab()
 
 with tab4:
-    generators_tab()
+    mapping_tab()
 
 with tab5:
-    create_tab()
+    generators_tab()
 
 with tab6:
-    generate_tab()
+    create_tab()
 
 with tab7:
+    generate_tab()
+
+with tab8:
     export_tab()
+
+with tab9:
+    data_importer_tab()
