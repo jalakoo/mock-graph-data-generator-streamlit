@@ -11,7 +11,6 @@ def property_row(
     pid: str,
     index: int, 
     properties: list[dict],
-    # generators: dict[str, Generator]
     ) -> PropertyMapping:
 
     # Create a new propertyMapping for storing user selections
@@ -30,7 +29,7 @@ def property_row(
             # TODO: Find away to pass in node labels and relationship types to this string
             recommended_generator = recommended_generator_from(existing_name, st.session_state[GENERATORS].values())
             if recommended_generator is None:
-                logging.warning(f'Could not find a recommended generator for property {existing_name}')
+                logging.info(f'No recommended generator for property {existing_name}')
         name = st.text_input("Property Name",value=existing_name, key=f"{type}_{pid}_property_{index}_name")
         if name != "" and name[0] == "_":
             st.error("Property names cannot start with an underscore")
@@ -47,9 +46,11 @@ def property_row(
     # Generator to create property data with
     with pc3:
 
-        # TODO: Hot reloading breaks here - unable to properly filter generators by type anymore - have to do a hard refresh - WHY?
+
 
         recommended_generator_index = 0
+        # TODO: Hot reloading breaks here - unable to properly filter generators by type anymore - have to do a hard refresh - WHY?
+
         # possible_generators =  [generator for generator in st.session_state[GENERATORS].values() if generator.type == generator_type]
 
         possible_generators = []

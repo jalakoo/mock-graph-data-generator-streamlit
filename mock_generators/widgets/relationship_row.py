@@ -81,7 +81,6 @@ def relationship_row(
     to_node = NodeMapping.empty()
     if fromId is not None:
         from_node = node_from_id(fromId)
-        logging.info(f'relationship_row: from_node: {from_node}')
     if toId is not None:
         to_node = node_from_id(toId) 
     should_enable = True

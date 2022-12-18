@@ -10,7 +10,7 @@ def create_tab():
     with col1:
         st.image("mock_generators/media/blueprint.gif")
     with col2:
-        st.write(f"Add additional generators.\n\nCreate new generators that can be used by properties in the mapping tab. These can be used to generate mock data for properties in the mapping tab.\n\nWhen finished, go to the Mapping Tab to assign generators to node/relationship properties or the Generators Tab to test and search for available generators.")
+        st.write(f"Add additional generators.\n\nCreate new generators that can be used by properties in the mapping tab.\n\nWhen finished, go to Generators Tab to test and search for available generators.")
     st.markdown("--------")
 
     # Make radio horizontal
@@ -19,7 +19,8 @@ def create_tab():
     # st.form sadly does not support dynamic widget generation internally.
     # TODO: Either create a custom way to clear all inputs after submission or reduce need to dynamically change code template / optional arg fields
     # with st.form("New Generator", clear_on_submit=True):
-    
+    st.info(f'NOTE: Creating a new generator DOES NOT clear fields. Go to the Generators Tab to review new generators.')
+
     # Generator type
     type = st.radio("Generator Type", ["String", "Bool", "Int", "Float","Datetime", "Assignment"],help="Generators are grouped by the data type they generate.")
 
@@ -57,24 +58,27 @@ def create_tab():
     code = st.text_area("Generator Code", placeholder = st.session_state["NEW_GENERATOR_CURRENT_TEMPLATE"], height = 200, value = code_template, help="The code that will be executed to generate the mock data. This should be a function that takes a single argument, a dictionary of arguments, and returns a single value. The function name should not be changed from 'generate()'.")
 
     # Optional Arguments
-    # num_cols = st.number_input("Optional Number of Arguments", 0, help="Arguments that can be passed to the generator when it is called. For example, a generator that generates a random number between 0 and 1 can have optional arguments that specify lower and upper bounds of the random number.")
 
-    # The below method of dynamically adding UI elements does not work in an st.form
-    # args : list[dict] = []
-    # if num_cols > 0:
-    #     for i in range(num_cols):
-    #         st.markdown("""---""")
-    #         args[i] = argument_widget(i)
 
-    # So we'll have to artifically set the number of argument inputs
+    # The below method of dynamically adding UI elements does not work in an st.forms
+    num_cols = st.number_input("Optional Number of Arguments", 0, help="Arguments that can be passed to the generator when it is called. For example, a generator that generates a random number between 0 and 1 can have optional arguments that specify lower and upper bounds of the random number.")
     args : list[dict] = []
-    num_args = 4
-    cols = st.columns(num_args)
-    for c in range(num_args):
-        with cols[c]:
-            new_arg = new_generator_argument(index=c, type=type)
+    if num_cols > 0:
+        for i in range(num_cols):
+            st.markdown("""---""")
+            new_arg = new_generator_argument(index=i, type=type)
             if new_arg:
                 args.append(new_arg)
+
+    # If using an st.form have to hardcode number of possible argument inputs
+    # args : list[dict] = []
+    # num_args = 4
+    # cols = st.columns(num_args)
+    # for c in range(num_args):
+    #     with cols[c]:
+    #         new_arg = new_generator_argument(index=c, type=type)
+    #         if new_arg:
+    #             args.append(new_arg)
 
     code_filepath = st.session_state[CODE_FILE]
     spec_filepath = st.session_state[SPEC_FILE]

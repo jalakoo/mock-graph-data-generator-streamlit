@@ -7,6 +7,7 @@ from constants import *
 def folder_files_expander(
     folder_path: str,
     widget_id: str = "",
+    # TODO: Update this to take a list
     specific_extension: str = None,
     show_hidden: bool = False,
     enable_delete_button: bool = False,

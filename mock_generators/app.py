@@ -8,11 +8,9 @@ from tabs.generate_tab import generate_tab
 from tabs.export_tab import export_tab
 from tabs.importing_tab import import_tab
 from tabs.design_tab import design_tab
-from models.generator import Generator
+from tabs.data_importer import data_importer_tab
 from models.mapping import Mapping
-from models.node_mapping import NodeMapping
-from models.relationship_mapping import RelationshipMapping
-from models.property_mapping import PropertyMapping
+
 
 # SETUP
 st.set_page_config(layout="wide")
@@ -55,7 +53,8 @@ st.markdown("This is a collection of tools to generate mock graph data for [Neo4
 generators = None
 imported_file = None
 
-tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs(["Config >", "Design >", "Import >",  "Mapping >", "Generators >", "New Generator >", "Generate >", "Export"])
+# Streamlit runs from top-to-bottom from tabs 1 through 8. This is essentially one giant single page app.  Earlier attempt to use Streamlit's multi-page app functionality resulted in an inconsistent state between pages.
+tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9 = st.tabs(["Config >", "Design >", "Import >",  "Mapping >", "Search Generators >", "Add New Generator >", "Generate >", "Export >", "Data Importer"])
 
 with tab1:
     config_tab()
@@ -80,3 +79,6 @@ with tab7:
 
 with tab8:
     export_tab()
+
+with tab9:
+    data_importer_tab()

@@ -51,7 +51,6 @@ class Mapping():
 
         try:
             json.loads(json.dumps(self.to_dict()))
-            # logging.info(f'mapping.py (model): is_valid. SUCCESS for mapping: {self}')
             return True
         except ValueError as err:
             logging.error(f'mapping.py (model): is_valid. ERROR: {err} for mapping: {self}')

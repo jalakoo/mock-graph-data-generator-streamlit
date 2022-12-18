@@ -188,7 +188,10 @@ class DataImporterJson():
         self,
         relationship: RelationshipMapping
         ):
-        # Must be run AFTER relationshipMappings have generated mock data.
+
+        # In case relationshipMapping has not yet generated data
+        if relationship.generated_values is None:
+            relationship.generate_values()
 
         # Add to graph:relationships
         try: 

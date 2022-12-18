@@ -121,6 +121,10 @@ class GeneratorArg():
 def generators_from_json(json : dict) -> dict:
     result = {}
     for key in json.keys():
+        if key == "README":
+            # Special key for embedding notes in the json 
+            # Hacky but whatever
+            continue
         generator = Generator.from_dict(key, json[key])
         result[key] = generator
     return result

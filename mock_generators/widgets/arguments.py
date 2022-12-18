@@ -75,7 +75,6 @@ def new_generator_argument(
     label = st.text_input("Name", key = f"arg_type_{index}_label", help="Name of the argument that will be displayed in the UI. (e.g. 'Name' or 'Age'. Leave blank to skip this argument.")
 
     default = input_type("Default Value", type_input, key=f"arg_type_{index}_default")
-    # logging.info(f'add_arg: {type_input}, {type}, {label}, {default}')
 
     if label is not None and label != "":
         return {

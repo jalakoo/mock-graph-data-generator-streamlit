@@ -13,28 +13,45 @@ def config_tab() -> list[Generator]:
     with col1:
         st.image("mock_generators/media/options.gif")
     with col2:
-        st.write(f"Optional Configuration Options.\n\nChange the export path, source locations for importing and reading generator specifications and code files. Generators are code functions used to generate specific types of mock data (ie: email generator for creating mock email addresses).")
+        st.write(f"Optional Configuration Options.\n\nSkip to Design tab if not needing to change any default folder paths.")
     st.markdown("--------")
 
     # Import/Export configurations
-    ec1, ec2, ec3 = st.columns(3)
 
-    with ec1:
-        # Override default import path
+    # Import Path
+    ci1, ci2 = st.columns([1,2])
+    with ci1:
         new_imports_path = st.text_input("Import Path", value=st.session_state[IMPORTS_PATH], help="Path to import previously uploaded JSON files from.")
         if new_imports_path != st.session_state[IMPORTS_PATH]:
             st.session_state[IMPORTS_PATH] = new_imports_path
-    with ec2:
-        # Load exports path
-        new_zips_path = st.text_input("Zip Archives folder path", value=st.session_state[ZIPS_PATH], help="Folder path where generated files are zipped and placed. This .zip file can be uploaded directly to Neo4j's data-importer")
-        if new_zips_path != st.session_state[ZIPS_PATH]:
-            st.session_state[ZIPS_PATH] = new_zips_path
+    with ci2:
+        st.write(f'Files in Import Path:')
+        folder_files_expander(
+            folder_path=st.session_state[IMPORTS_PATH],
+            specific_extension=".json")
 
-    with ec3:
+    # Generated Files path
+    ce1, ce2 = st.columns([1,2])
+    with ce1:
         new_exports_filepath = st.text_input("Generated Files folder path", st.session_state[EXPORTS_PATH], help="Folder path where generated files are placed. The final .zip file for data-importer use will zip all non-hidden files from this folder.")
         if new_exports_filepath != st.session_state[EXPORTS_PATH]:
             st.session_state[EXPORTS_PATH] = new_exports_filepath
+    with ce2:
+        st.write(f'Files in Generated Files Path:')
+        folder_files_expander(
+            folder_path=st.session_state[EXPORTS_PATH])
 
+    # Export Zips path
+    cz1, cz2 = st.columns([1,2])
+    with cz1:
+        new_zips_path = st.text_input("Zip Archives folder path", value=st.session_state[ZIPS_PATH], help="Folder path where generated files are zipped and placed. This .zip file can be uploaded directly to Neo4j's data-importer")
+        if new_zips_path != st.session_state[ZIPS_PATH]:
+            st.session_state[ZIPS_PATH] = new_zips_path
+    with cz2:
+        st.write(f'Files in Zip Exports Path:')
+        # TODO: Why does this work in the export tab but not here?
+        folder_files_expander(
+            folder_path=st.session_state[ZIPS_PATH])
 
     # Load new generator template file
     cc1, cc2 = st.columns([1,2])

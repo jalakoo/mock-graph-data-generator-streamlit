@@ -3,6 +3,7 @@ from models.generator import Generator
 import sys
 import logging
 
+# TODO: Should have made these dataclasses
 class NodeMapping():
 
     @staticmethod

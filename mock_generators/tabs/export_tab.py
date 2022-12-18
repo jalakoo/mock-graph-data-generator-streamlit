@@ -17,7 +17,7 @@ def export_tab():
 
     with ec1:
         st.write(f"GENERATED FILES:")
-        folder_files_expander(export_folder, widget_id="export_tab")
+        folder_files_expander(export_folder, widget_id="export_tab", enable_download=True)
 
     with ec2:
         st.write(f'DOWNLOAD ZIP FILES:')
@@ -25,5 +25,6 @@ def export_tab():
 
     with ec3:
         st.write(f"UPLOAD TO:")
-        link = '[Neo4j Data Import Tool](https://console.neo4j.io)'
+        link = "- [Neo4j Console's](https://console.neo4j.io) Data Import Feature OR"
         st.markdown(link, unsafe_allow_html=True)
+        st.write(f'- Go to the Data Import tab to access the tool directly.')

@@ -1,20 +1,75 @@
 {
+    "README":{
+        "content": "This is a list of all generators that initially came with this repo."
+    }
+    ,
+    "05711cac": {
+        "args": [],
+        "code_url": "mock_generators/generators/05711cac.py",
+        "description": "Random URI with Faker library.",
+        "name": "URL",
+        "tags": [
+            "uri",
+            "url"
+        ],
+        "type": "String"
+    },
+    "05add148": {
+        "args": [
+            {
+                "default": "",
+                "label": "Optional Domain (ie: company.com)",
+                "type": "String"
+            }
+        ],
+        "code_url": "mock_generators/generators/05add148.py",
+        "description": "Random email with Faker library.",
+        "name": "Email",
+        "tags": [
+            "email"
+        ],
+        "type": "String"
+    },
+    "111d38e0": {
+        "args": [
+            {
+                "default": "",
+                "label": "List of float (ie: 1.0, 2.2, 3.3)",
+                "type": "String"
+            }
+        ],
+        "code_url": "mock_generators/generators/111d38e0.py",
+        "description": "Randomly selected float from a comma-seperated list of options.",
+        "name": "Float from list",
+        "tags": [
+            "float",
+            "list"
+        ],
+        "type": "Float"
+    },
     "338d576e": {
         "args": [
             {
                 "default": 1,
                 "label": "Minimum Number",
-                "type": "Int"
+                "type": "Integer"
             },
             {
                 "default": 10,
                 "label": "Maximum Number",
-                "type": "Int"
+                "type": "Integer"
             }
         ],
         "code_url": "mock_generators/generators/338d576e.py",
         "description": "String generator using the lorem-text package",
         "name": "Paragraphs",
+        "tags": [
+            "string",
+            "lorem",
+            "ipsum",
+            "paragraph",
+            "paragraphs"
+        ],
         "type": "String"
     },
     "469b37c7": {
@@ -22,37 +77,62 @@
             {
                 "default": 1,
                 "label": "Min",
-                "type": "Int"
+                "type": "Integer"
             },
             {
                 "default": 10,
                 "label": "Max",
-                "type": "Int"
+                "type": "Integer"
             }
         ],
         "code_url": "mock_generators/generators/469b37c7.py",
         "description": "Random integer from a min and max value argument. Argument values are inclusive.",
-        "name": "Int",
-        "type": "Int"
+        "name": "Int Range",
+        "tags": [
+            "int",
+            "integer",
+            "number",
+            "num",
+            "count"
+        ],
+        "type": "Integer"
     },
     "470ff56f": {
         "args": [],
         "code_url": "mock_generators/generators/470ff56f.py",
         "description": "Country name generator using the Faker library.",
         "name": "Country",
+        "tags": [
+            "country",
+            "from"
+        ],
         "type": "String"
+    },
+    "4b0db60a": {
+        "args": [],
+        "code_url": "mock_generators/generators/4b0db60a.py",
+        "description": "Randomly assigns to a target node. Duplicates and orphan nodes possible.",
+        "name": "Pure Random",
+        "tags": [
+            "random"
+        ],
+        "type": "Assignment"
     },
     "57f2df99": {
         "args": [
             {
                 "default": 50,
                 "label": "Percent chance of true (out of 100)",
-                "type": "Int"
+                "type": "Integer"
             }
         ],
         "code_url": "mock_generators/generators/57f2df99.py",
         "description": "Bool generator using the Faker library.",
         "name": "Bool",
+        "tags": [
+            "bool",
+            "boolean"
+        ],
         "type": "Bool"
     },
     "58e9ddbb": {
@@ -60,6 +140,10 @@
         "code_url": "mock_generators/generators/58e9ddbb.py",
         "description": "First name generator using the Faker library",
         "name": "First Name",
+        "tags": [
+            "first",
+            "name"
+        ],
         "type": "String"
     },
     "5929c11b": {
@@ -67,6 +151,31 @@
         "code_url": "mock_generators/generators/5929c11b.py",
         "description": "Last name generator using the Faker library.",
         "name": "Last Name",
+        "tags": [
+            "last",
+            "name"
+        ],
+        "type": "String"
+    },
+    "5bf1fbd6": {
+        "args": [
+            {
+                "default": "",
+                "label": "List of words (ie: alpha, brave, charlie)",
+                "type": "String"
+            }
+        ],
+        "code_url": "mock_generators/generators/5bf1fbd6.py",
+        "description": "Randomly selected string from a comma-seperated list of options.",
+        "name": "String from list",
+        "tags": [
+            "string",
+            "list",
+            "word",
+            "words",
+            "status",
+            "type"
+        ],
         "type": "String"
     },
     "5e30c30b": {
@@ -74,19 +183,39 @@
         "code_url": "mock_generators/generators/5e30c30b.py",
         "description": "Company name generator using the Faker library.",
         "name": "Company Name",
+        "tags": [
+            "company",
+            "name"
+        ],
         "type": "String"
+    },
+    "73853311": {
+        "args": [],
+        "code_url": "mock_generators/generators/73853311.py",
+        "description": "Assigns each source node to a random target node, until target node records are exhausted. No duplicates, no orphan to nodes.",
+        "name": "Exhaustive Random",
+        "tags": [
+            "exhaustive"
+        ],
+        "type": "Assignment"
     },
     "78bc0765": {
         "args": [
             {
                 "default": 37,
                 "label": "Limit character length",
-                "type": "Int"
+                "type": "Integer"
             }
         ],
         "code_url": "mock_generators/generators/78bc0765.py",
         "description": "Random UUID 4 hash using Faker library. 37 Characters Max.",
         "name": "UUID",
+        "tags": [
+            "uuid",
+            "hash",
+            "unique",
+            "uid"
+        ],
         "type": "String"
     },
     "92eeddbb": {
@@ -94,6 +223,10 @@
         "code_url": "mock_generators/generators/92eeddbb.py",
         "description": "City name generator using the Faker library.",
         "name": "City",
+        "tags": [
+            "city",
+            "name"
+        ],
         "type": "String"
     },
     "ab64469b": {
@@ -112,37 +245,186 @@
         "code_url": "mock_generators/generators/ab64469b.py",
         "description": "Generate a random date between 2 specified dates. Exclusive of days specified.",
         "name": "Date",
+        "tags": [
+            "date",
+            "datetime",
+            "created",
+            "updated",
+            "at"
+        ],
         "type": "Datetime"
+    },
+    "c9a071b5": {
+        "args": [],
+        "code_url": "mock_generators/generators/c9a071b5.py",
+        "description": "Technobabble words all lower-cased. Faker Library",
+        "name": "Technical BS Phrase",
+        "tags": [
+            "phrase",
+            "phrases",
+            "technical",
+            "jargon",
+            "task",
+            "description"
+        ],
+        "type": "String"
+    },
+    "d1ebdc1a": {
+        "args": [],
+        "code_url": "mock_generators/generators/d1ebdc1a.py",
+        "description": "Phrase with first letter capitalized. Faker Library",
+        "name": "Catch Phrase",
+        "tags": [
+            "phrase",
+            "phrases",
+            "catch",
+            "project",
+            "description"
+        ],
+        "type": "String"
+    },
+    "df2bbd43": {
+        "args": [
+            {
+                "default": "",
+                "label": "CSV Filepath",
+                "type": "String",
+                "hint": "mock_generators/datasets/tech_companies.csv",
+                "description":""
+            },
+            {
+                "default": "",
+                "label": "Header Column Field",
+                "type": "String",
+                "hint": "Company Name",
+                "description":""
+            }
+        ],
+        "code_url": "mock_generators/generators/df2bbd43.py",
+        "description": "Random string row value from a specified csv file. Be certain field contains string values.",
+        "name": "String from CSV",
+        "tags": [
+            "csv",
+            " string",
+            " random"
+        ],
+        "type": "String"
     },
     "e0eb78b0": {
         "args": [
             {
                 "default": 33,
                 "label": "Limit Character Length",
-                "type": "Int"
+                "type": "Integer"
             }
         ],
         "code_url": "mock_generators/generators/e0eb78b0.py",
         "description": "Random MD5 hash using Faker library. 33 Characters max",
         "name": "MD5",
+        "tags": [
+            "md5",
+            "hash",
+            "unique"
+        ],
         "type": "String"
+    },
+    "e56d87a3": {
+        "args": [
+            {
+                "default": "",
+                "label": "List of integers (ie: 1, 2, 3)",
+                "type": "String"
+            }
+        ],
+        "code_url": "mock_generators/generators/e56d87a3.py",
+        "description": "Randomly selected int from a comma-seperated list of options. If no list provided, will return 0",
+        "name": "Int from list",
+        "tags": [
+            "int",
+            "integer",
+            "number",
+            "num",
+            "count",
+            "list",
+            "salary",
+            "cost"
+        ],
+        "type": "Integer"
+    },
+    "e8cff8c1": {
+        "args": [
+            {
+                "default": 0.0,
+                "label": "Min",
+                "type": "Float"
+            },
+            {
+                "default": 1.0,
+                "label": "Max",
+                "type": "Float"
+            },
+            {
+                "default": 2,
+                "label": "Decimal Places",
+                "type": "Integer"
+            }
+        ],
+        "code_url": "mock_generators/generators/e8cff8c1.py",
+        "description": "Random float between a range. Inclusive.",
+        "name": "Float",
+        "tags": [
+            "float",
+            "decimal",
+            "number",
+            "num",
+            "count",
+            "cost",
+            "price"
+        ],
+        "type": "Float"
+    },
+    "ecdff22c": {
+        "args": [
+            {
+                "default": 1,
+                "label": "Value",
+                "type": "Integer"
+            }
+        ],
+        "code_url": "mock_generators/generators/ecdff22c.py",
+        "description": "Constant integer value",
+        "name": "Int",
+        "tags": [
+            "int",
+            "integer",
+            "num",
+            "number",
+            "count"
+        ],
+        "type": "Integer"
     },
     "id1": {
         "args": [
             {
                 "default": 1,
                 "label": "Minimum Number",
-                "type": "Int"
+                "type": "Integer"
             },
             {
                 "default": 10,
                 "label": "Maximum Number",
-                "type": "Int"
+                "type": "Integer"
             }
         ],
         "code_url": "mock_generators/generators/loremtext_words.py",
         "description": "String generator using the lorem-text package",
         "name": "Words",
+        "tags": [
+            "words",
+            "lorem",
+            "text",
+            "description"
+        ],
         "type": "String"
     },
     "id2": {
@@ -150,17 +432,24 @@
             {
                 "default": 1,
                 "label": "Minimum Number",
-                "type": "Int"
+                "type": "Integer"
             },
             {
                 "default": 10,
                 "label": "Maximum Number",
-                "type": "Int"
+                "type": "Integer"
             }
         ],
         "code_url": "mock_generators/generators/loremtext_sentence.py",
         "description": "String generator using the lorem-text package",
         "name": "Sentences",
+        "tags": [
+            "sentence",
+            "sentences",
+            "lorem",
+            "text",
+            "description"
+        ],
         "type": "String"
     }
 }

@@ -1,4 +1,7 @@
 {
+    "README":{
+        "content": "This is the default list of all generators used by the app. If you add new generators they will be added to this file. The default_generators.json file contains a copy of this from the repo maintainer(s)"
+    },
     "05711cac": {
         "args": [],
         "code_url": "mock_generators/generators/05711cac.py",
