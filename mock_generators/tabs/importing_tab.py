@@ -77,7 +77,9 @@ def import_tab():
             st.write("Select an import file:")
 
             folder_files_expander(
-                folder_path=st.session_state[IMPORTS_PATH], file_selected=file_selected, file_selection_button_text="Load this file")
+                folder_path=st.session_state[IMPORTS_PATH], file_selected=file_selected, 
+                specific_extension=".json",
+                file_selection_button_text="Load this file")
 
         elif import_option == "Upload":
             # Upload a new file
