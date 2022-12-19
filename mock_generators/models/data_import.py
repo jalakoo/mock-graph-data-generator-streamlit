@@ -13,10 +13,10 @@ def file_schema_for_property(property: PropertyMapping)-> dict:
     # Why is it so tough to catch datetime objects?
     if isinstance(sample_value, datetime.date):
         sample_value = sample_value.isoformat()
-    if type(sample_value) is datetime:
-        sample_value = sample_value.isoformat()
-    if property.type == GeneratorType.DATETIME:
-        sample_value = sample_value.isoformat()
+    # if type(sample_value) is datetime:
+    #     sample_value = sample_value.isoformat()
+    # if property.type == GeneratorType.DATETIME:
+    #     sample_value = sample_value.isoformat()
 
     result = {
         "name": property.name,
@@ -55,6 +55,14 @@ def graph_model_property(property: PropertyMapping)-> dict:
 def mapping_model_node_mappings(node:NodeMapping)->list[dict[str,str]]:
     result = []
     for property in node.properties.values():
+        result.append({
+            "field": property.name,
+        })
+    return result
+
+def mapping_model_relationship_mappings(rel:RelationshipMapping)->list[dict[str,str]]:
+    result = []
+    for property in rel.properties.values():
         result.append({
             "field": property.name,
         })
@@ -289,7 +297,7 @@ class DataImporterJson():
             {
                     f"{relationship.rid}":{
                         "relationshipSchema": f'{relationship.rid}',
-                        "mappings":[],
+                        "mappings":mapping_model_node_mappings(relationship),
                         # NOTE: The prefixing
                         "sourceMappings": [{
                             "field":f"_from_{relationship.from_node.key_property.name}"

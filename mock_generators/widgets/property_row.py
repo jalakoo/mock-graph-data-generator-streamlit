@@ -31,9 +31,11 @@ def property_row(
             if recommended_generator is None:
                 logging.info(f'No recommended generator for property {existing_name}')
         name = st.text_input("Property Name",value=existing_name, key=f"{type}_{pid}_property_{index}_name")
-        if name != "" and name[0] == "_":
-            st.error("Property names cannot start with an underscore")
-            name = None
+        if name is None or name == "":
+            st.error("Property name cannot be empty")
+        # if name[0] == "_":
+        #     st.error("Property names cannot start with an underscore")
+        #     name = None
 
     # Property type
     with pc2:
@@ -140,6 +142,7 @@ def property_row(
         st.write("Options")
         should_ignore = st.checkbox("Exclude/ignore", value=False,  key=f"{type}_{pid}_property_{index}__ignore")
 
+    # TODO: Update to fail validation if any property items failed (ie empty name)
     if should_ignore == True:
         return PropertyMapping.empty()
         

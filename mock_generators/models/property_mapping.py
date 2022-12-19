@@ -1,4 +1,5 @@
 from models.generator import Generator, GeneratorType
+from list_utils import clean_list
 import logging
 
 class PropertyMapping():
@@ -28,7 +29,9 @@ class PropertyMapping():
         self.args = args
 
     def __str__(self):
-        return f"PropertyMapping(pid={self.pid}, name={self.name}, type={self.type}, generator={self.generator.name}, generator_id={self.generator.id}, args={self.args})"
+        name = self.name if self.name is not None else "<unnamed>"
+        generator = self.generator if self.generator is not None else "<no_generator_assigned>"
+        return f"PropertyMapping(pid={self.pid}, name={name}, type={self.type}, generator={generator}, args={self.args}"
         
     def __repr__(self):
         return self.__str__()
@@ -40,9 +43,9 @@ class PropertyMapping():
         return {
             "pid": self.pid,
             "name": self.name,
-            "type": self.type.to_string(),
-            "generator": self.generator.to_dict(),
-            "args": self.args
+            "type": self.type.to_string() if self.type is not None else None,
+            "generator": self.generator.to_dict() if self.generator is not None else None,
+            "args": clean_list(self.args)
         }
 
     def ready_to_generate(self):

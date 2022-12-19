@@ -6,6 +6,7 @@ import logging
 import random
 import sys
 from copy import deepcopy
+from list_utils import clean_list
 
 class RelationshipMapping():
 
@@ -50,12 +51,12 @@ class RelationshipMapping():
         self.to_node = to_node
         self.properties = properties
         self.count_generator = count_generator
-        self.count_args = count_args
+        self.count_args = clean_list(count_args)
         self.generated_values = None
         self.filter_generator = filter_generator
-        self.filter_generator_args = filter_args
+        self.filter_generator_args = clean_list(filter_args)
         self.assignment_generator = assignment_generator
-        self.assignment_args = assignment_args
+        self.assignment_args = clean_list(assignment_args)
 
     def __str__(self):
         return f"RelationshipMapping(rid={self.rid}, type={self.type}, from_node={self.from_node}, to_node={self.to_node}, properties={self.properties}, count_generator={self.count_generator}, count_args={self.count_args})"

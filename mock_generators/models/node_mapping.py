@@ -2,6 +2,7 @@ from models.property_mapping import PropertyMapping
 from models.generator import Generator
 import sys
 import logging
+from list_utils import clean_list
 
 # TODO: Should have made these dataclasses
 class NodeMapping():
@@ -54,7 +55,7 @@ class NodeMapping():
                 "labels": self.labels,
                 "properties": {key: property.to_dict() for (key, property) in self.properties.items() if property.type is not None},
                 "count_generator": self.count_generator.to_dict() if self.count_generator is not None else None,
-                "count_args": self.count_args,
+                "count_args": clean_list(self.count_args),
                 "key_property" : self.key_property.to_dict() if self.key_property is not None else None
             }
 
