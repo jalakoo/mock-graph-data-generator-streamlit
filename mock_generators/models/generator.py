@@ -171,6 +171,8 @@ class Generator():
         name: str, 
         description: str, 
         code_url: str,
+        # Information on arguments the generator CAN take. 
+        # Argument values to use during generate are passed in the generate call
         args: list[GeneratorArg],
         tags: list[str]
         ):

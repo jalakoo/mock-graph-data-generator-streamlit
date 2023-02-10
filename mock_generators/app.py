@@ -54,31 +54,24 @@ generators = None
 imported_file = None
 
 # Streamlit runs from top-to-bottom from tabs 1 through 8. This is essentially one giant single page app.  Earlier attempt to use Streamlit's multi-page app functionality resulted in an inconsistent state between pages.
-tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9 = st.tabs(["Config >", "Design >", "Import >",  "Mapping >", "Search Generators >", "Add New Generator >", "Generate >", "Export >", "Data Importer"])
 
-with tab1:
+t0, t1, t2, t3, t4, t5 = st.tabs([
+    "Config >",
+    "Design >",
+    "Import >",
+    "Generate >",
+    "Export >",
+    "Data Importer"
+])
+with t0:
     config_tab()
-
-with tab2:
+with t1:
     design_tab()
-
-with tab3:
+with t2:
     import_tab()
-
-with tab4:
-    mapping_tab()
-
-with tab5:
-    generators_tab()
-
-with tab6:
-    create_tab()
-
-with tab7:
+with t3:
     generate_tab()
-
-with tab8:
+with t4:
     export_tab()
-
-with tab9:
+with t5:
     data_importer_tab()

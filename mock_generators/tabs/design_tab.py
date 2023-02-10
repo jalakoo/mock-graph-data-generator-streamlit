@@ -12,4 +12,9 @@ def design_tab():
         st.write(f"Design Data Model.\n\nUse the [arrows.app](https://arrows.app) then download the .json file to the Import tab.")
     st.markdown("--------")
 
-    components.iframe("https://arrows.app", height=1000, scrolling=False)
+    c1, c2 = st.columns([8,2])
+    with c1:
+        components.iframe("https://arrows.app", height=1000, scrolling=False)
+    with c2:
+        st.write("Generators")
+        st.markdown("--------")

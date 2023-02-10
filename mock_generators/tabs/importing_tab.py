@@ -9,6 +9,7 @@ from models.mapping import Mapping
 import sys
 import datetime
 import os
+from logic.generate_mapping import mapping_from_json
 
 # Convenience functions
 def import_file(file) -> bool:
@@ -127,19 +128,22 @@ def import_tab():
         if current_file is not None:
             # Verfiy file is valid arrows JSON
             try:
-                json_file = json.loads(current_file)
-                nodes = json_file["nodes"]
-                relationships = json_file["relationships"]
-                if nodes is None:
-                    nodes = []
-                if relationships is None:
-                    relationships = []
-                st.session_state[IMPORTED_NODES] = nodes
-                st.session_state[IMPORTED_RELATIONSHIPS] = relationships
+                # json_file = json.loads(current_file)
+                # nodes = json_file["nodes"]
+                # relationships = json_file["relationships"]
+                # if nodes is None:
+                #     nodes = []
+                # if relationships is None:
+                #     relationships = []
+                # st.session_state[IMPORTED_NODES] = nodes
+                # st.session_state[IMPORTED_RELATIONSHIPS] = relationships
 
-                st.write(f'Imported Data:')
-                st.write(f'     - {len(nodes)} Nodes')
-                st.write(f'     - {len(relationships)} Relationships')
-
+                # st.write(f'Imported Data:')
+                # st.write(f'     - {len(nodes)} Nodes')
+                # st.write(f'     - {len(relationships)} Relationships')
+                mapping = mapping_from_json(current_file)
+                
             except json.decoder.JSONDecodeError:
                 st.error('JSON file is not valid.')
+            except Exception as e:
+                st.error(f'Uncaught Error: {e}')
