@@ -42,9 +42,7 @@ if EXPORTS_PATH not in st.session_state:
 if CODE_TEMPLATE_FILE not in st.session_state:
     st.session_state[CODE_TEMPLATE_FILE] = DEFAULT_CODE_TEMPLATES_FILE
 if MAPPINGS not in st.session_state:
-    st.session_state[MAPPINGS] = Mapping(
-        nodes={}, 
-        relationships={})
+    st.session_state[MAPPINGS] = None
 
 # UI
 st.title("Mock Graph Data Generator")

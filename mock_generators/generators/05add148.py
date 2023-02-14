@@ -3,9 +3,12 @@ fake = Faker()
 
 # Do not change function name or arguments
 def generate(args: list[any]):
-    domain = args[0]
-    if domain == "" or domain is None:
+    result = None
+    if len(args) != 0:
+        domain = args[0]
+        if domain != "" and domain is not None:
+            result = fake.email(domain=domain)
+    if result is None:
         result = fake.email()
-    else:
-        result = fake.email(domain=domain)
+
     return result

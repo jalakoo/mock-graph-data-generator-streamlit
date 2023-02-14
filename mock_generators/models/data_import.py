@@ -18,9 +18,10 @@ def file_schema_for_property(property: PropertyMapping)-> dict:
     # if property.type == GeneratorType.DATETIME:
     #     sample_value = sample_value.isoformat()
 
+    type = property.generator.type.to_string()
     result = {
         "name": property.name,
-        "type": property.type.to_string().lower(),
+        "type": type,
         "sample": sample_value,
         "include": True
     }
@@ -47,7 +48,7 @@ def file_schema_for_relationship(relationship: RelationshipMapping)-> list[dict]
 def graph_model_property(property: PropertyMapping)-> dict:
     result = {
         "property": property.name,
-        "type": property.type.to_string().lower(),
+        "type": property.generator.type.to_string().lower(),
         "identifier": property.pid
         }
     return result
@@ -198,6 +199,7 @@ class DataImporterJson():
         ):
 
         # In case relationshipMapping has not yet generated data
+        # TODO: Need this here anymore?
         if relationship.generated_values is None:
             relationship.generate_values()
 

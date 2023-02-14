@@ -98,15 +98,6 @@ class RelationshipMapping():
         self, 
         )-> list[dict]:
 
-        # Sample incoming all_node_values:
-        # {
-        #   "<node_mapping>":[
-        #       {
-        #       "first_name":"John",
-        #       "last_name":"Doe"
-        #      }  
-        #   ]
-        # }
 
         # Make sure from and to nodes have generated values already
         if self.from_node.generated_values == None:
@@ -151,9 +142,11 @@ class RelationshipMapping():
 
             # Get the key property name and value for the source node record
             from_node_key_property_name = self.from_node.key_property.name
-            from_node_key_property_value = value_dict[from_node_key_property_name]
+            from_node_key_property_value = value_dict.get(from_node_key_property_name, None)
+            if from_node_key_property_value is None:
+                raise Exception(f"Key property '{from_node_key_property_name}' not found in node: {value_dict}")
 
-            # If count is zero - no relationship to generate for the curent source node
+            # If count is zero - no relationship to generate for the current source node
 
             # Generate a new relationship for each count
             for i in range(count):
@@ -197,5 +190,6 @@ class RelationshipMapping():
 
         # Store results for reference
         self.generated_values = all_results
+        # logging.info(f'relationship_mapping.py: 1 value: {self.generated_values[0]}')
         return self.generated_values
         

@@ -16,18 +16,17 @@ def import_file(file) -> bool:
     if file is  None:
         raise Exception(f'import.py: import_file function called with no file')
 
+    # Check if file is a valid JSON file
     try:
         json_file = json.loads(file)
         # Bring in the raw import data for nodes and relationships
         node_dicts = json_file["nodes"]
         relationship_dicts = json_file["relationships"]
         if node_dicts is None:
-            node_dicts = []
+            return False
         if relationship_dicts is None:
-            relationship_dicts = []
-        
-        st.session_state[IMPORTED_NODES] = node_dicts
-        st.session_state[IMPORTED_RELATIONSHIPS] = relationship_dicts
+            return False
+
         return True
     except json.decoder.JSONDecodeError:
         st.error(f'JSON file {file} is not valid.')
@@ -51,9 +50,9 @@ def file_selected(path):
     # Import
     sucessful_import = import_file(selected_file)
     if sucessful_import:
-        st.success(f"Import Complete. Proceed to the Mapping page")
+        st.success(f"Import Complete.")
     else:
-        st.error(f"Import Failed. Please try again.")
+        st.error(f"Import Failed. Check file format.")
 
 def import_tab():
 
@@ -65,9 +64,11 @@ def import_tab():
 
     st.markdown("--------")
 
-    i1, i2 = st.columns([3,1])
+    i1, i3 = st.columns([3,3])
 
     with i1:
+        # File Selection
+
         selected_file = None
         import_option = st.radio("Select Import Source", ["An Existing File", "Upload"], horizontal=True)
 
@@ -122,28 +123,42 @@ def import_tab():
                 
             #     file_selected(selected_filepath)
 
-    with i2:
-        # Process uploaded / selected file
+    # with i2:
+
+    #     # Display loaded file
+    #     st.write('IMPORT STATUS:')
+
+    #     # Process uploaded / selected file
         current_file = st.session_state[IMPORTED_FILE]
         if current_file is not None:
             # Verfiy file is valid arrows JSON
             try:
-                # json_file = json.loads(current_file)
-                # nodes = json_file["nodes"]
-                # relationships = json_file["relationships"]
-                # if nodes is None:
-                #     nodes = []
-                # if relationships is None:
-                #     relationships = []
-                # st.session_state[IMPORTED_NODES] = nodes
-                # st.session_state[IMPORTED_RELATIONSHIPS] = relationships
+                generators = st.session_state[GENERATORS]
+                mapping = mapping_from_json(current_file, generators)
+                st.session_state[MAPPINGS] = mapping
+                st.success(f"Mappings generated from import file.")
 
-                # st.write(f'Imported Data:')
-                # st.write(f'     - {len(nodes)} Nodes')
-                # st.write(f'     - {len(relationships)} Relationships')
-                mapping = mapping_from_json(current_file)
-                
             except json.decoder.JSONDecodeError:
-                st.error('JSON file is not valid.')
+                st.error('Import JSON file is not valid.')
             except Exception as e:
                 st.error(f'Uncaught Error: {e}')
+    #     else:
+    #         st.warning(f'No file selected. Please select a file to import.')
+
+    with i3:
+        # Display auto-generated Mapping files
+        st.write('MAPPING DATA:')
+        mapping = st.session_state[MAPPINGS]
+        if mapping is None:
+            st.warning(f'No mapping data available. Import a file.')
+        elif mapping.is_empty() == True:
+            st.error(f'No mapping data extracted from imported file. Is the file correctly formatted?')
+        elif mapping.is_valid() == False:
+            st.error(f'Mappping invalid. Please check the imported file.')
+        else:
+            st.success(f'Mappping options valid for generation. Proceed to Generate Tab.')
+
+            # For the curious
+            with st.expander("Raw Mapping Data"):
+                if mapping is not None:
+                    st.json(mapping.to_dict())

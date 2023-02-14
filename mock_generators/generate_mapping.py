@@ -13,76 +13,56 @@ def generator_for_raw_property(
     property_value: str, 
     generators: dict[str, Generator]
     ) -> tuple[Generator, list[any]]:
-    """Returns a generator and args for specially formatted property values from the arrows.app JSON file"""
+    """Returns a generator and args for a property"""
     # Sample expected string: "{\"company_name\":[]}"
 
-    # Throws an error if a generator can not be found
+    # Check that the property info is notated for mock data generation use
+    # leading_bracket = property_value[0]
+    # trailing_bracket = property_value[-1]
+    # if leading_bracket != "{" or trailing_bracket != "}":
+    #     logging.warning(f'generate_mapping.py: generator_for_raw_property: property_value not wrapped in {{ and }}. Skipping generator assignment for property_value: {property_value}')
+    #     return (None, None)
+    
+    # # The property value should be a JSON string. Convert to a dict obj
+    # json_string = property_value[1:-1]
 
-    obj = json.loads(property_value)
+    try:
+        obj = json.loads(property_value)
+    except Exception as e:
+        logging.info(f'generate_mapping.py: generator_for_raw_property: Could not parse JSON string: {property_value}. Skipping generator assignment for property_value: {property_value}')
+        return (None, None)
 
-    if len(obj) == 0:
-        raise Exception(f'generate_mapping.py: generator_for_raw_property: Expected dictionary object from json string not found: {property_value}')
-
-    generator = None
-    args = None
-    # Should only be one item, if not take the last
+    # Should only ever be one
     for key, value in obj.items():
         generator_id = key
         generator = generators.get(generator_id, None)
         if generator is None:
-            raise Exception(f'generate_mapping.py: generator_for_raw_property: generator_id {generator_id} not found in generators.')
+            logging.error(f'generate_mapping.py: generator_for_raw_property: generator_id {generator_id} not found in generators. Skipping generator assignment for property_value: {property_value}')
+            return None
+
         args = value
-    return (generator, args)
+        return (generator, args)
 
 def propertymappings_for_raw_properties(
     raw_properties: dict[str, str], 
     generators: dict[str, Generator]
     ) -> dict[str, PropertyMapping]:
     """Returns a list of property mappings for a node or relationship"""
-
-    # raw_properties is a dict of key value pairs from properties value from an entry from the arrows.app JSON file. Example:
-    # {
-    #     "name": "{\"company_name\":[]}",
-    #     "uuid": "{\"uuid\":[8]}",
-    #     "{count}": "{\"int\":[1]}",
-    #     "{key}": "uuid"
-    # },  
-
     property_mappings = {}
-    
-    if raw_properties is None or len(raw_properties) == 0:
-        raise Exception(f'generate_mapping.py: propertymappings_for_raw_properties: No raw_properties assignment received.')
-    
-    if generators is None or len(generators) == 0:
-        raise Exception(f'generate_mapping.py: propertymappings_for_raw_properties: No generators assignment received.')
-
     for key, value in raw_properties.items():
-        # Skip any keys with { } (brackets) as these are special cases for defining count/assignment/filter generators
-        if key.startswith('{') and key.endswith('}'):
+        generator, args = generator_for_raw_property(value, generators)
+        if generator is None:
+            # TODO: Insert PropertyMapping with no generator? Use literal value?
             continue
 
-        # Only process values with string { } (brackets)
-        if not isinstance(value, str) or not value.startswith('{') or not value.endswith('}'):
-            property_mappings[key] = value
-            continue
-        try:
-            generator, args = generator_for_raw_property(value, generators)
-            if generator is None:
-                # TODO: Insert PropertyMapping with no generator? Use literal value?
-                logging.warning(f'generate_mapping.py: propertymappings_for_raw_properties: could not find generator for key: {key}, property_value: {value}')
-                continue
-
-            pid = str(uuid.uuid4())[:8]
-            property_mapping = PropertyMapping(
-                pid = pid,
-                name=key,
-                generator=generator,
-                args=args
-            )
-            property_mappings[pid] = property_mapping
-        except Exception as e:
-            logging.warning(f'generate_mapping.py: propertymappings_for_raw_properties: could not create property mapping for key: {key}, property_value: {value}: {e}')
-            continue
+        pid = str(uuid.uuid4())[:8]
+        property_mapping = PropertyMapping(
+            pid = pid,
+            name=key,
+            generator=generator,
+            args=args
+        )
+        property_mappings[pid] = property_mapping
     return property_mappings
 
 def node_mappings_from(
@@ -100,10 +80,10 @@ def node_mappings_from(
     #     "caption": "Company",
     #     "labels": [],
     #     "properties": {
-    #       "name": "{\"company_name\":[]}",
-    #       "uuid": "{\"uuid\":[8]}}",
-    #       "{count}": "{{"int\":[1]}",
-    #       "{key}": "uuid"
+    #       "name": "{{\"company_name\":[]}}",
+    #       "uuid": "{{\"uuid\":[8]}}",
+    #       "{{count}}": "{{\"int\":[1]}}",
+    #       "{{key}}": "uuid"
     #     },
     #     "style": {}
     #   }
@@ -142,18 +122,10 @@ def node_mappings_from(
             continue
 
         # Get proper generators for count generator
-        try:
-            count_generator, count_args = generator_for_raw_property(count_generator_config, generators)
-        except Exception as e:
-            logging.warning(f"generate_mappings: node_mappings_from: could not find count generator for node: {node_dict}: {e}")
-            continue
+        count_generator, count_args = generator_for_raw_property(count_generator_config, generators)
 
         # Create property mappings for properties
-        try: 
-            property_mappings = propertymappings_for_raw_properties(properties, generators)
-        except Exception as e:
-            logging.warning(f"generate_mappings: node_mappings_from: could not create property mappings for node: {node_dict}: {e}")
-            continue
+        property_mappings = propertymappings_for_raw_properties(properties, generators)
 
         # Assign correct property mapping as key property
         # logging.info(f'generate_mappings: node_mappings_from: key_property: {key}, property_mappings: {property_mappings}')
@@ -236,24 +208,12 @@ def relationshipmappings_from(
             assignment_generator_config = "{\"exhaustive_random\":[]}"
 
         # Get proper generators for count generator
-        try:
-            count_generator, count_args = generator_for_raw_property(count_generator_config, generators)
-        except Exception as e:
-            logging.warning(f"generate_mappings: relationshipmappings_from: could not find count generator for relationship: {relationship_dict}: {e}")
-            continue
+        count_generator, count_args = generator_for_raw_property(count_generator_config, generators)
 
         # Create property mappings for properties
-        try:
-            property_mappings = propertymappings_for_raw_properties(properties, generators)
-        except Exception as e:
-            logging.warning(f"generate_mappings: relationshipmappings_from: could not create property mappings for relationship: {relationship_dict}: {e}")
-            continue
+        property_mappings = propertymappings_for_raw_properties(properties, generators)
 
-        try:
-            assignment_generator, assignment_args = generator_for_raw_property(assignment_generator_config, generators)
-        except Exception as e:
-            logging.warning(f"generate_mappings: relationshipmappings_from: could not create assignment generator for relationship: {relationship_dict}: {e}")
-            continue
+        assignment_generator, assignment_args = generator_for_raw_property(assignment_generator_config, generators)
 
         from_node = nodes.get(from_id, None)
         if from_node is None:

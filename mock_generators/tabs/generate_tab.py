@@ -1,6 +1,6 @@
 import streamlit as st
 from constants import *
-# from models.mapping import Mapping
+from models.mapping import Mapping
 from logic.generate_csv import generate_csv
 from logic.generate_data_import import generate_data_importer_json
 import os
@@ -20,6 +20,8 @@ def generate_tab():
     st.markdown("--------")
 
     mapping = st.session_state[MAPPINGS]
+    if mapping is None:
+        mapping = Mapping.empty()
     export_folder = st.session_state[EXPORTS_PATH]
     zips_folder = st.session_state[ZIPS_PATH]
     imported_filename = st.session_state[IMPORTED_FILENAME]
@@ -31,27 +33,27 @@ def generate_tab():
     export_zip_filename.replace(" ", "_")
     export_zip_filename.replace(".", "_")
 
-    g1, g2, g3, g4 = st.columns(4)
+    g2, g3, g4 = st.columns(3)
 
-    with g1:
-        st.write('MAPPING DATA:')
-        if MAPPINGS not in st.session_state:
-            # Why hasn't mappings been preloaded by now?
-            st.error(f'Mappings data was not preloaded')
-        elif st.session_state[MAPPINGS] is None:
-            st.error(f'Mappping option not valid for generation. Please configure mapping options below.')
-        elif st.session_state[MAPPINGS].is_empty() == True:
-            st.error(f'No data currently mapped. Please configure in Mapping tab.')
-        elif st.session_state[MAPPINGS].is_valid() == False:
-            st.error(f'Mappping option not valid for generation. Please configure in Mapping tab.')
-        else:
-            st.success(f'Mappping options valid for generation.')
+    # with g1:
+    #     st.write('MAPPING DATA:')
+    #     if MAPPINGS not in st.session_state:
+    #         # Why hasn't mappings been preloaded by now?
+    #         st.error(f'Mappings data was not preloaded')
+    #     elif st.session_state[MAPPINGS] is None:
+    #         st.error(f'Mappping option not valid for generation. Please configure mapping options below.')
+    #     elif st.session_state[MAPPINGS].is_empty() == True:
+    #         st.error(f'No data currently mapped. Please configure in Mapping tab.')
+    #     elif st.session_state[MAPPINGS].is_valid() == False:
+    #         st.error(f'Mappping option not valid for generation. Please configure in Mapping tab.')
+    #     else:
+    #         st.success(f'Mappping options valid for generation.')
 
-        # For the curious
-        with st.expander("Raw Mapping Data"):
-            st.json(mapping.to_dict())
+    #     # For the curious
+    #     with st.expander("Raw Mapping Data"):
+    #         st.json(mapping.to_dict())
 
-        # should_clear = st.checkbox("Delete all files in export folder with each Generate run", value=True)
+    #     # should_clear = st.checkbox("Delete all files in export folder with each Generate run", value=True)
 
     with g2:
         st.write(f'READY FOR GENERATION:')
@@ -67,12 +69,17 @@ def generate_tab():
                 st.stop()
                 return
 
-            for key, node in mapping.nodes.items():
+            # Generate values from mappings
+            for _, node in mapping.nodes.items():
                 # logging.info(f'Generating data for node: {node}')
                 if len(node.properties) == 0:
                     st.error(f'Node {node.caption} has no properties. Add at least one property to generate data.')
                     st.stop()
                     return
+                node.generate_values()
+
+            for _, rel in mapping.relationships.items():
+                rel.generate_values()
 
             # Delete all files in export folder first
             dir = export_folder
@@ -130,7 +137,7 @@ def generate_tab():
     with g4:
         st.write(f'GENERATED DATA SUMMARY:')
         # TODO: Why do these disappear when returning to tab?
-        nodes = st.session_state[MAPPINGS].nodes
+        nodes = mapping.nodes
         for _, node in nodes.items():
             values = node.generated_values
             if values is not None:
