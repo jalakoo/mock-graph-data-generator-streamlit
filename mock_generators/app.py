@@ -10,7 +10,7 @@ from tabs.importing_tab import import_tab
 from tabs.design_tab import design_tab
 from tabs.data_importer import data_importer_tab
 from models.mapping import Mapping
-
+from config import load_generators
 
 # SETUP
 st.set_page_config(layout="wide")
@@ -44,6 +44,8 @@ if CODE_TEMPLATE_FILE not in st.session_state:
 if MAPPINGS not in st.session_state:
     st.session_state[MAPPINGS] = None
 
+load_generators()
+
 # UI
 st.title("Mock Graph Data Generator")
 st.markdown("This is a collection of tools to generate mock graph data for [Neo4j](https://neo4j.com) graph databases.")
@@ -53,16 +55,16 @@ imported_file = None
 
 # Streamlit runs from top-to-bottom from tabs 1 through 8. This is essentially one giant single page app.  Earlier attempt to use Streamlit's multi-page app functionality resulted in an inconsistent state between pages.
 
-t0, t1, t2, t3, t4, t5 = st.tabs([
-    "Config >",
+t1, t2, t3, t4, t5 = st.tabs([
+    # "Config >",
     "Design >",
     "Import >",
     "Generate >",
     "Export >",
     "Data Importer"
 ])
-with t0:
-    config_tab()
+# with t0:
+#     config_tab()
 with t1:
     design_tab()
 with t2:
