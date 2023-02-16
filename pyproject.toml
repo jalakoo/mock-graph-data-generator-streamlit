@@ -16,6 +16,7 @@ streamlit-toggle-switch = "^1.0.2"
 hydralit-components = "^1.0.10"
 pytest = "^7.2.0"
 dataclasses-json = "^0.5.7"
+pyperclip = "^1.8.2"
 
 
 [tool.poetry.group.dev.dependencies]
