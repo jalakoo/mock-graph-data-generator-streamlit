@@ -7,9 +7,10 @@ import logging
 from file_utils import load_string, save_file
 from models.mapping import Mapping
 import sys
-import datetime
 import os
 from logic.generate_mapping import mapping_from_json
+from generate import generate_data
+from datetime import datetime
 
 # Convenience functions
 def import_file(file) -> bool:
@@ -64,15 +65,18 @@ def import_tab():
 
     st.markdown("--------")
 
-    i1, i3 = st.columns([3,3])
+    i1, i2, i3 = st.columns(3)
+
+    start_generated = datetime.now()
+    last_generated = start_generated
 
     with i1:
         # File Selection
+        st.write('IMPORT ARROWS FILE:')
+        # st.markdown("--------")
 
         selected_file = None
         import_option = st.radio("Select Import Source", ["An Existing File", "Upload"], horizontal=True)
-
-        st.markdown("--------")
 
         if import_option == "An Existing File":
             # Saved options
@@ -105,60 +109,38 @@ def import_tab():
                 file_selected(selected_filepath)
         else:
             logging.info(f'Copy & Paste Option disabled') 
-        # else:
-            # # Copy & Paste
-            # pasted_json = st.text_area("Paste an arrows JSON file here", height=300)
-            # # logging.info(f'pasted_json: {pasted_json}')
-            # if pasted_json is not None and pasted_json != "":
-            #     temp_filename = f'pasted_file.json'
-            #     selected_filepath = f"{st.session_state[IMPORTS_PATH]}/{temp_filename}"
-            #     # data = json.dumps(pasted_json, indent=4)
-            #     try:
-            #         save_file(
-            #             filepath=selected_filepath,
-            #             data=pasted_json)
-            #     except:
-            #         st.error(f"Error saving file to {st.session_state[IMPORTS_PATH]}")
-            #         logging.error(f'Error saving file: {sys.exc_info()[0]}')
-                
-            #     file_selected(selected_filepath)
 
-    # with i2:
 
-    #     # Display loaded file
-    #     st.write('IMPORT STATUS:')
-
-    #     # Process uploaded / selected file
+        # Process uploaded / selected file
         current_file = st.session_state[IMPORTED_FILE]
         if current_file is not None:
             # Verfiy file is valid arrows JSON
             try:
                 generators = st.session_state[GENERATORS]
                 mapping = mapping_from_json(current_file, generators)
-                st.session_state[MAPPINGS] = mapping
-                st.success(f"Mappings generated from import file.")
+                # st.session_state[MAPPINGS] = mapping
+                generate_data(mapping)
+
+                last_generated = datetime.now()
+                # st.success(f"New data generated from import file.")
 
             except json.decoder.JSONDecodeError:
                 st.error('Import JSON file is not valid.')
             except Exception as e:
                 st.error(f'Uncaught Error: {e}')
-    #     else:
-    #         st.warning(f'No file selected. Please select a file to import.')
+
+    with i2:
+        export_folder = st.session_state[EXPORTS_PATH]
+        st.write(f"RECENTLY GENERATED FILES:")
+        if start_generated != last_generated:
+            st.success(f"New data generated from import file.")
+        folder_files_expander(export_folder, widget_id="export_tab", enable_download=True)
 
     with i3:
-        # Display auto-generated Mapping files
-        st.write('MAPPING DATA:')
-        mapping = st.session_state[MAPPINGS]
-        if mapping is None:
-            st.warning(f'No mapping data available. Import a file.')
-        elif mapping.is_empty() == True:
-            st.error(f'No mapping data extracted from imported file. Is the file correctly formatted?')
-        elif mapping.is_valid() == False:
-            st.error(f'Mappping invalid. Please check the imported file.')
-        else:
-            st.success(f'Mappping options valid for generation. Proceed to Generate Tab.')
 
-            # For the curious
-            with st.expander("Raw Mapping Data"):
-                if mapping is not None:
-                    st.json(mapping.to_dict())
+        st.write('GENERATED ZIP FILES:')
+        if start_generated != last_generated:
+            st.success(f"New zip files generated from import file.")
+        zips_folder = st.session_state[ZIPS_PATH]       
+        
+        folder_files_expander(zips_folder, widget_id="export_tab", enable_download=True, enable_delete_button=True)

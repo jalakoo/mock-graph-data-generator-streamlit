@@ -138,5 +138,5 @@ class NodeMapping():
         
         # Store and return all_results
         self.generated_values = all_results
-        logging.info(f'node_mapping.py: NodeMapping.generate_values() generated {len(self.generated_values)} values for node mapping {self.caption}')
+        # logging.info(f'node_mapping.py: NodeMapping.generate_values() generated {len(self.generated_values)} values for node mapping {self.caption}')
         return self.generated_values
