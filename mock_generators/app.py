@@ -57,11 +57,11 @@ imported_file = None
 
 t1, t2, t5 = st.tabs([
     # "Config >",
-    "Design >",
-    "Generate >",
+    "① Design",
+    "② Generate",
     # "Generate >",
     # "Export >",
-    "Data Importer"
+    "③ Data Importer"
 ])
 # with t0:
 #     config_tab()

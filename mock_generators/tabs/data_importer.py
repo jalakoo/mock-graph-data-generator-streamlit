@@ -7,7 +7,8 @@ def data_importer_tab():
 
     col1, col2 = st.columns([1,11])
     with col1:
-        st.image("mock_generators/media/signpost.gif")
+        st.image("mock_generators/media/export.gif")
+        # st.image("mock_generators/media/signpost.gif")
     with col2:
         st.write(f"Data Importer App.\n\nUse the [Data Importer Tool](https://data-importer.graphapp.io/) to upload generated .zip file to for review and ingesetion to a Neo4j database instance.")
     st.markdown("--------")

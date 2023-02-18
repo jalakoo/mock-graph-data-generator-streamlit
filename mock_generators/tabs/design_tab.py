@@ -12,12 +12,27 @@ import json
 
 def design_tab():
 
-    col1, col2 = st.columns([1,11])
-    with col1:
-        st.image("mock_generators/media/abstract.gif")
-    with col2:
-        st.write(f"Design Data Model.\n\nUse the [arrows.app](https://arrows.app) then download the .json file to the Import tab.")
-    st.markdown("--------")
+    # col1, col2 = st.columns([1,11])
+    # with col1:
+    #     st.image("mock_generators/media/abstract.gif")
+    # with col2:
+    #     st.write(f"Design Data Model.\n\nUse the [arrows.app](https://arrows.app) then download the .json file to the Import tab.")
+    # st.markdown("--------")
+
+    st.write("Use the arrows.app to design a graph data model. When selecting Nodes or Relationships, a properties inspector will appear on the right. Configure the mock graph generator by adding properties with specially formatted keys and values. See additional details in the dropdowns below.\n\nOnce completed, click on the 'Download/Export' button in the arrows.app. Make sure to use the 'JSON' export option.")
+    d1, d2, d3 = st.columns(3)
+    with d1:
+        with st.expander("NODE requirements"):
+            st.write("Nodes require 2 keys to have mock data generated for it:  {count} and {key}. The {count} key identifies which data generator (and args) to use for creating the number of nodes.\n\nExample of node properties that would create mock data:")
+            st.image("mock_generators/media/sample_node_properties.png")
+    with d2:
+        with st.expander("RELATIONSHIP requirements"):
+            st.write("Relationships require 1 key: {count} and can take 2 optional keys: {assignment} and {filter}. The {count} key identifies which data generator (and args) to use for creating the number of relationships between a source node and a target node. EXAMPLE: If every source node should connect to exactly one target node, then the target generator value should be 1.\n\nThe {assignement} key identifies which data generator (and args) to use when deciding which target nodes this relationship should connect with.\n\nThe {filter} key identifies a data generator (and args) to use for deciding what, if any, target nodes to ignore.\n\nExample of node properties that would create mock data:")
+            st.image("mock_generators/media/sample_relationship_properties.png")
+    with d3:
+        with st.expander("PROPERTY requirements"):
+            st.write("Properties needing mock generated data should be a stringified JSON object. The unique generator name should be used as a key, followed by a list/array or argument values.\n\nSee the NODE and RELATIONSHIP properties dropdown for examples.\n\nThe right hand Generators preview lists all the available mock data generators. Arguments can be set and example output data can be previewed by clicking on the 'Generate Example Output' button. Use the 'Copy for Arrows' button to copy the required formatted JSON string to your clipboard, to paste into the arrows.app")
+            st.image("mock_generators/media/sample_generator.png")
 
     c1, c2 = st.columns([8,2])
     with c1:

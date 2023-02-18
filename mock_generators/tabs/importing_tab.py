@@ -59,7 +59,8 @@ def import_tab():
 
     col1, col2 = st.columns([1,11])
     with col1:
-        st.image("mock_generators/media/import.gif")
+        # st.image("mock_generators/media/import.gif")
+        st.image("mock_generators/media/fireworks.gif")
     with col2:
         st.markdown("Import JSON files from an [arrows.app](https://arrows.app/#/local/id=A330UT1VEBAjNH1Ykuss) data model. \n\nProceed to the Mapping Tab when complete.")
 
