@@ -300,6 +300,9 @@ def mapping_from_json(
     if relationship_dicts is None:
         raise Exception(f"generate_mappings: mapping_from_json: No relationships found in JSON file: {json}")
 
+    # TODO:
+    # Purge orphaned nodes
+
     # Convert source information to mapping objects
     nodes = node_mappings_from(node_dicts, generators)
     relationships = relationshipmappings_from(relationship_dicts, nodes, generators)

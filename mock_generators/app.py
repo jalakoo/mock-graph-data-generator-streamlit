@@ -1,15 +1,8 @@
 import streamlit as st
 from constants import *
-from tabs.config_tab import config_tab
-from tabs.generators_tab import generators_tab
-from tabs.new_generator_tab import create_tab
-from tabs.mapping_tab import mapping_tab
-from tabs.generate_tab import generate_tab
-from tabs.export_tab import export_tab
 from tabs.importing_tab import import_tab
 from tabs.design_tab import design_tab
 from tabs.data_importer import data_importer_tab
-from models.mapping import Mapping
 from config import load_generators
 
 # SETUP
@@ -56,22 +49,13 @@ imported_file = None
 # Streamlit runs from top-to-bottom from tabs 1 through 8. This is essentially one giant single page app.  Earlier attempt to use Streamlit's multi-page app functionality resulted in an inconsistent state between pages.
 
 t1, t2, t5 = st.tabs([
-    # "Config >",
     "① Design",
     "② Generate",
-    # "Generate >",
-    # "Export >",
     "③ Data Importer"
 ])
-# with t0:
-#     config_tab()
 with t1:
     design_tab()
 with t2:
     import_tab()
-# with t3:
-#     generate_tab()
-# with t4:
-#     export_tab()
 with t5:
     data_importer_tab()

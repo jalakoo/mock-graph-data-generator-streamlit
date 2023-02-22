@@ -18,8 +18,14 @@ def design_tab():
     # with col2:
     #     st.write(f"Design Data Model.\n\nUse the [arrows.app](https://arrows.app) then download the .json file to the Import tab.")
     # st.markdown("--------")
-
-    st.write("Use the arrows.app to design a graph data model. When selecting Nodes or Relationships, a properties inspector will appear on the right. Configure the mock graph generator by adding properties with specially formatted keys and values. See additional details in the dropdowns below.\n\nOnce completed, click on the 'Download/Export' button in the arrows.app. Make sure to use the 'JSON' export option.")
+    with st.expander("Instructions"):
+        st.write("""
+        1. Connect to arrows.app. Optionally login via Google to save your model designs
+        2. Select a Node or Relationship to display a properties inspector on the right
+        3. Configure the mock graph generator by adding properties with specially formatted keys and value strings. See additional details on how to do this in the dropdowns below
+        4. Once completed, click on the 'Download/Export' button in the arrows.app. Make sure to use the 'JSON' export option
+        5. Proceed to the '② Generate' tab
+        """)
     d1, d2, d3 = st.columns(3)
     with d1:
         with st.expander("NODE requirements"):
@@ -38,10 +44,8 @@ def design_tab():
     with c1:
         components.iframe("https://arrows.app", height=1000, scrolling=False)
     with c2:
-        st.write("Generators")
-        st.markdown("--------")
-        # TODO: Put generators search feature here
-        # TODO: Add copy and paste button to produce specially formatted string values to use in the arrows property app
+        # st.write("Generators")
+        # st.markdown("--------")
 
         generators = st.session_state[GENERATORS]
         if generators is None:
@@ -49,12 +53,11 @@ def design_tab():
             st.stop()
 
         # Search by name or description
-        search_term = st.text_input("Search by keyword", "")
+        search_term = st.text_input("Search Generators by keyword", "", help="Generators are functions for creating mock data.")
 
         # Filter by type
         st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
-        type_filter = st.radio("Filter by type", ["All", "String", "Bool", "Integer", "Float","Datetime", "Assignment"])
-        # logging.info(f"Generators: {generators}")
+        type_filter = st.radio("Filter Generator outputs by type", ["All", "String", "Bool", "Integer", "Float","Datetime", "Assignment"])
         for _, generator in sorted(generators.items(), key=lambda gen:(gen[1].name)):
             # generator = generators[key]
             # Filtering

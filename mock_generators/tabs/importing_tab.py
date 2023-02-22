@@ -1,3 +1,5 @@
+# Now the new Generate Tab
+
 import streamlit as st
 import json
 from constants import *
@@ -57,12 +59,23 @@ def file_selected(path):
 
 def import_tab():
 
-    col1, col2 = st.columns([1,11])
-    with col1:
-        # st.image("mock_generators/media/import.gif")
-        st.image("mock_generators/media/fireworks.gif")
-    with col2:
-        st.markdown("Import JSON files from an [arrows.app](https://arrows.app/#/local/id=A330UT1VEBAjNH1Ykuss) data model. \n\nProceed to the Mapping Tab when complete.")
+    # col1, col2 = st.columns([1,11])
+    # with col1:
+    #     # st.image("mock_generators/media/import.gif")
+    #     st.image("mock_generators/media/fireworks.gif")
+    # with col2:
+    #     st.markdown("Import JSON files from an [arrows.app](https://arrows.app/#/local/id=A330UT1VEBAjNH1Ykuss) data model. \n\nProceed to the Mapping Tab when complete.")
+
+    with st.expander("Instructions"):
+        st.write(
+            """
+        1. Import or select a previously imported JSON file from an arrows.app export
+        2. The mock graph data generator will automatically generate a .csv and .zip files
+        3. Download the .zip file
+        4. Proceed to the '③ Data Importer' tab
+        """
+        )
+    
 
     st.markdown("--------")
 
@@ -73,7 +86,7 @@ def import_tab():
 
     with i1:
         # File Selection
-        st.write('IMPORT ARROWS FILE:')
+        st.write('SELECT ARROWS FILE:')
         # st.markdown("--------")
 
         selected_file = None
@@ -118,7 +131,9 @@ def import_tab():
             # Verfiy file is valid arrows JSON
             try:
                 generators = st.session_state[GENERATORS]
-                mapping = mapping_from_json(current_file, generators)
+                mapping = mapping_from_json(
+                    current_file, 
+                    generators)
                 # st.session_state[MAPPINGS] = mapping
                 generate_data(mapping)
 
