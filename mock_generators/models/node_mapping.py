@@ -46,18 +46,42 @@ class NodeMapping():
     def __repr__(self):
         return self.__str__()
 
+    def __eq__(self, other):
+        if not isinstance(other, NodeMapping):
+            return False
+        if self.nid != other.nid:
+            return False
+        if self.caption != other.caption:
+            return False
+        if self.labels != other.labels:
+            return False
+        if self.properties != other.properties:
+            return False
+        if self.count_generator != other.count_generator:
+            return False
+        if self.count_args != other.count_args:
+            return False
+        if self.key_property != other.key_property:
+            return False
+        return True
 
     def to_dict(self):
-            return {
-                "nid": self.nid,
-                "caption": self.caption,
-                "position": self.position,
-                "labels": self.labels,
-                "properties": {key: property.to_dict() for (key, property) in self.properties.items() if property.type is not None},
-                "count_generator": self.count_generator.to_dict() if self.count_generator is not None else None,
-                "count_args": clean_list(self.count_args),
-                "key_property" : self.key_property.to_dict() if self.key_property is not None else None
-            }
+        properties = {}
+        for key, property in self.properties.items():
+            if isinstance(property, PropertyMapping):
+                properties[key] = property.to_dict()
+                continue
+            properties[key] = property
+        return {
+            "nid": self.nid,
+            "caption": self.caption,
+            "position": self.position,
+            "labels": self.labels,
+            "properties": properties,
+            "count_generator": self.count_generator.to_dict() if self.count_generator is not None else None,
+            "count_args": clean_list(self.count_args),
+            "key_property" : self.key_property.to_dict() if self.key_property is not None else None
+        }
 
     def filename(self):
         return f"{self.caption.lower()}_{self.nid.lower()}"
@@ -98,9 +122,15 @@ class NodeMapping():
         try:
             for _ in range(count):
                 node_result = {}
-                for property_name, property in self.properties.items():
+                # logging.info(f'node_mapping.py: NodeMapping.generate_values() generating values for node mapping \'{self.caption}\' with properties {self.properties}')
+                for property_id, property in self.properties.items():
+                    # Pass literal values
+                    if isinstance(property, PropertyMapping) == False:
+                        node_result[property_id] = property
+                        continue
+                    # Have PropertyMapping generate a value
                     value = property.generate_value()
-                    node_result[property_name] = value
+                    node_result[property.name] = value
                 # node_result["_uid"] = f"{self.id}_{str(uuid.uuid4())[:8]}"
                 all_results.append(node_result)
         except:
@@ -108,5 +138,5 @@ class NodeMapping():
         
         # Store and return all_results
         self.generated_values = all_results
-        logging.info(f'node_mapping.py: NodeMapping.generate_values() generated {len(self.generated_values)} values for node mapping {self.caption}')
+        # logging.info(f'node_mapping.py: NodeMapping.generate_values() generated {len(self.generated_values)} values for node mapping {self.caption}')
         return self.generated_values

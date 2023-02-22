@@ -1,7 +1,7 @@
 import streamlit as st
 
 # Default local filepaths
-DEFAULT_GENERATORS_SPEC_FILE = "mock_generators/generators.json"
+DEFAULT_GENERATORS_SPEC_FILE = "mock_generators/named_generators.json"
 DEFAULT_GENERATORS_CODE_PATH = "mock_generators/generators"
 DEFAULT_ARROWS_SAMPLE_PATH = "mock_generators/samples/arrows.json"
 DEFAULT_IMPORTS_PATH = "mock_generators/imports"

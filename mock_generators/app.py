@@ -1,16 +1,9 @@
 import streamlit as st
 from constants import *
-from tabs.config_tab import config_tab
-from tabs.generators_tab import generators_tab
-from tabs.new_generator_tab import create_tab
-from tabs.mapping_tab import mapping_tab
-from tabs.generate_tab import generate_tab
-from tabs.export_tab import export_tab
 from tabs.importing_tab import import_tab
 from tabs.design_tab import design_tab
 from tabs.data_importer import data_importer_tab
-from models.mapping import Mapping
-
+from config import load_generators
 
 # SETUP
 st.set_page_config(layout="wide")
@@ -42,9 +35,9 @@ if EXPORTS_PATH not in st.session_state:
 if CODE_TEMPLATE_FILE not in st.session_state:
     st.session_state[CODE_TEMPLATE_FILE] = DEFAULT_CODE_TEMPLATES_FILE
 if MAPPINGS not in st.session_state:
-    st.session_state[MAPPINGS] = Mapping(
-        nodes={}, 
-        relationships={})
+    st.session_state[MAPPINGS] = None
+
+load_generators()
 
 # UI
 st.title("Mock Graph Data Generator")
@@ -54,31 +47,15 @@ generators = None
 imported_file = None
 
 # Streamlit runs from top-to-bottom from tabs 1 through 8. This is essentially one giant single page app.  Earlier attempt to use Streamlit's multi-page app functionality resulted in an inconsistent state between pages.
-tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9 = st.tabs(["Config >", "Design >", "Import >",  "Mapping >", "Search Generators >", "Add New Generator >", "Generate >", "Export >", "Data Importer"])
 
-with tab1:
-    config_tab()
-
-with tab2:
+t1, t2, t5 = st.tabs([
+    "① Design",
+    "② Generate",
+    "③ Data Importer"
+])
+with t1:
     design_tab()
-
-with tab3:
+with t2:
     import_tab()
-
-with tab4:
-    mapping_tab()
-
-with tab5:
-    generators_tab()
-
-with tab6:
-    create_tab()
-
-with tab7:
-    generate_tab()
-
-with tab8:
-    export_tab()
-
-with tab9:
+with t5:
     data_importer_tab()

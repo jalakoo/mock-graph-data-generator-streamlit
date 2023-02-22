@@ -104,6 +104,21 @@ class GeneratorArg():
     def __repr__(self):
         return self.__str__()
 
+    def __eq__(self, other):
+        if isinstance(other, GeneratorArg) == False:
+            return False
+        if self.type != other.type:
+            return False
+        if self.label != other.label:
+            return False 
+        if self.default != other.default:
+            return False
+        if self.hint != other.hint:
+            return False
+        if self.description != other.description:
+            return False
+        return True
+
     def to_dict(self):
         return {
             "type": self.type.to_string(),
@@ -171,6 +186,8 @@ class Generator():
         name: str, 
         description: str, 
         code_url: str,
+        # Information on arguments the generator CAN take. 
+        # Argument values to use during generate are passed in the generate call
         args: list[GeneratorArg],
         tags: list[str]
         ):
@@ -201,6 +218,25 @@ class Generator():
 
     def __repr__(self):
         return self.__str__()
+
+    def __eq__(self, other):
+        if isinstance(other, Generator) == False:
+            return False
+        if self.id != other.id:
+            return False
+        if self.name != other.name:
+            return False
+        if self.description != other.description:
+            return False
+        if self.code_url != other.code_url:
+            return False
+        if self.args != other.args:
+            return False
+        if self.type != other.type:
+            return False
+        if self.tags != other.tags:
+            return False 
+        return True
 
     def generate(self, args):
         # Args are not the same as the generator args, these are the arg inputs from user

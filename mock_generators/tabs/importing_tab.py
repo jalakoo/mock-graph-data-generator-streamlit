@@ -1,3 +1,5 @@
+# Now the new Generate Tab
+
 import streamlit as st
 import json
 from constants import *
@@ -7,26 +9,27 @@ import logging
 from file_utils import load_string, save_file
 from models.mapping import Mapping
 import sys
-import datetime
 import os
+from logic.generate_mapping import mapping_from_json
+from generate import generate_data
+from datetime import datetime
 
 # Convenience functions
 def import_file(file) -> bool:
     if file is  None:
         raise Exception(f'import.py: import_file function called with no file')
 
+    # Check if file is a valid JSON file
     try:
         json_file = json.loads(file)
         # Bring in the raw import data for nodes and relationships
         node_dicts = json_file["nodes"]
         relationship_dicts = json_file["relationships"]
         if node_dicts is None:
-            node_dicts = []
+            return False
         if relationship_dicts is None:
-            relationship_dicts = []
-        
-        st.session_state[IMPORTED_NODES] = node_dicts
-        st.session_state[IMPORTED_RELATIONSHIPS] = relationship_dicts
+            return False
+
         return True
     except json.decoder.JSONDecodeError:
         st.error(f'JSON file {file} is not valid.')
@@ -50,27 +53,44 @@ def file_selected(path):
     # Import
     sucessful_import = import_file(selected_file)
     if sucessful_import:
-        st.success(f"Import Complete. Proceed to the Mapping page")
+        st.success(f"Import Complete.")
     else:
-        st.error(f"Import Failed. Please try again.")
+        st.error(f"Import Failed. Check file format.")
 
 def import_tab():
 
-    col1, col2 = st.columns([1,11])
-    with col1:
-        st.image("mock_generators/media/import.gif")
-    with col2:
-        st.markdown("Import JSON files from an [arrows.app](https://arrows.app/#/local/id=A330UT1VEBAjNH1Ykuss) data model. \n\nProceed to the Mapping Tab when complete.")
+    # col1, col2 = st.columns([1,11])
+    # with col1:
+    #     # st.image("mock_generators/media/import.gif")
+    #     st.image("mock_generators/media/fireworks.gif")
+    # with col2:
+    #     st.markdown("Import JSON files from an [arrows.app](https://arrows.app/#/local/id=A330UT1VEBAjNH1Ykuss) data model. \n\nProceed to the Mapping Tab when complete.")
+
+    with st.expander("Instructions"):
+        st.write(
+            """
+        1. Import or select a previously imported JSON file from an arrows.app export
+        2. The mock graph data generator will automatically generate a .csv and .zip files
+        3. Download the .zip file
+        4. Proceed to the '③ Data Importer' tab
+        """
+        )
+    
 
     st.markdown("--------")
 
-    i1, i2 = st.columns([3,1])
+    i1, i2, i3 = st.columns(3)
+
+    start_generated = datetime.now()
+    last_generated = start_generated
 
     with i1:
+        # File Selection
+        st.write('SELECT ARROWS FILE:')
+        # st.markdown("--------")
+
         selected_file = None
         import_option = st.radio("Select Import Source", ["An Existing File", "Upload"], horizontal=True)
-
-        st.markdown("--------")
 
         if import_option == "An Existing File":
             # Saved options
@@ -103,43 +123,40 @@ def import_tab():
                 file_selected(selected_filepath)
         else:
             logging.info(f'Copy & Paste Option disabled') 
-        # else:
-            # # Copy & Paste
-            # pasted_json = st.text_area("Paste an arrows JSON file here", height=300)
-            # # logging.info(f'pasted_json: {pasted_json}')
-            # if pasted_json is not None and pasted_json != "":
-            #     temp_filename = f'pasted_file.json'
-            #     selected_filepath = f"{st.session_state[IMPORTS_PATH]}/{temp_filename}"
-            #     # data = json.dumps(pasted_json, indent=4)
-            #     try:
-            #         save_file(
-            #             filepath=selected_filepath,
-            #             data=pasted_json)
-            #     except:
-            #         st.error(f"Error saving file to {st.session_state[IMPORTS_PATH]}")
-            #         logging.error(f'Error saving file: {sys.exc_info()[0]}')
-                
-            #     file_selected(selected_filepath)
 
-    with i2:
+
         # Process uploaded / selected file
         current_file = st.session_state[IMPORTED_FILE]
         if current_file is not None:
             # Verfiy file is valid arrows JSON
             try:
-                json_file = json.loads(current_file)
-                nodes = json_file["nodes"]
-                relationships = json_file["relationships"]
-                if nodes is None:
-                    nodes = []
-                if relationships is None:
-                    relationships = []
-                st.session_state[IMPORTED_NODES] = nodes
-                st.session_state[IMPORTED_RELATIONSHIPS] = relationships
+                generators = st.session_state[GENERATORS]
+                mapping = mapping_from_json(
+                    current_file, 
+                    generators)
+                # st.session_state[MAPPINGS] = mapping
+                generate_data(mapping)
 
-                st.write(f'Imported Data:')
-                st.write(f'     - {len(nodes)} Nodes')
-                st.write(f'     - {len(relationships)} Relationships')
+                last_generated = datetime.now()
+                # st.success(f"New data generated from import file.")
 
             except json.decoder.JSONDecodeError:
-                st.error('JSON file is not valid.')
+                st.error('Import JSON file is not valid.')
+            except Exception as e:
+                st.error(f'Uncaught Error: {e}')
+
+    with i2:
+        export_folder = st.session_state[EXPORTS_PATH]
+        st.write(f"RECENTLY GENERATED FILES:")
+        if start_generated != last_generated:
+            st.success(f"New data generated from import file.")
+        folder_files_expander(export_folder, widget_id="export_tab", enable_download=True)
+
+    with i3:
+
+        st.write('GENERATED ZIP FILES:')
+        if start_generated != last_generated:
+            st.success(f"New zip files generated from import file.")
+        zips_folder = st.session_state[ZIPS_PATH]       
+        
+        folder_files_expander(zips_folder, widget_id="export_tab", enable_download=True, enable_delete_button=True)
