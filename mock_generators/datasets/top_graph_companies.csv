@@ -1,0 +1,18 @@
+name,description,url
+Neo4j,"Neo4j is the world's leading graph database. It is designed to store, manage, and query highly connected data.",https://neo4j.com/
+ArangoDB,"ArangoDB is a native multi-model database with flexible data models for documents, graphs, and key-values.",https://www.arangodb.com/
+JanusGraph,"JanusGraph is a scalable graph database optimized for storing and querying large graphs with billions of vertices and edges distributed across a multi-machine cluster.",https://janusgraph.org/
+OrientDB,"OrientDB is a distributed graph database with the flexibility of document databases, providing a hybrid model with both document and graph concepts.",https://orientdb.com/
+DataStax Enterprise Graph,"DataStax Enterprise Graph is a distributed graph database built on top of Apache Cassandra, designed for managing large, complex graph datasets at scale.",https://www.datastax.com/products/datastax-enterprise-graph
+GraphDB,"GraphDB is a semantic graph database that supports RDF and SPARQL, allowing for the efficient management and querying of large and complex graph datasets.",https://graphdb.ontotext.com/
+AllegroGraph,"AllegroGraph is a semantic graph database designed for managing large and complex datasets with high concurrency and availability requirements. It supports RDF, SPARQL, and Prolog.",https://franz.com/agraph/allegrograph/
+Amazon Neptune,"Amazon Neptune is a fully-managed graph database service that allows you to store and query highly connected data with ease.",https://aws.amazon.com/neptune/
+Cayley,"Cayley is an open source graph database inspired by Google's Knowledge Graph, providing a simple and easy-to-use interface for managing and querying graphs.",https://cayley.io/
+Dgraph,"Dgraph is a native graph database that is designed for real-time queries and high availability. It supports GraphQL and provides a distributed, horizontally scalable architecture.",https://dgraph.io/
+GraphBase,"GraphBase is a graph database management system that provides efficient storage and querying of large and complex graph datasets. It supports a range of query languages, including Cypher and Gremlin.",https://graphbase.net/
+Graph Story,"Graph Story is a cloud-based graph database service that provides an easy-to-use interface for managing and querying large and complex graph datasets.",https://graphstory.com/
+InfiniteGraph,"InfiniteGraph is a distributed graph database that is designed for managing large and complex datasets with high performance and scalability. It supports Java and .NET APIs for easy integration.",http://www.objectivity.com/products/infinitegraph/
+MarkLogic,"MarkLogic is a NoSQL database that provides advanced search and semantic capabilities for managing complex data. It supports RDF, SPARQL, and JavaScript for querying graph data.",https://www.marklogic.com/
+Microsoft Azure Cosmos DB,"Microsoft Azure Cosmos DB is a globally distributed, multi-model database service that provides support for graph, document, and key-value data models.",https://azure.microsoft.com/en-us/services/cosmos-db/
+Oracle Spatial and Graph,"Oracle Spatial and Graph is a spatial and graph database that provides advanced analytics and modeling capabilities for managing complex data. It supports RDF, SPARQL, and Java APIs for querying graph data.",https://www.oracle.com/database/technologies/spatialandgraph.html
+Oracle NoSQL Database,"Oracle NoSQL Database is a distributed, key-value store database that provides support for graph data models. It is designed for high performance and scalability, and provides easy integration with Java APIs.",https://www.oracle.com/database/technologies/nosql-d

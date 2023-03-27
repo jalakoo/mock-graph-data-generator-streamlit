@@ -1,0 +1,139 @@
+technology,related_to
+JavaScript,Web Development
+JavaScript,Frontend Development
+JavaScript,Node.js
+JavaScript,React
+JavaScript,Angular
+JavaScript,Vue.js
+JavaScript,Express.js
+JavaScript,TypeScript
+Python,Data Science
+Python,Machine Learning
+Python,Artificial Intelligence
+Python,Web Development
+Python,Scientific Computing
+Python,Data Analysis
+Python,Django
+Python,Flask
+Python,Pandas
+Python,Numpy
+Python,Scikit-learn
+Python,TensorFlow
+Python,PyTorch
+GraphQL,API Development
+GraphQL,Web Development
+GraphQL,React
+GraphQL,Node.js
+GraphQL,Relay
+Java,Android Development
+Java,Enterprise Development
+Java,Web Development
+Java,Spring Framework
+Java,Hibernate
+Java,JavaFX
+C++,Game Development
+C++,High Performance Computing
+C++,Embedded Systems
+C++,Operating Systems
+C++,Data Science
+Ruby,Web Development
+Ruby,Scripting
+Ruby,Testing
+Ruby,Rails
+Ruby,Sinatra
+Ruby,RSpec
+PHP,Web Development
+PHP,CMS Development
+PHP,Drupal
+PHP,Laravel
+PHP,WordPress
+PHP,CodeIgniter
+PHP,Symfony
+Swift,iOS Development
+Swift,MacOS Development
+Swift,WatchOS Development
+Swift,SwiftUI
+Kotlin,Android Development
+Kotlin,Web Development
+Kotlin,Gradle
+C#,Windows Development
+C#,Game Development
+C#,.NET Framework
+C#,Unity
+C#,ASP.NET
+SQL,Database Development
+SQL,Data Analysis
+SQL,Data Science
+SQL,MySQL
+SQL,PostgreSQL
+SQL,Microsoft SQL Server
+SQL,Oracle Database
+R,Data Science
+R,Statistical Computing
+R,Data Analysis
+R,Visualization
+R,Shiny
+Go,Web Development
+Go,Cloud Computing
+Go,Network Programming
+Go,Docker
+Go,Kubernetes
+Scala,Data Science
+Scala,Web Development
+Scala,Functional Programming
+Scala,Apache Spark
+Scala,Akka
+React,Web Development
+React,JavaScript
+React,Frontend Development
+React,Redux
+React,Next.js
+React,Gatsby
+React,Styled Components
+Vue.js,Web Development
+Vue.js,JavaScript
+Vue.js,Frontend Development
+Vue.js,Nuxt.js
+Vue.js,Vuex
+Node.js,Web Development
+Node.js,JavaScript
+Node.js,Backend Development
+Node.js,Express.js
+Node.js,Sails.js
+Node.js,Nest.js
+TypeScript,Web Development
+TypeScript,JavaScript
+TypeScript,Frontend Development
+TypeScript,Node.js
+TypeScript,React
+TypeScript,Angular
+Angular,Web Development
+Angular,JavaScript
+Angular,Frontend Development
+Angular,TypeScript
+Angular,Material Design
+Angular,NGXS
+Docker,Containerization
+Docker,Cloud Computing
+Docker,Kubernetes
+Docker,DevOps
+Ruby on Rails,Web Development
+Ruby on Rails,Ruby
+Ruby on Rails,RESTful API Development
+Ruby on Rails,Active Record
+Ruby on Rails,Action Cable
+ASP.NET,Web Development
+ASP.NET,Windows Development
+ASP.NET,C#
+ASP.NET,MVC Framework
+ASP.NET,Entity Framework
+Laravel,Web Development
+Laravel,PHP
+Laravel,RESTful API Development
+Laravel,Composer
+jQuery,Web Development
+jQuery,JavaScript
+jQuery,Frontend Development
+jQuery,DOM Manipulation
+Spring Framework,Java
+Spring Framework,Enterprise Development

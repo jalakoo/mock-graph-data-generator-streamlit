@@ -8,6 +8,10 @@ This is a prototype app for generating mock graph data for [Neo4j](https://neo4j
 
 The app uses [Streamlit](https://streamlit.io/) to create and manage the UI interface.
 
+
+## Adding new packages
+`poetry add <package_name>`
+
 ## Running
 Locally
 `poetry run streamlit run mock_generators/app.py`
