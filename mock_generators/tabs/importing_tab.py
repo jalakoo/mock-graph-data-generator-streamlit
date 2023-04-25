@@ -82,6 +82,7 @@ def import_tab():
         # Save to session state
         st.session_state[MAPPINGS] = Mapping.empty()
 
+        name = uploaded_file.name.split(".")[0]
         if current_file is not None:
             # TODO: Verfiy file is valid arrows JSON
             generators = st.session_state[GENERATORS]
@@ -92,6 +93,6 @@ def import_tab():
             st.download_button(
                 label = "Download Zip file for Data Importer",
                 data = zip,
-                file_name = f"{uploaded_file.name}.zip",
-                mime = "application/zip"
+                file_name = f"{name}.zip",
+                mime = "text/plain"
             )
