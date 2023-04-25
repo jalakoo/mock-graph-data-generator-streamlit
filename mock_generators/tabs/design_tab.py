@@ -118,12 +118,21 @@ def design_tab():
                         st.write(f'Output: {result}')
                     except:
                         st.error(f"Problem running generator {generator.name}: {sys.exc_info()[0]}")
-                if st.button("Copy for Arrows", key=f"copy_{generator.id}"):
-                    name = generator.name
-                    args = arg_inputs
-                    obj = {
-                        generator.id: args
-                    }
-                    json_string = json.dumps(obj)
-                    pyperclip.copy(json_string)
-                    st.success(f'Copied to clipboard: {json_string}. Paste into Arrows.app to use.')
+
+                # Property Code
+                name = generator.name
+                args = arg_inputs
+                obj = {
+                    generator.id: args
+                }
+                json_string = json.dumps(obj)
+
+
+                st.write('Copy & paste as a node/relationship property value in arrows.app')
+                copy1, copy2 = st.columns(2)
+                with copy1:
+                    st.write(f'{json_string}')
+                with copy2:
+                    if st.button("Copy for Arrows", key=f"copy_{generator.id}"):
+                        pyperclip.copy(json_string)
+                        st.success(f'Copied to clipboard: {json_string}. Paste as a property value in Arrows.app')
