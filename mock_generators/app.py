@@ -2,9 +2,8 @@ import streamlit as st
 from constants import *
 from tabs.importing_tab import import_tab
 from tabs.design_tab import design_tab
-from tabs.integrated_design_tab import integrated_design_tab
+# from tabs.integrated_design_tab import integrated_design_tab
 from tabs.data_importer import data_importer_tab
-from tabs.ideate_tab import ideate
 from config import load_generators
 
 # TODO: Move this stuff into the config class
@@ -51,14 +50,13 @@ imported_file = None
 
 # Streamlit runs from top-to-bottom from tabs 1 through 8. This is essentially one giant single page app.  Earlier attempt to use Streamlit's multi-page app functionality resulted in an inconsistent state between pages.
 
-t0, t1, t2, t5 = st.tabs([
-    "⓪ Ideate",
+t1, t2, t5 = st.tabs([
     "① Design",
     "② Generate",
     "③ Data Importer"
 ])
-with t0:
-    ideate()
+# with t0:
+#     ideate()
 with t1:
     design_tab()
     # integrated_design_tab()

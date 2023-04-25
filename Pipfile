@@ -5,6 +5,12 @@ name = "pypi"
 
 [packages]
 pytest = "*"
+streamlit = "*"
+streamlit-extras = "*"
+pyperclip = "*"
+streamlit-agraph = "*"
+lorem-text = "*"
+faker = "*"
 
 [dev-packages]
 
