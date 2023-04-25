@@ -120,19 +120,22 @@ def design_tab():
                         st.error(f"Problem running generator {generator.name}: {sys.exc_info()[0]}")
 
                 # Property Code
-                name = generator.name
+                # name = generator.name
                 args = arg_inputs
                 obj = {
                     generator.id: args
                 }
-                json_string = json.dumps(obj)
+
+                json_string = json.dumps(obj, default=str)
 
 
-                st.write('Copy & paste as a node/relationship property value in arrows.app')
-                copy1, copy2 = st.columns(2)
-                with copy1:
-                    st.write(f'{json_string}')
-                with copy2:
-                    if st.button("Copy for Arrows", key=f"copy_{generator.id}"):
-                        pyperclip.copy(json_string)
-                        st.success(f'Copied to clipboard: {json_string}. Paste as a property value in Arrows.app')
+                st.write('Copy & paste below as a node/relationship property value in arrows.app')
+                # copy1, copy2 = st.columns(2)
+                # with copy1:
+                st.code(f'{json_string}')
+
+                # Paperclip / copy in general known to not work in streamlit cloud
+                # with copy2:
+                #     if st.button("Copy for Arrows", key=f"copy_{generator.id}"):
+                #         pyperclip.copy(json_string)
+                #         st.success(f'Copied to clipboard: {json_string}. Paste as a property value in Arrows.app')
