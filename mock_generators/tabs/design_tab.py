@@ -7,7 +7,7 @@ import sys
 import logging
 import datetime
 from models.generator import GeneratorType
-import pyperclip
+# import pyperclip
 import json
 
 def design_tab():

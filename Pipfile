@@ -11,6 +11,7 @@ pyperclip = "*"
 streamlit-agraph = "*"
 lorem-text = "*"
 faker = "*"
+streamlit-player = "*"
 
 [dev-packages]
 

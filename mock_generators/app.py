@@ -4,6 +4,7 @@ from tabs.importing_tab import import_tab
 from tabs.design_tab import design_tab
 # from tabs.integrated_design_tab import integrated_design_tab
 from tabs.data_importer import data_importer_tab
+from tabs.tutorial import tutorial_tab
 from config import load_generators
 
 # TODO: Move this stuff into the config class
@@ -43,23 +44,26 @@ load_generators()
 
 # UI
 st.title("Mock Graph Data Generator")
-st.markdown("This is a collection of tools to generate mock graph data for [Neo4j](https://neo4j.com) graph databases.")
+st.markdown("This is a collection of tools to generate mock graph data for [Neo4j](https://neo4j.com) graph databases. NOTE: Chromium browser recommended for best experience.")
+
+
 
 generators = None
 imported_file = None
 
 # Streamlit runs from top-to-bottom from tabs 1 through 8. This is essentially one giant single page app.  Earlier attempt to use Streamlit's multi-page app functionality resulted in an inconsistent state between pages.
 
-t1, t2, t5 = st.tabs([
+t0, t1, t2, t5 = st.tabs([
+    "⓪ Tutorial",
     "① Design",
     "② Generate",
     "③ Data Importer"
 ])
-# with t0:
-#     ideate()
+
+with t0:
+    tutorial_tab()
 with t1:
     design_tab()
-    # integrated_design_tab()
 with t2:
     import_tab()
 with t5:
