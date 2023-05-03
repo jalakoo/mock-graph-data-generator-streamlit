@@ -1,5 +1,5 @@
 from models.generator import Generator, GeneratorType
-from list_utils import clean_list
+from models.list_utils import clean_list
 import logging
 
 class PropertyMapping():

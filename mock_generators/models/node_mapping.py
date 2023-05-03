@@ -1,8 +1,11 @@
+# from models.property_mapping import PropertyMapping
+# from models.generator import Generator
 from models.property_mapping import PropertyMapping
 from models.generator import Generator
+from models.list_utils import clean_list
+
 import sys
 import logging
-from list_utils import clean_list
 
 # TODO: Should have made these dataclasses
 class NodeMapping():

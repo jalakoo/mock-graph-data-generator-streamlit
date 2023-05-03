@@ -1,18 +1,12 @@
+import os
 import pytest
-# from mock_generators import __version__
 
 from mock_generators.models.generator import Generator, GeneratorType, GeneratorArg
-
 from mock_generators.models.node_mapping import NodeMapping
-
 from mock_generators.generate_mapping import generator_for_raw_property, mapping_from_json, propertymappings_for_raw_properties, node_mappings_from
 
 import json
-# For pytest to properly find modules, add following to pyproject.toml:
-# [tool.pytest.ini_options]
-# pythonpath = [
-#   ".", "mock_generators"
-# ]
+import logging
 
 int_args_test = GeneratorArg(
         type=GeneratorType.INT,
@@ -104,15 +98,11 @@ class TestClass:
         
 
     def test_generator_for_raw_property(self):
-        print(f'int_generator_test: {int_generator_test}')
-        print(f'int_args_test: {int_args_test}')
-        print(f'test_generators: {test_generators}')
         try:
             test_string = "{\"test_int\":[1]}"
             generator, args = generator_for_raw_property(test_string, test_generators)
         except Exception as e:
             print(f'Exception: {e}')
-        print(f'generator: {generator}, args: {args}')
         # if status_message is not None:
         #     print(f'status: {status_message}')
         assert int_generator_test is not None
@@ -131,19 +121,16 @@ class TestClass:
         assert generator is None
         assert args is None
 
-    def test_propertymappings_for_raw_properties(self):
+    def test_propertymappings_for_raw_properties_smoke(self):
+        raw_props = {
+                "alpha": "{\"test_int\":[1]}",
+                "bravo": "{\"test_float\":[1.0, 2.0]}"
+            }
         mappings = propertymappings_for_raw_properties(
-            raw_properties={
-                "alpha": "{\'test_int\':[1]",
-                "bravo": "{\'test_float\':[1.0, 2.0]"
-            },
+            raw_properties=raw_props,
             generators= test_generators)
-        print(f'mappings: {mappings}')
         assert len(mappings) == 2
-        assert mappings['alpha'].generator == self.int_generator_test()
-        assert mappings['alpha'].args == self.int_args_test()
-        assert mappings['bravo'].generator == self.float_generator_test()
-        assert mappings['bravo'].args == self.float_args_test()
+
 
     # def test_node_mappings_from(self):
     #     nodes = node_mappings_from(

@@ -1,12 +1,16 @@
 
+# from models.node_mapping import NodeMapping
+# from models.property_mapping import PropertyMapping
+# from models.generator import Generator
+
 from models.node_mapping import NodeMapping
 from models.property_mapping import PropertyMapping
 from models.generator import Generator
+from models.list_utils import clean_list
+
 import logging
-import random
 import sys
 from copy import deepcopy
-from list_utils import clean_list
 
 class RelationshipMapping():
 

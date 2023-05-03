@@ -1,11 +1,11 @@
 # Builds mapping file from specially formatted arrows.app JSON file
 
 import json
-from models.mapping import Mapping
-from models.node_mapping import NodeMapping
-from models.relationship_mapping import RelationshipMapping
-from models.property_mapping import PropertyMapping
-from models.generator import Generator
+from .models.mapping import Mapping
+from .models.node_mapping import NodeMapping
+from .models.relationship_mapping import RelationshipMapping
+from .models.property_mapping import PropertyMapping
+from .models.generator import Generator
 import logging
 import uuid
 
@@ -16,20 +16,10 @@ def generator_for_raw_property(
     """Returns a generator and args for a property"""
     # Sample expected string: "{\"company_name\":[]}"
 
-    # Check that the property info is notated for mock data generation use
-    # leading_bracket = property_value[0]
-    # trailing_bracket = property_value[-1]
-    # if leading_bracket != "{" or trailing_bracket != "}":
-    #     logging.warning(f'generate_mapping.py: generator_for_raw_property: property_value not wrapped in {{ and }}. Skipping generator assignment for property_value: {property_value}')
-    #     return (None, None)
-    
-    # # The property value should be a JSON string. Convert to a dict obj
-    # json_string = property_value[1:-1]
-
     try:
         obj = json.loads(property_value)
     except Exception as e:
-        logging.info(f'generate_mapping.py: generator_for_raw_property: Could not parse JSON string: {property_value}. Skipping generator assignment for property_value: {property_value}')
+        logging.info(f'Could not parse JSON string: {property_value}. Skipping generator assignment for property_value: {property_value}')
         return (None, None)
 
     # Should only ever be one
@@ -37,7 +27,7 @@ def generator_for_raw_property(
         generator_id = key
         generator = generators.get(generator_id, None)
         if generator is None:
-            logging.error(f'generate_mapping.py: generator_for_raw_property: generator_id {generator_id} not found in generators. Skipping generator assignment for property_value: {property_value}')
+            logging.error(f'Generator_id {generator_id} not found in generators. Skipping generator assignment for property_value: {property_value}')
             return None
 
         args = value

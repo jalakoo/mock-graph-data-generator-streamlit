@@ -14,8 +14,11 @@ def generator_for_raw_property(
     generators: dict[str, Generator]
     ) -> tuple[Generator, list[any]]:
     """Returns a generator and args for specially formatted property values from the arrows.app JSON file"""
+
     # Sample expected string: "{\"company_name\":[]}"
 
+    # TODO: Support following options: "string", "bool", "boolean", "float", "integer", "number", "date", "datetime"
+    
     # Throws an error if a generator can not be found
 
     obj = json.loads(property_value)
@@ -57,14 +60,30 @@ def propertymappings_for_raw_properties(
         raise Exception(f'generate_mapping.py: propertymappings_for_raw_properties: No generators assignment received.')
 
     for key, value in raw_properties.items():
+
         # Skip any keys with { } (brackets) as these are special cases for defining count/assignment/filter generators
         if key.startswith('{') and key.endswith('}'):
             continue
+
+        # TODO: Skip special COUNT and KEY literals
 
         # Only process values with string { } (brackets)
         if not isinstance(value, str) or not value.startswith('{') or not value.endswith('}'):
             property_mappings[key] = value
             continue
+
+            # TODO: Permit literals
+
+            # TODO: Process strings = lorem words
+
+            # TODO: Process booleans
+
+            # TODO: Process ints
+
+            # TODO: Process floats
+
+            # TODO: Process dates
+
         try:
             generator, args = generator_for_raw_property(value, generators)
             if generator is None:
@@ -129,15 +148,22 @@ def node_mappings_from(
             logging.warning(f"generate_mappings: node_mappings_from: dict is missing properties: {node_dict}. Can not configure for data generation. Skipping node.")
             continue
 
+
         # Determine count generator to use
+        # TODO: Support COUNT literal
         count_generator_config = properties.get("{count}", None)
         if count_generator_config is None:
+            # TODO: Randomize count
             logging.warning(f"generate_mappings: node_mappings_from: node properties is missing {{count}} key from properties: {properties}: Skipping {node_dict}")
             continue
+
+        # TODO: Add a uuid key-value
+
 
         # Get string name for key property. Value should be an unformatted string
         key = properties.get("{key}", None)
         if key is None:
+            # TODO: If no key property use uuid
             logging.warning(f"generate_mappings: node_mappings_from: node properties is missing {{key}}: Skipping {node_dict}")
             continue
 
@@ -225,8 +251,10 @@ def relationshipmappings_from(
             continue
 
         # Determine count generator to use
+        # TODO: Support COUNT key type
         count_generator_config = properties.get("{count}", None)
         if count_generator_config is None:
+            # TODO: Support default count generation
             logging.warning(f"generate_mappings: relationshipmappings_from: relationship properties is missing '{{count}}' key from properties: {properties}: Skipping {relationship_dict}")
             continue
 
