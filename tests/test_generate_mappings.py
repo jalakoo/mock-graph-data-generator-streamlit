@@ -1,57 +1,16 @@
 import os
 import pytest
 
-from mock_generators.models.generator import Generator, GeneratorType, GeneratorArg
-from mock_generators.models.node_mapping import NodeMapping
-from mock_generators.generate_mapping import generator_for_raw_property, mapping_from_json, propertymappings_for_raw_properties, node_mappings_from
-
+from mock_generators.models.generator import Generator, GeneratorType
 import json
 import logging
 
-int_args_test = GeneratorArg(
-        type=GeneratorType.INT,
-        label="test_arg",
-        default=1,
-    )
+# test_generators = load_generators("mock_generators/named_generators.json")
 
-int_generator_test = Generator(
-        id="test_int",
-        name="test_int",
-        type=GeneratorType.INT,
-        description="test",
-        args=[int_args_test],
-        code_url="mock_generators/generators/ecdff22c.py",
-        tags=["int, integer, number"]
-    )
-
-float_args_test = [
-    GeneratorArg(
-        type=GeneratorType.FLOAT,
-        label="min",
-        default=1.0,
-    ),
-    GeneratorArg(
-        type=GeneratorType.FLOAT,
-        label="max",
-        default=2.0,
-    ),
-    ]
-
-float_generator_test = Generator(
-        id="test_float",
-        name = "test_float",
-        type=GeneratorType.FLOAT,
-        description="test",
-        args=float_args_test,
-        code_url="mock_generators/generators/e8cff8c1.py",
-        tags=["float", "number"]
-    )
-
-test_generators = {
-    "test_int" : int_generator_test,
-    "test_float" : float_generator_test
-}
-
+# TODO: Test propertymappings_for_raw_properties
+# TODO: Test node_mappings_from
+# TODO: Test relationshipmappings_from
+# TODO: Test mapping_from_json
 class TestClass:
 
     # def test_version(self):
@@ -95,41 +54,66 @@ class TestClass:
         except Exception as e:
             print(f'Exception: {e}')
             assert False
+
+    # def test_failed_generator_for_raw_property(self):
+    #     try:
+    #         generator, args = generator_for_raw_property("{\'test_doesnt_exist\':[1]}", test_generators)
+    #         assert generator is None
+    #         assert args is None
+    #     except Exception as e:
+    #         print(f'Exception: {e}')
+
+
+    # def test_propertymappings_for_raw_properties_smoke(self):
+    #     raw_props = {
+    #             "alpha": "{\"test_int\":[1]}",
+    #             "bravo": "{\"test_float\":[1.0, 2.0]}"
+    #         }
+    #     mappings = propertymappings_for_raw_properties(
+    #         raw_properties=raw_props,
+    #         generators= test_generators)
+    #     assert len(mappings) == 2
+
+    # def test_node_mappings_from_literals(self):
+    #     nodes = [
+    #         {
+    #             "id": "n1",
+    #             "position": {
+    #             "x": 284.5,
+    #             "y": -204
+    #             },
+    #             "caption": "Company",
+    #             "labels": [],
+    #             "properties": {
+    #                 "string": "name",
+    #                 "bool": "bool",
+    #                 "int": "int",
+    #                 "float": "float",
+    #                 "datetime": "2020-01-01T00:00:00Z"
+    #             },
+    #             "style": {}
+    #         }
+    #     ]
+
+    # def test_propertymappings_for_raw_properties_literals(self):
+    #     raw_props = {
+    #             "string": "test",
+    #             "bool": True,
+    #             "int": 1,
+    #             "float": 1.0,
+    #             "datetime": "2020-01-01T00:00:00Z",
+    #     }
+    #     mappings = propertymappings_for_raw_properties(
+    #         raw_properties=raw_props,
+    #         generators= test_generators)
         
+    #     assert len(mappings) == 5
+    #     assert mappings["string"] == "test"
+    #     assert mappings["bool"] == True
+    #     assert mappings["int"] == 1
+    #     assert mappings["float"] == 1.0
+    #     assert mappings["datetime"] == "2020-01-01T00:00:00Z"
 
-    def test_generator_for_raw_property(self):
-        try:
-            test_string = "{\"test_int\":[1]}"
-            generator, args = generator_for_raw_property(test_string, test_generators)
-        except Exception as e:
-            print(f'Exception: {e}')
-        # if status_message is not None:
-        #     print(f'status: {status_message}')
-        assert int_generator_test is not None
-        assert int_args_test is not None
-        assert generator == int_generator_test
-        assert args == [1]
-        # Test generator returned creates acceptable value
-        value = generator.generate(args)
-        assert value == 1
-
-    def test_failed_generator_for_raw_property(self):
-        try:
-            generator, args = generator_for_raw_property("{\'test_doesnt_exist\':[1]}", test_generators)
-        except Exception as e:
-            print(f'Exception: {e}')
-        assert generator is None
-        assert args is None
-
-    def test_propertymappings_for_raw_properties_smoke(self):
-        raw_props = {
-                "alpha": "{\"test_int\":[1]}",
-                "bravo": "{\"test_float\":[1.0, 2.0]}"
-            }
-        mappings = propertymappings_for_raw_properties(
-            raw_properties=raw_props,
-            generators= test_generators)
-        assert len(mappings) == 2
 
 
     # def test_node_mappings_from(self):

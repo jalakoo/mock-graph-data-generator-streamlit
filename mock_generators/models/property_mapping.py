@@ -4,12 +4,13 @@ import logging
 
 class PropertyMapping():
 
+    # TODO: Handle literals
+    
     @staticmethod
     def empty():
         return PropertyMapping(
             pid = None,
             name = None,
-            # type = None,
             generator = None,
             args = None
         )
@@ -18,13 +19,11 @@ class PropertyMapping():
         self, 
         pid: str,
         name: str = None, 
-        # type: GeneratorType = None, 
         generator: Generator = None, 
         # Args to pass into generator during running
         args: list[any] = []):
         self.pid = pid
         self.name = name
-        # self.type = type
         self.generator = generator
         self.args = args
 
@@ -43,7 +42,6 @@ class PropertyMapping():
         return {
             "pid": self.pid,
             "name": self.name,
-            # "type": self.type.to_string() if self.type is not None else None,
             "generator": self.generator.to_dict() if self.generator is not None else None,
             "args": clean_list(self.args)
         }
@@ -51,8 +49,6 @@ class PropertyMapping():
     def ready_to_generate(self):
         if self.name is None:
             return False
-        # if self.type is None:
-        #     return False
         if self.generator is None:
             return False
         return True

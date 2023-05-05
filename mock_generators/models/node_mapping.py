@@ -5,6 +5,7 @@ from models.generator import Generator
 from models.list_utils import clean_list
 
 import sys
+import uuid
 import logging
 
 # TODO: Should have made these dataclasses
@@ -13,6 +14,7 @@ class NodeMapping():
     @staticmethod
     def empty():
         return NodeMapping(
+            uid = f"{str(uuid.uuid4())[:8]}",
             nid = "",
             position = {"x": 0, "y": 0},
             caption = "",
@@ -29,10 +31,11 @@ class NodeMapping():
         position: dict,   # ie: {x: 0, y: 0}
         caption: str,
         labels: list[str], 
-        properties: dict[str, PropertyMapping],
+        properties: dict[str, any],
         count_generator: Generator,
         count_args: list[any],
         key_property: PropertyMapping):
+        # self.uid = f"{str(uuid.uuid4())[:8]}"
         self.nid = nid
         self.position = position
         self.caption = caption
@@ -118,8 +121,9 @@ class NodeMapping():
         count = 0
         all_results = []
         try:
-            count = self.count_generator.generate(self.count_args)
+            count = int(self.count_generator.generate(self.count_args))
         except:
+            logging.error(f'Possibly incorrect generator assigned for count generation: {self.count_generator}')
             raise Exception(f"Node mapping could not generate a number of nodes to continue generation process, error: {str(sys.exc_info()[0])}")
 
         try:
@@ -134,7 +138,9 @@ class NodeMapping():
                     # Have PropertyMapping generate a value
                     value = property.generate_value()
                     node_result[property.name] = value
-                # node_result["_uid"] = f"{self.id}_{str(uuid.uuid4())[:8]}"
+
+                # Assign a uuid
+                # node_result["_uid"] = f"{self.uid}"
                 all_results.append(node_result)
         except:
             raise Exception(f"Node mapping could not generate property values, error: {str(sys.exc_info()[0])}")

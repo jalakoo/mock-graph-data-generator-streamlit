@@ -134,8 +134,10 @@ class RelationshipMapping():
             # Decide on how many of these relationships to generate
             count = 0
             try:
-                count = self.count_generator.generate(self.count_args)
+                count = int(self.count_generator.generate(self.count_args))
             except:
+                logging.error(f'Possibly incorrect generator assigned for count generation: {self.count_generator}')
+
                 # Generator not found or other code error
                 raise Exception(f"Relationship mapping could not generate a number of relationships to continue generation process, error: {str(sys.exc_info()[0])}")
 

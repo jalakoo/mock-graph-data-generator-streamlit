@@ -18,7 +18,6 @@ def preload_state():
         st.session_state[IMPORTED_FILENAME] = ""
     if IMPORTS_PATH not in st.session_state:
         st.session_state[IMPORTS_PATH] = DEFAULT_IMPORTS_PATH
-    # TODO: Replace with reference to selected import file
     if IMPORTED_FILE not in st.session_state:
         st.session_state[IMPORTED_FILE] = None
     if IMPORTED_NODES not in st.session_state:
@@ -32,7 +31,19 @@ def preload_state():
     if MAPPINGS not in st.session_state:
         st.session_state[MAPPINGS] = None
 
-def load_generators():
+def load_generators(
+        folderpath = str
+):
+    try:
+        with open(folderpath) as input:
+            generators_json = load_json(folderpath)
+            new_generators = generators_from_json(generators_json)
+            return new_generators
+    except FileNotFoundError:
+        raise Exception('Generator JSONs not found.')
+    
+
+def load_generators_to_streamlit():
     spec_filepath = st.session_state[SPEC_FILE]
     generators = st.session_state[GENERATORS]
     try:
