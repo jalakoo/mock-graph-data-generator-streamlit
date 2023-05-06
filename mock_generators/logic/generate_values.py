@@ -3,6 +3,7 @@ from models.generator import Generator
 import logging
 import json
 
+# ORIGINAL GENERATOR ASSIGNMENT
 def actual_generator_for_raw_property(
     property_value: str, 
     generators: dict[str, Generator]
@@ -27,7 +28,45 @@ def actual_generator_for_raw_property(
 
     return (None, None)
 
+# KEYWORD GENERATOR ASSIGNMENT
+def keyword_generator_for_raw_property(
+    value: str,
+    generators: dict[str, Generator]
+    ) -> tuple[Generator, list[any]]:
+    """Returns a generator and args for a property value using a generic keyword. Returns None if not found."""
 
+    result = None
+    if value.lower() == "string":
+            result = {
+                "lorem_words": [1,3]
+            }
+    elif value.lower() == "int" or value.lower() == "integer":
+            result = {
+                "int_range": [1,100]
+            }
+    elif value.lower() == "float":
+            result = {
+                "float_range": [1.0,100.0, 2]
+            }
+    elif value.lower() == "bool" or value.lower() == "boolean":
+            result = {
+                "bool": [50]
+            }
+    elif value.lower() == "date" or value.lower() == "datetime":
+            result = {
+                "date": ["1970-01-01", "2022-11-24"]
+            }
+
+    # Default
+    if result is None:
+        return (None, None)
+    
+    # Generator was assigned
+    g_config = json.dumps(result)
+    return actual_generator_for_raw_property(g_config, generators)
+
+
+# LITERAL GENERATOR ASSIGNMENT SUPPORT
 def all_ints(values: list[str]) -> bool:
     for value in values:
         if not is_int(value):
@@ -48,7 +87,7 @@ def all_floats(values: list[str]) -> bool:
 
 def is_int(value: str) -> bool:
     try:
-        integer = int(value)
+        int(value)
         return True
     except ValueError:
         return False
@@ -66,6 +105,30 @@ def literal_generator_from_value(
     )-> tuple[Generator, list[any]]:
     """
         Attempts to find an actual generator based on more concise literal values from arrows.app JSON
+
+        Support for:
+            - ints
+            - floats
+            - ranges of ints
+            - ranges of floats
+            - lists of ints
+            - lists of floats
+            - string literals
+            - list of strings
+
+        TODO:
+            - bools
+            - lists of bools
+            - date
+            - lists of dates
+            - datetime
+            - list of datetimes
+            - "int" / "integer" -> random int generator
+            - "float" -> random float generator
+            - "string" -> random word generator
+            - "bool" / "boolean" -> random bool generator
+            - "date" -> random datetime generator
+            - "datetime" -> random datetime generator
     """
     # Sample expected values: 
     #   "1"
@@ -80,7 +143,7 @@ def literal_generator_from_value(
         "string": [value]
     }
 
-    # Check for keywords
+
 
     # Check if value is an int or float
     if is_int(value):
@@ -165,6 +228,9 @@ def generator_for_raw_property(
 
     # Check for Legacy Properties assignments
     # Also returns None, None if no matching generator found
+    if generator is None:
+        generator, args = keyword_generator_for_raw_property(property_value, generators)
+
     if generator is None:
         generator, args = actual_generator_for_raw_property(property_value, generators)
 

@@ -275,7 +275,7 @@
                 "type": "Datetime"
             }
         ],
-        "code_url": "mock_generators/generators/ab64469b.py",
+        "code_url": "mock_generators/generators/date.py",
         "description": "Generate a random date between 2 specified dates. Exclusive of days specified.",
         "name": "Date",
         "tags": [
@@ -449,7 +449,7 @@
                 "type": "Integer"
             }
         ],
-        "code_url": "mock_generators/generators/loremtext_words.py",
+        "code_url": "mock_generators/generators/lorem_words.py",
         "description": "String generator using the lorem-text package",
         "name": "Words",
         "tags": [
@@ -473,7 +473,7 @@
                 "type": "Integer"
             }
         ],
-        "code_url": "mock_generators/generators/loremtext_sentence.py",
+        "code_url": "mock_generators/generators/lorem_sentences.py",
         "description": "String generator using the lorem-text package",
         "name": "Sentences",
         "tags": [

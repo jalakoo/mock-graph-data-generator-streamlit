@@ -1,6 +1,6 @@
 import pytest
 from mock_generators.config import load_generators
-from mock_generators.logic.generate_values import literal_generator_from_value, actual_generator_for_raw_property, generator_for_raw_property
+from mock_generators.logic.generate_values import literal_generator_from_value, actual_generator_for_raw_property, generator_for_raw_property, keyword_generator_for_raw_property
 
 
 test_generators = load_generators("mock_generators/named_generators.json")
@@ -17,8 +17,8 @@ class TestActualGenerators:
             assert generator == None
             assert args == None
         except Exception as e:
-            print(f'Exception: {e}')
-            assert False    
+            assert False, f'Exception: {e}'
+ 
 
         try:
             # Empty
@@ -27,8 +27,8 @@ class TestActualGenerators:
             assert generator == None
             assert args == None
         except Exception as e:
-            print(f'Exception: {e}')
-            assert False   
+            assert False, f'Exception: {e}'
+
 
         try:
             # Number
@@ -37,8 +37,8 @@ class TestActualGenerators:
             assert generator == None
             assert args == None
         except Exception as e:
-            print(f'Exception: {e}')
-            assert False   
+            assert False, f'Exception: {e}'
+  
 
         try:
             # Empty
@@ -47,8 +47,8 @@ class TestActualGenerators:
             assert generator == None
             assert args == None
         except Exception as e:
-            print(f'Exception: {e}')
-            assert False  
+            assert False, f'Exception: {e}'
+
 
     def test_integer(self):
         try:
@@ -59,8 +59,8 @@ class TestActualGenerators:
             value = generator.generate(args)
             assert value == 1
         except Exception as e:
-            print(f'Exception: {e}')
-            assert False
+            assert False, f'Exception: {e}'
+
 
     def test_integer_list_single(self):
         try:
@@ -71,8 +71,8 @@ class TestActualGenerators:
             value = generator.generate(args)
             assert value == 1
         except Exception as e:
-            print(f'Exception: {e}')
-            assert False
+            assert False, f'Exception: {e}'
+
 
     def test_integer_list_multi(self):
         try:
@@ -83,8 +83,8 @@ class TestActualGenerators:
             value = generator.generate(args)
             assert value in [1,2,3]
         except Exception as e:
-            print(f'Exception: {e}')
-            assert False
+            assert False, f'Exception: {e}'
+
 
 class TestLiteralGenerators:
     def test_integer(self):
@@ -96,8 +96,8 @@ class TestLiteralGenerators:
             value = generator.generate(args)
             assert value == 1
         except Exception as e:
-            print(f'Exception: {e}')
-            assert False
+             assert False, f'Exception: {e}'
+
 
     def test_float(self):
         try:
@@ -108,8 +108,8 @@ class TestLiteralGenerators:
             value = generator.generate(args)
             assert value == 1.0
         except Exception as e:
-            print(f'Exception: {e}')
-            assert False
+            assert False, f'Exception: {e}'
+
 
     def test_int_range(self):
         try:
@@ -120,8 +120,8 @@ class TestLiteralGenerators:
             value = generator.generate(args)
             assert value in [1,2,3]
         except Exception as e:
-            print(f'Exception: {e}')
-            assert False
+            assert False, f'Exception: {e}'
+
 
     def test_float_range(self):
         try:
@@ -133,8 +133,8 @@ class TestLiteralGenerators:
             assert value <= 2.0
             assert value >= 1.0
         except Exception as e:
-            print(f'Exception: {e}')
-            assert False
+            assert False, f'Exception: {e}'
+
 
     def test_int_list(self):
         try:
@@ -145,8 +145,8 @@ class TestLiteralGenerators:
             value = generator.generate(args)
             assert value in [1,2,3]
         except Exception as e:
-            print(f'Exception: {e}')
-            assert False
+            assert False, f'Exception: {e}'
+
 
     def test_float_list(self):
         try:
@@ -157,8 +157,8 @@ class TestLiteralGenerators:
             value = generator.generate(args)
             assert value in [1.0, 2.0, 3.0], f'generator: {generator}, args: {args}, value: {value}'
         except Exception as e:
-            print(f'Exception: {e}')
-            assert False
+            assert False, f'Exception: {e}'
+
 
     def test_string(self):
         try:
@@ -169,8 +169,8 @@ class TestLiteralGenerators:
             value = generator.generate(args)
             assert value == "A string value"
         except Exception as e:
-            print(f'Exception: {e}')
-            assert False
+            assert False, f'Exception: {e}'
+
 
     def test_string_from_list(self):
         try:
@@ -181,17 +181,18 @@ class TestLiteralGenerators:
             value = generator.generate(args)
             assert value in ["Chicken", "Peas", "Carrots"]
         except Exception as e:
-            print(f'Exception: {e}')
-            assert False
+            assert False, f'Exception: {e}'
+
         
 class TestGeneratorForProperties:
     def test_failed_generator_for_raw_property(self):
+        # Will default to a string literal
         try:
             generator, args = generator_for_raw_property("{\'test_doesnt_exist\':[1]}", test_generators)
-            assert generator is None
-            assert args is None
+            value = generator.generate(args)
+            assert value == "{\'test_doesnt_exist\':[1]}"
         except Exception as e:
-            print(f'Exception: {e}')
+            assert False, f'Exception: {e}'
 
     def test_string_routing(self):
         try:
@@ -202,8 +203,8 @@ class TestGeneratorForProperties:
             value = generator.generate(args)
             assert value == "literal string"
         except Exception as e:
-            print(f'Exception: {e}')
-            assert False
+            assert False, f'Exception: {e}'
+
     
         try:
             # List of strings
@@ -214,5 +215,104 @@ class TestGeneratorForProperties:
             value = generator.generate(args)
             assert value in ["Chicken", "Peas", "Carrots"]
         except Exception as e:
-            print(f'Exception: {e}')
-            assert False
+            assert False, f'Exception: {e}'
+
+
+
+class TestKeywordGeneratorForProperties:
+    def test_no_keyword_found(self):
+        try:
+            generator, args = keyword_generator_for_raw_property("NOT A KEYWORD", test_generators)
+            assert generator is None
+            assert args is None
+        except Exception as e:
+            assert False, f'Exception: {e}'
+
+    def test_bool_keywords(self):
+        try:
+            generator, args = keyword_generator_for_raw_property("bool", test_generators)
+            value = generator.generate(args)
+            assert value in [True, False]
+        except Exception as e:
+            assert False, f'Exception: {e}'
+
+        try:
+            generator, args = keyword_generator_for_raw_property("boolean", test_generators)
+            value = generator.generate(args)
+            assert value in [True, False]
+        except Exception as e:
+            assert False, f'Exception: {e}'
+
+        try:
+            generator, args = keyword_generator_for_raw_property("Boolean", test_generators)
+            value = generator.generate(args)
+            assert value in [True, False]
+        except Exception as e:
+            assert False, f'Exception: {e}'
+
+    def test_int_keywords(self):
+        try:
+            generator, args = keyword_generator_for_raw_property("int", test_generators)
+            value = generator.generate(args)
+            assert value <= 100
+            assert value >= 1
+        except Exception as e:
+            assert False, f'Exception: {e}'
+
+        try:
+            generator, args = keyword_generator_for_raw_property("integer", test_generators)
+            value = generator.generate(args)
+            assert value <= 100
+            assert value >= 1
+        except Exception as e:
+            assert False, f'Exception: {e}'
+
+        try:
+            generator, args = keyword_generator_for_raw_property("Integer", test_generators)
+            value = generator.generate(args)
+            assert value <= 100
+            assert value >= 1
+        except Exception as e:
+            assert False, f'Exception: {e}'
+
+    def test_float_keywords(self):
+        try:
+            generator, args = keyword_generator_for_raw_property("float", test_generators)
+            value = generator.generate(args)
+            assert value <= 100.0
+            assert value >= 1.0
+        except Exception as e:
+            assert False, f'Exception: {e}'
+
+        try:
+            generator, args = keyword_generator_for_raw_property("Float", test_generators)
+            value = generator.generate(args)
+            assert value <= 100.0
+            assert value >= 1.0
+        except Exception as e:
+            assert False, f'Exception: {e}'
+
+    def test_date_keywords(self):
+        from datetime import datetime
+
+        try:
+            generator, args = keyword_generator_for_raw_property("date", test_generators)
+            value = generator.generate(args)
+            lower_bound = datetime.fromisoformat('1970-01-01T00:00:00')
+            upper_bound = datetime.fromisoformat('2022-11-24T00:00:00')
+            check_date = datetime.fromisoformat(value)
+            assert lower_bound <= check_date <= upper_bound
+        except Exception as e:
+            assert False, f'Exception: {e}'
+
+
+        try:
+            generator, args = keyword_generator_for_raw_property("Datetime", test_generators)
+            value = generator.generate(args)
+            lower_bound = datetime.fromisoformat('1970-01-01T00:00:00')
+            upper_bound = datetime.fromisoformat('2022-11-24T00:00:00')
+            check_date = datetime.fromisoformat(value)
+            print(f'check_date: {check_date}')
+            assert lower_bound <= check_date <= upper_bound
+        except Exception as e:
+            assert False, f'Exception: {e}'
