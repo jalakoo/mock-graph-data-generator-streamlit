@@ -1,12 +1,16 @@
 
+# from models.node_mapping import NodeMapping
+# from models.property_mapping import PropertyMapping
+# from models.generator import Generator
+
 from models.node_mapping import NodeMapping
 from models.property_mapping import PropertyMapping
 from models.generator import Generator
+from models.list_utils import clean_list
+
 import logging
-import random
 import sys
 from copy import deepcopy
-from list_utils import clean_list
 
 class RelationshipMapping():
 
@@ -130,8 +134,10 @@ class RelationshipMapping():
             # Decide on how many of these relationships to generate
             count = 0
             try:
-                count = self.count_generator.generate(self.count_args)
+                count = int(self.count_generator.generate(self.count_args))
             except:
+                logging.error(f'Possibly incorrect generator assigned for count generation: {self.count_generator}')
+
                 # Generator not found or other code error
                 raise Exception(f"Relationship mapping could not generate a number of relationships to continue generation process, error: {str(sys.exc_info()[0])}")
 

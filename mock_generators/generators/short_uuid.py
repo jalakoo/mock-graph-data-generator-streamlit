@@ -1,6 +1,5 @@
 from faker import Faker
 fake = Faker()
-import logging
 
 def generate(args: list[any]=[]):
     if len(args) == 0:

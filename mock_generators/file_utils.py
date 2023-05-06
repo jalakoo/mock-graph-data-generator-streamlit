@@ -78,7 +78,6 @@ def save_json(filepath, data):
 
 def save_csv(filepath: str, data: list[dict]):
     with open(filepath, 'w') as csvfile:
-        # TODO: Fix, will crash if the data is empty
         if data is None:
             raise Exception(f'file_utils.py: save_csv: No data to save to {filepath}')
         if len(data) == 0:

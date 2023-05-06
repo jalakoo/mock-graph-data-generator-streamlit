@@ -2,7 +2,7 @@ from enum import Enum, unique
 import logging
 import sys
 import re
-import numbers
+# import numbers
 # TODO: replace with dataclasses
 # from dataclasses import dataclass
 
@@ -245,7 +245,7 @@ class Generator():
             result = module.generate(args)
             return result
         except:
-            logging.error(f"Error generating data for generator {self.name}, id {self.id}: {sys.exc_info()[0]}")
+            logging.error(f"Error generating data for generator '{self.name}': id {self.id}: ERROR: {sys.exc_info()[0]}")
             return None
 
 

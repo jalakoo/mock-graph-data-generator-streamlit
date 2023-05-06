@@ -29,6 +29,23 @@
         ],
         "type": "String"
     },
+    "float": {
+        "args": [
+            {
+                "default": 1.0,
+                "label": "Value",
+                "type": "Float"
+            }
+        ],
+        "code_url": "mock_generators/generators/float.py",
+        "description": "Constant Float value",
+        "name": "Float",
+        "tags": [
+            "float",
+            "number"
+        ],
+        "type": "Float"
+    },
     "float_from_list": {
         "args": [
             {
@@ -37,7 +54,7 @@
                 "type": "String"
             }
         ],
-        "code_url": "mock_generators/generators/111d38e0.py",
+        "code_url": "mock_generators/generators/float_from_list.py",
         "description": "Randomly selected float from a comma-seperated list of options.",
         "name": "Float from list",
         "tags": [
@@ -84,7 +101,7 @@
                 "type": "Integer"
             }
         ],
-        "code_url": "mock_generators/generators/469b37c7.py",
+        "code_url": "mock_generators/generators/int_range.py",
         "description": "Random integer from a min and max value argument. Argument values are inclusive.",
         "name": "Int Range",
         "tags": [
@@ -156,6 +173,23 @@
         ],
         "type": "String"
     },
+    "string": {
+        "args": [
+            {
+                "default": "",
+                "label": "List of words (ie: alpha, brave, charlie)",
+                "type": "String"
+            }
+        ],
+        "code_url": "mock_generators/generators/literal.py",
+        "description": "String literal",
+        "name": "String",
+        "tags": [
+            "string",
+            "word"
+        ],
+        "type": "String"
+    },
     "string_from_list": {
         "args": [
             {
@@ -164,7 +198,7 @@
                 "type": "String"
             }
         ],
-        "code_url": "mock_generators/generators/5bf1fbd6.py",
+        "code_url": "mock_generators/generators/string_from_list.py",
         "description": "Randomly selected string from a comma-seperated list of options.",
         "name": "String from list",
         "tags": [
@@ -200,20 +234,34 @@
     },
     "uuid": {
         "args": [
-            {
-                "default": 37,
-                "label": "Limit character length",
-                "type": "Integer"
-            }
         ],
-        "code_url": "mock_generators/generators/78bc0765.py",
-        "description": "Random UUID 4 hash using Faker library. 37 Characters Max.",
+        "code_url": "mock_generators/generators/uuid.py",
+        "description": "UUID4 Generator",
         "name": "UUID",
         "tags": [
             "uuid",
             "hash",
             "unique",
             "uid"
+        ],
+        "type": "String"
+    },
+    "short_uuid": {
+        "args": [
+            {
+                "default": 37,
+                "label": "Limit character length",
+                "type": "Integer"
+            }
+        ],
+        "code_url": "mock_generators/generators/short_uuid.py",
+        "description": "Random UUID 4 hash using Faker library. 37 Characters Max.",
+        "name": "Short UUID",
+        "tags": [
+            "uid",
+            "hash",
+            "unique",
+            "short"
         ],
         "type": "String"
     },
@@ -241,7 +289,7 @@
                 "type": "Datetime"
             }
         ],
-        "code_url": "mock_generators/generators/ab64469b.py",
+        "code_url": "mock_generators/generators/date.py",
         "description": "Generate a random date between 2 specified dates. Exclusive of days specified.",
         "name": "Date",
         "tags": [
@@ -335,7 +383,7 @@
                 "type": "String"
             }
         ],
-        "code_url": "mock_generators/generators/e56d87a3.py",
+        "code_url": "mock_generators/generators/int_from_list.py",
         "description": "Randomly selected int from a comma-seperated list of options. If no list provided, will return 0",
         "name": "Int from list",
         "tags": [
@@ -368,7 +416,7 @@
                 "type": "Integer"
             }
         ],
-        "code_url": "mock_generators/generators/e8cff8c1.py",
+        "code_url": "mock_generators/generators/float_range.py",
         "description": "Random float between a range. Inclusive.",
         "name": "Float",
         "tags": [
@@ -390,7 +438,7 @@
                 "type": "Integer"
             }
         ],
-        "code_url": "mock_generators/generators/ecdff22c.py",
+        "code_url": "mock_generators/generators/int.py",
         "description": "Constant integer value",
         "name": "Int",
         "tags": [
@@ -415,7 +463,7 @@
                 "type": "Integer"
             }
         ],
-        "code_url": "mock_generators/generators/loremtext_words.py",
+        "code_url": "mock_generators/generators/lorem_words.py",
         "description": "String generator using the lorem-text package",
         "name": "Words",
         "tags": [
@@ -439,7 +487,7 @@
                 "type": "Integer"
             }
         ],
-        "code_url": "mock_generators/generators/loremtext_sentence.py",
+        "code_url": "mock_generators/generators/lorem_sentences.py",
         "description": "String generator using the lorem-text package",
         "name": "Sentences",
         "tags": [

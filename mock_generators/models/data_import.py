@@ -1,10 +1,13 @@
-from models.mapping import Mapping
+# from models.mapping import Mapping
+# from models.node_mapping import NodeMapping
+# from models.relationship_mapping import RelationshipMapping
+# from models.property_mapping import PropertyMapping
+# from models.generator import GeneratorType
 from models.node_mapping import NodeMapping
 from models.relationship_mapping import RelationshipMapping
 from models.property_mapping import PropertyMapping
-import logging
-from models.generator import GeneratorType
 import datetime
+import logging
 
 def file_schema_for_property(property: PropertyMapping)-> dict:
 
