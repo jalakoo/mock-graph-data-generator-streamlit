@@ -14,7 +14,6 @@ class NodeMapping():
     @staticmethod
     def empty():
         return NodeMapping(
-            uid = f"{str(uuid.uuid4())[:8]}",
             nid = "",
             position = {"x": 0, "y": 0},
             caption = "",
@@ -35,7 +34,6 @@ class NodeMapping():
         count_generator: Generator,
         count_args: list[any],
         key_property: PropertyMapping):
-        # self.uid = f"{str(uuid.uuid4())[:8]}"
         self.nid = nid
         self.position = position
         self.caption = caption
@@ -108,12 +106,12 @@ class NodeMapping():
         # Example return:
         # [
         #     {
-        #         "_uid": "n1_abc",
+        #         "_uid": "abc123",
         #         "first_name": "John",
         #         "last_name": "Doe"
         #     },
         #     {
-        #         "_uid": "n1_xyz",
+        #         "_uid": "xyz123",
         #         "first_name": "Jane",
         #         "last_name": "Doe"
         #     }
@@ -129,7 +127,6 @@ class NodeMapping():
         try:
             for _ in range(count):
                 node_result = {}
-                # logging.info(f'node_mapping.py: NodeMapping.generate_values() generating values for node mapping \'{self.caption}\' with properties {self.properties}')
                 for property_id, property in self.properties.items():
                     # Pass literal values
                     if isinstance(property, PropertyMapping) == False:
@@ -140,12 +137,10 @@ class NodeMapping():
                     node_result[property.name] = value
 
                 # Assign a uuid
-                # node_result["_uid"] = f"{self.uid}"
                 all_results.append(node_result)
         except:
             raise Exception(f"Node mapping could not generate property values, error: {str(sys.exc_info()[0])}")
         
         # Store and return all_results
         self.generated_values = all_results
-        # logging.info(f'node_mapping.py: NodeMapping.generate_values() generated {len(self.generated_values)} values for node mapping {self.caption}')
         return self.generated_values

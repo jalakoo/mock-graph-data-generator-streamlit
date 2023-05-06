@@ -234,20 +234,34 @@
     },
     "uuid": {
         "args": [
-            {
-                "default": 37,
-                "label": "Limit character length",
-                "type": "Integer"
-            }
         ],
-        "code_url": "mock_generators/generators/78bc0765.py",
-        "description": "Random UUID 4 hash using Faker library. 37 Characters Max.",
+        "code_url": "mock_generators/generators/uuid.py",
+        "description": "UUID4 Generator",
         "name": "UUID",
         "tags": [
             "uuid",
             "hash",
             "unique",
             "uid"
+        ],
+        "type": "String"
+    },
+    "short_uuid": {
+        "args": [
+            {
+                "default": 37,
+                "label": "Limit character length",
+                "type": "Integer"
+            }
+        ],
+        "code_url": "mock_generators/generators/short_uuid.py",
+        "description": "Random UUID 4 hash using Faker library. 37 Characters Max.",
+        "name": "Short UUID",
+        "tags": [
+            "uid",
+            "hash",
+            "unique",
+            "short"
         ],
         "type": "String"
     },

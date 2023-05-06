@@ -2,7 +2,14 @@ import streamlit as st
 from constants import *
 from file_utils import load_json
 from models.generator import generators_from_json
+import logging
 
+def setup_logging():
+    logger = logging.getLogger(__name__)
+    FORMAT = "[%(filename)s:%(lineno)s - %(funcName)20s() ] %(message)s"
+    logging.basicConfig(format=FORMAT)
+    logger.setLevel(logging.DEBUG)
+    
 def preload_state():
     if ZIPS_PATH not in st.session_state:
         st.session_state[ZIPS_PATH] = DEFAULT_ZIPS_PATH

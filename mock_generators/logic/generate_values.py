@@ -143,8 +143,6 @@ def literal_generator_from_value(
         "string": [value]
     }
 
-
-
     # Check if value is an int or float
     if is_int(value):
         integer = int(value)
@@ -160,7 +158,6 @@ def literal_generator_from_value(
 
     # NOTE: Not currently handling complex literals
      
-
     # Check if value is a range of ints or floats
     r = value.split("-")
     if len(r) == 2:
