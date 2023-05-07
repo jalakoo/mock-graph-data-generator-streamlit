@@ -12,6 +12,8 @@ streamlit-agraph = "*"
 lorem-text = "*"
 faker = "*"
 streamlit-player = "*"
+requests = "*"
+pandas = "*"
 
 [dev-packages]
 mock-generators = {editable = true, path = "."}

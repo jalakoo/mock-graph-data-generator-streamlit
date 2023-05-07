@@ -336,24 +336,23 @@
                 "default": "",
                 "label": "CSV Filepath",
                 "type": "String",
-                "hint": "mock_generators/datasets/tech_companies.csv",
+                "hint": "http://some.website.com/tech_companies.csv",
                 "description":""
             },
             {
                 "default": "",
                 "label": "Header Column Field",
                 "type": "String",
-                "hint": "Company Name",
+                "hint": "Name",
                 "description":""
             }
         ],
-        "code_url": "mock_generators/generators/df2bbd43.py",
-        "description": "Random string row value from a specified csv file. Be certain field contains string values.",
+        "code_url": "mock_generators/generators/string_from_csv.py",
+        "description": "Random string row value from a  csv file located at a given url. Be certain field contains string values.",
         "name": "String from CSV",
         "tags": [
             "csv",
-            " string",
-            " random"
+            "string"
         ],
         "type": "String"
     },
@@ -449,6 +448,31 @@
             "count"
         ],
         "type": "Integer"
+    },
+        "image_url":{
+            "args": [
+                {
+                    "default": 400,
+                    "label": "Image Width",
+                    "type": "Integer"
+                },
+                {
+                    "default": 200,
+                    "label": "Image Height",
+                    "type": "Integer"
+                }
+            ],
+            "code_url": "mock_generators/generators/image_url.py",
+            "description": "Random image url generator using Lorem Picsum",
+            "name": "Image URL",
+            "tags": [
+                "image",
+                "lorem",
+                "images",
+                "url",
+                "link"
+            ],
+            "type": "String"
     },
     "lorem_words": {
         "args": [

@@ -121,20 +121,15 @@ def literal_generator_from_value(
             - lists of bools
             - date
             - lists of dates
-            - datetime
+            - datetime (ISO 8601)
             - list of datetimes
-            - "int" / "integer" -> random int generator
-            - "float" -> random float generator
-            - "string" -> random word generator
-            - "bool" / "boolean" -> random bool generator
-            - "date" -> random datetime generator
-            - "datetime" -> random datetime generator
     """
     # Sample expected values: 
     #   "1"
     #   "1-10"
     #   "[3, 5, 10]"
     #   "[Yes, No]"
+    #   "[True, False, False]"
 
     # Original specificaion took stringified JSON objects to notate generator and args to use. We're going to convert matching literal values to appropriate generators
     

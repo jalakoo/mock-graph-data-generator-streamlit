@@ -12,12 +12,6 @@ import json
 
 def design_tab():
 
-    # col1, col2 = st.columns([1,11])
-    # with col1:
-    #     st.image("mock_generators/media/abstract.gif")
-    # with col2:
-    #     st.write(f"Design Data Model.\n\nUse the [arrows.app](https://arrows.app) then download the .json file to the Import tab.")
-    # st.markdown("--------")
     with st.expander("Instructions"):
         st.write("""
         1. Connect to arrows.app. Optionally login via Google to save your model designs
@@ -40,13 +34,13 @@ def design_tab():
             st.write("Properties needing mock generated data should be a stringified JSON object. The unique generator name should be used as a key, followed by a list/array or argument values.\n\nSee the NODE and RELATIONSHIP properties dropdown for examples.\n\nThe right hand Generators preview lists all the available mock data generators. Arguments can be set and example output data can be previewed by clicking on the 'Generate Example Output' button. Use the 'Copy for Arrows' button to copy the required formatted JSON string to your clipboard, to paste into the arrows.app")
             st.image("mock_generators/media/sample_generator.png")
 
+    
     c1, c2 = st.columns([8,2])
     with c1:
+        # Arrows interface
         components.iframe("https://arrows.app", height=1000, scrolling=False)
     with c2:
-        # st.write("Generators")
-        # st.markdown("--------")
-
+        # Generators List
         generators = st.session_state[GENERATORS]
         if generators is None:
             st.write("No generators loaded")
