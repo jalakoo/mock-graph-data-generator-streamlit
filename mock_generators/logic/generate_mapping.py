@@ -6,7 +6,7 @@ from models.node_mapping import NodeMapping
 from models.relationship_mapping import RelationshipMapping
 from models.property_mapping import PropertyMapping
 from models.generator import Generator
-from logic.generate_values import generator_for_raw_property
+from logic.generate_values import generator_for_raw_property, actual_generator_for_raw_property
 import logging
 import uuid
 
@@ -29,16 +29,56 @@ def propertymappings_for_raw_properties(
     if generators is None or len(generators) == 0:
         raise Exception(f'generate_mapping.py: propertymappings_for_raw_properties: No generators assignment received.')
 
+    # Special handling for addresses
+    raw_keys = raw_properties.keys()
+    # Assign uuid if not key property assignment was made
+    if "{key}" not in raw_keys and "KEY" not in raw_keys:
+        raw_properties["KEY"] = "_uid"
+        raw_properties["_uid"] = f'{{"uuid":[]}}'
+    if "ADDRESS" in raw_keys:
+        raw_properties.pop("ADDRESS")
+        # Going to an address generator to create following properties:
+        # address_line_1, address_line_2, city, state, zip, latitude, longitude
+        generator, args = actual_generator_for_raw_property('{"address_usa": []}', generators)
+        value = generator.generate(args)
+        # Insert all values - they will be read as literals during the node generation process
+        try:
+            address1 = value.get('address1', None)
+            if address1 is not None:
+                raw_properties['address1'] = f'{{"string":["{address1}"]}}'
+            address2 = value.get('address2', None)
+            if address2 is not None:
+                raw_properties['address2'] = f'{{"string":["{address2}"]}}'
+            city = value.get('city', None)
+            if city is not None:
+                raw_properties['city'] = f'{{"string":["{city}"]}}'
+            state = value.get('state', None)
+            if state is not None:
+                raw_properties['state'] = f'{{"string":["{state}"]}}'
+            postalCode = value.get('postalCode', None)
+            if postalCode is not None:
+                raw_properties['postalCode'] = f'{{"string":["{postalCode}"]}}'
+            lat = value.get('coordinates', None).get('lat', None)
+            if lat is not None:
+                raw_properties['latitude'] = f'{{"string":["{lat}"]}}'
+            lng = value.get('coordinates', None).get('lng', None)
+            if lng is not None:
+                raw_properties['longitude'] = f'{{"string":["{lng}"]}}'
+            # Add country
+            raw_properties['country'] = f'{{"string":["USA"]}}'
+        except Exception as e:
+            logging.error(f'Problem extracting data from address object: {value}: ERROR: {e}')
+
     for key, value in raw_properties.items():
 
         # Skip any keys with { } (brackets) as these are special cases for defining count/assignment/filter generators
         if key.startswith('{') and key.endswith('}'):
             continue
 
-        # TODO: Skip special COUNT and KEY literals
+        # Skip special COUNT and KEY literals
         if key == "COUNT" or key == "KEY":
                 continue
-    
+
         try:
             generator, args = generator_for_raw_property(value, generators)
             if generator is None:
