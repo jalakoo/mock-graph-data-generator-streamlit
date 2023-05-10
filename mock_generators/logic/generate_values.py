@@ -1,5 +1,5 @@
 
-from models.generator import Generator
+from models.generator import Generator, GeneratorType
 import logging
 import json
 
@@ -196,6 +196,17 @@ def literal_generator_from_value(
     # Package and return from legacy process
     actual_string = json.dumps(result)
     return actual_generator_for_raw_property(actual_string, generators)
+
+def assignment_generator_for(
+    config: str,
+    generators: dict[str, Generator]
+) -> tuple[Generator, list[any]]:
+    
+    gen, args =  actual_generator_for_raw_property(config, generators)
+    if gen.type != GeneratorType.ASSIGNMENT:
+        logging.error(f'Generator {gen.name} is not an assignment generator.')
+        return (None, None)
+    return gen, args
 
 def generator_for_raw_property(
     property_value: str, 

@@ -2,6 +2,39 @@
     "README":{
         "content": "This is the default list of all generators used by the app. If you add new generators they will be added to this file. The default_generators.json file contains a copy of this from the repo maintainer(s)"
     },
+    "address_usa": {
+        "args": [],
+        "code_url": "mock_generators/generators/address_usa.py",
+        "description": "Random Address using the random-address package.",
+        "name": "URL",
+        "tags": [
+            "address",
+            "location"
+        ],
+        "type": "String"
+    },
+    "street": {
+        "args": [],
+        "code_url": "mock_generators/generators/street.py",
+        "description": "Random Street Address using the Faker library.",
+        "name": "String",
+        "tags": [
+            "address",
+            "street"
+        ],
+        "type": "String"
+    },
+    "postcode": {
+        "args": [],
+        "code_url": "mock_generators/generators/postcode.py",
+        "description": "Random Postal Code using the Faker library.",
+        "name": "String",
+        "tags": [
+            "address",
+            "street"
+        ],
+        "type": "String"
+    },
     "uri": {
         "args": [],
         "code_url": "mock_generators/generators/05711cac.py",
@@ -115,7 +148,7 @@
     },
     "country": {
         "args": [],
-        "code_url": "mock_generators/generators/470ff56f.py",
+        "code_url": "mock_generators/generators/country.py",
         "description": "Country name generator using the Faker library.",
         "name": "Country",
         "tags": [
@@ -126,7 +159,7 @@
     },
     "pure_random": {
         "args": [],
-        "code_url": "mock_generators/generators/4b0db60a.py",
+        "code_url": "mock_generators/generators/pure_random.py",
         "description": "Randomly assigns to a target node. Duplicates and orphan nodes possible.",
         "name": "Pure Random",
         "tags": [
@@ -224,7 +257,7 @@
     },
     "exhaustive_random": {
         "args": [],
-        "code_url": "mock_generators/generators/73853311.py",
+        "code_url": "mock_generators/generators/exhaustive_random.py",
         "description": "Assigns each source node to a random target node, until target node records are exhausted. No duplicates, no orphan to nodes.",
         "name": "Exhaustive Random",
         "tags": [
@@ -267,11 +300,24 @@
     },
     "city": {
         "args": [],
-        "code_url": "mock_generators/generators/92eeddbb.py",
+        "code_url": "mock_generators/generators/city.py",
         "description": "City name generator using the Faker library.",
         "name": "City",
         "tags": [
             "city",
+            "name"
+        ],
+        "type": "String"
+    },
+    "state": {
+        "args": [],
+        "code_url": "mock_generators/generators/state.py",
+        "description": "Random US state code",
+        "name": "State",
+        "tags": [
+            "state",
+            "state code",
+            "US",
             "name"
         ],
         "type": "String"

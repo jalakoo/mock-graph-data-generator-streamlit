@@ -124,11 +124,13 @@ class RelationshipMapping():
 
         # TODO: Run filter generator here to determine which source nodes to process
 
-        # Make a copy of the generated list
-        values = deepcopy(self.to_node.generated_values)
+        # Make a copy of source and target dicts
+        sources = self.from_node.generated_values[:]
+        targets = self.to_node.generated_values[:]
 
         # Iterate through every generated source node
-        for value_dict in self.from_node.generated_values:
+        # for value_dict in self.from_node.generated_values:
+        for value_dict in sources:
             # dict of property names and generated values
 
             # Decide on how many of these relationships to generate
@@ -158,17 +160,18 @@ class RelationshipMapping():
             for i in range(count):
                 # Select a random target node
 
-                if values is None or len(values) == 0:
-                    # TODO: This appears to break the randomization
-                    logging.info(f'relationship_mapping.py: values exhausted at index {i} before count of {count} reached. Values: {len(values)}')
-                    continue
+                if targets is None or len(targets) == 0:
+                    # targets exhausted, reset
+                    targets = self.to_node.generated_values[:]
 
                 # Extract results. Values will be passed back through the next iteration in case the generator returns a modified list
 
-                # TODO: values does not change after this call
-                to_node_value_dict, new_values = self.assignment_generator.generate(values)
+                # print(f'Attempting to run assignment generator: {self.assignment_generator}. Targets: {len(targets)}')
 
-                values = new_values
+                to_node_value_dict, new_targets = self.assignment_generator.generate(targets)
+
+                # print(f'Assignment generator returned target node: {to_node_value_dict}')
+                targets = new_targets
 
                 # Types of randomization generators to consider:
                 # - Pure Random

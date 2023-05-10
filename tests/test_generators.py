@@ -5,6 +5,23 @@ from mock_generators.logic.generate_values import actual_generator_for_raw_prope
 from datetime import datetime
 test_generators = load_generators("mock_generators/named_generators.json")
 
+class TestAddressGenerator:
+    def test_address_generator_elements(self):
+        try:
+            test_string = '{"address_usa": []}'
+            generator, args = actual_generator_for_raw_property(test_string, test_generators)
+            value = generator.generate(args)
+
+            assert value['address1'], f'address object missing address_line_1: {value}'
+            assert value['city'], f'address object missing city: {value}'
+            assert value['state'], f'address object missing state: {value}'
+            assert value['postalCode'], f'address object missing postalCode: {value}'
+            assert value['coordinates']['lat'], f'address object missing coordinates.lat: {value}'
+            assert value['coordinates']['lng'], f'address object missing coordinates.lng: {value}'
+
+        except Exception as e:
+            assert False, f'Exception: {e}' 
+
 class TestDateGenerator:
     def test_date_generator(self):
         try:
