@@ -1,5 +1,10 @@
-from random_address import real_random_address
+from random_address import real_random_address_by_state
+import random
 
 def generate(args: list[any]):
     # Generate a dictionary with valid random address information
-    return real_random_address()
+    states = [
+        "AL", "AR", "CA", "CO", "CT", "DC", "FL", "GA", "HI", "KY", "MA" "MD", "TN", "TX", "OK", "VT"
+    ]
+    state_code = random.choice(states)
+    return real_random_address_by_state(state_code)
