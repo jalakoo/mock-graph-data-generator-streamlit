@@ -2,6 +2,39 @@
     "README":{
         "content": "This is the default list of all generators used by the app. If you add new generators they will be added to this file. The default_generators.json file contains a copy of this from the repo maintainer(s)"
     },
+    "address_usa": {
+        "args": [],
+        "code_url": "mock_generators/generators/address_usa.py",
+        "description": "Random Address using the random-address package.",
+        "name": "URL",
+        "tags": [
+            "address",
+            "location"
+        ],
+        "type": "String"
+    },
+    "street": {
+        "args": [],
+        "code_url": "mock_generators/generators/street.py",
+        "description": "Random Street Address using the Faker library.",
+        "name": "String",
+        "tags": [
+            "address",
+            "street"
+        ],
+        "type": "String"
+    },
+    "postcode": {
+        "args": [],
+        "code_url": "mock_generators/generators/postcode.py",
+        "description": "Random Postal Code using the Faker library.",
+        "name": "String",
+        "tags": [
+            "address",
+            "street"
+        ],
+        "type": "String"
+    },
     "uri": {
         "args": [],
         "code_url": "mock_generators/generators/05711cac.py",
@@ -29,6 +62,23 @@
         ],
         "type": "String"
     },
+    "float": {
+        "args": [
+            {
+                "default": 1.0,
+                "label": "Value",
+                "type": "Float"
+            }
+        ],
+        "code_url": "mock_generators/generators/float.py",
+        "description": "Constant Float value",
+        "name": "Float",
+        "tags": [
+            "float",
+            "number"
+        ],
+        "type": "Float"
+    },
     "float_from_list": {
         "args": [
             {
@@ -37,7 +87,7 @@
                 "type": "String"
             }
         ],
-        "code_url": "mock_generators/generators/111d38e0.py",
+        "code_url": "mock_generators/generators/float_from_list.py",
         "description": "Randomly selected float from a comma-seperated list of options.",
         "name": "Float from list",
         "tags": [
@@ -84,7 +134,7 @@
                 "type": "Integer"
             }
         ],
-        "code_url": "mock_generators/generators/469b37c7.py",
+        "code_url": "mock_generators/generators/int_range.py",
         "description": "Random integer from a min and max value argument. Argument values are inclusive.",
         "name": "Int Range",
         "tags": [
@@ -98,7 +148,7 @@
     },
     "country": {
         "args": [],
-        "code_url": "mock_generators/generators/470ff56f.py",
+        "code_url": "mock_generators/generators/country.py",
         "description": "Country name generator using the Faker library.",
         "name": "Country",
         "tags": [
@@ -109,7 +159,7 @@
     },
     "pure_random": {
         "args": [],
-        "code_url": "mock_generators/generators/4b0db60a.py",
+        "code_url": "mock_generators/generators/pure_random.py",
         "description": "Randomly assigns to a target node. Duplicates and orphan nodes possible.",
         "name": "Pure Random",
         "tags": [
@@ -156,6 +206,23 @@
         ],
         "type": "String"
     },
+    "string": {
+        "args": [
+            {
+                "default": "",
+                "label": "List of words (ie: alpha, brave, charlie)",
+                "type": "String"
+            }
+        ],
+        "code_url": "mock_generators/generators/literal.py",
+        "description": "String literal",
+        "name": "String",
+        "tags": [
+            "string",
+            "word"
+        ],
+        "type": "String"
+    },
     "string_from_list": {
         "args": [
             {
@@ -164,7 +231,7 @@
                 "type": "String"
             }
         ],
-        "code_url": "mock_generators/generators/5bf1fbd6.py",
+        "code_url": "mock_generators/generators/string_from_list.py",
         "description": "Randomly selected string from a comma-seperated list of options.",
         "name": "String from list",
         "tags": [
@@ -190,7 +257,7 @@
     },
     "exhaustive_random": {
         "args": [],
-        "code_url": "mock_generators/generators/73853311.py",
+        "code_url": "mock_generators/generators/exhaustive_random.py",
         "description": "Assigns each source node to a random target node, until target node records are exhausted. No duplicates, no orphan to nodes.",
         "name": "Exhaustive Random",
         "tags": [
@@ -200,14 +267,9 @@
     },
     "uuid": {
         "args": [
-            {
-                "default": 37,
-                "label": "Limit character length",
-                "type": "Integer"
-            }
         ],
-        "code_url": "mock_generators/generators/78bc0765.py",
-        "description": "Random UUID 4 hash using Faker library. 37 Characters Max.",
+        "code_url": "mock_generators/generators/uuid.py",
+        "description": "UUID4 Generator",
         "name": "UUID",
         "tags": [
             "uuid",
@@ -217,13 +279,45 @@
         ],
         "type": "String"
     },
+    "short_uuid": {
+        "args": [
+            {
+                "default": 37,
+                "label": "Limit character length",
+                "type": "Integer"
+            }
+        ],
+        "code_url": "mock_generators/generators/short_uuid.py",
+        "description": "Random UUID 4 hash using Faker library. 37 Characters Max.",
+        "name": "Short UUID",
+        "tags": [
+            "uid",
+            "hash",
+            "unique",
+            "short"
+        ],
+        "type": "String"
+    },
     "city": {
         "args": [],
-        "code_url": "mock_generators/generators/92eeddbb.py",
+        "code_url": "mock_generators/generators/city.py",
         "description": "City name generator using the Faker library.",
         "name": "City",
         "tags": [
             "city",
+            "name"
+        ],
+        "type": "String"
+    },
+    "state": {
+        "args": [],
+        "code_url": "mock_generators/generators/state.py",
+        "description": "Random US state code",
+        "name": "State",
+        "tags": [
+            "state",
+            "state code",
+            "US",
             "name"
         ],
         "type": "String"
@@ -241,7 +335,7 @@
                 "type": "Datetime"
             }
         ],
-        "code_url": "mock_generators/generators/ab64469b.py",
+        "code_url": "mock_generators/generators/date.py",
         "description": "Generate a random date between 2 specified dates. Exclusive of days specified.",
         "name": "Date",
         "tags": [
@@ -288,24 +382,23 @@
                 "default": "",
                 "label": "CSV Filepath",
                 "type": "String",
-                "hint": "mock_generators/datasets/tech_companies.csv",
+                "hint": "http://some.website.com/tech_companies.csv",
                 "description":""
             },
             {
                 "default": "",
                 "label": "Header Column Field",
                 "type": "String",
-                "hint": "Company Name",
+                "hint": "Name",
                 "description":""
             }
         ],
-        "code_url": "mock_generators/generators/df2bbd43.py",
-        "description": "Random string row value from a specified csv file. Be certain field contains string values.",
+        "code_url": "mock_generators/generators/string_from_csv.py",
+        "description": "Random string row value from a  csv file located at a given url. Be certain field contains string values.",
         "name": "String from CSV",
         "tags": [
             "csv",
-            " string",
-            " random"
+            "string"
         ],
         "type": "String"
     },
@@ -335,7 +428,7 @@
                 "type": "String"
             }
         ],
-        "code_url": "mock_generators/generators/e56d87a3.py",
+        "code_url": "mock_generators/generators/int_from_list.py",
         "description": "Randomly selected int from a comma-seperated list of options. If no list provided, will return 0",
         "name": "Int from list",
         "tags": [
@@ -368,7 +461,7 @@
                 "type": "Integer"
             }
         ],
-        "code_url": "mock_generators/generators/e8cff8c1.py",
+        "code_url": "mock_generators/generators/float_range.py",
         "description": "Random float between a range. Inclusive.",
         "name": "Float",
         "tags": [
@@ -390,7 +483,7 @@
                 "type": "Integer"
             }
         ],
-        "code_url": "mock_generators/generators/ecdff22c.py",
+        "code_url": "mock_generators/generators/int.py",
         "description": "Constant integer value",
         "name": "Int",
         "tags": [
@@ -401,6 +494,31 @@
             "count"
         ],
         "type": "Integer"
+    },
+        "image_url":{
+            "args": [
+                {
+                    "default": 400,
+                    "label": "Image Width",
+                    "type": "Integer"
+                },
+                {
+                    "default": 200,
+                    "label": "Image Height",
+                    "type": "Integer"
+                }
+            ],
+            "code_url": "mock_generators/generators/image_url.py",
+            "description": "Random image url generator using Lorem Picsum",
+            "name": "Image URL",
+            "tags": [
+                "image",
+                "lorem",
+                "images",
+                "url",
+                "link"
+            ],
+            "type": "String"
     },
     "lorem_words": {
         "args": [
@@ -415,7 +533,7 @@
                 "type": "Integer"
             }
         ],
-        "code_url": "mock_generators/generators/loremtext_words.py",
+        "code_url": "mock_generators/generators/lorem_words.py",
         "description": "String generator using the lorem-text package",
         "name": "Words",
         "tags": [
@@ -439,7 +557,7 @@
                 "type": "Integer"
             }
         ],
-        "code_url": "mock_generators/generators/loremtext_sentence.py",
+        "code_url": "mock_generators/generators/lorem_sentences.py",
         "description": "String generator using the lorem-text package",
         "name": "Sentences",
         "tags": [

@@ -1,6 +1,6 @@
 # Do not change function name or arguments
 def generate(args: list[any]):
     value = args[0]
-    return value
-
-
+    # Will raise error if not an int
+    integer = int(value)
+    return integer

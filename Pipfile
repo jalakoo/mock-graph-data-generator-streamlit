@@ -12,8 +12,12 @@ streamlit-agraph = "*"
 lorem-text = "*"
 faker = "*"
 streamlit-player = "*"
+requests = "*"
+pandas = "*"
+random-address = "*"
 
 [dev-packages]
+mock-generators = {editable = true, path = "."}
 
 [requires]
 python_version = "3.11"

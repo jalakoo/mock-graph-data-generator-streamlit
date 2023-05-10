@@ -1,8 +1,12 @@
+# from models.property_mapping import PropertyMapping
+# from models.generator import Generator
 from models.property_mapping import PropertyMapping
 from models.generator import Generator
+from models.list_utils import clean_list
+
 import sys
+import uuid
 import logging
-from list_utils import clean_list
 
 # TODO: Should have made these dataclasses
 class NodeMapping():
@@ -26,7 +30,7 @@ class NodeMapping():
         position: dict,   # ie: {x: 0, y: 0}
         caption: str,
         labels: list[str], 
-        properties: dict[str, PropertyMapping],
+        properties: dict[str, any],
         count_generator: Generator,
         count_args: list[any],
         key_property: PropertyMapping):
@@ -102,12 +106,12 @@ class NodeMapping():
         # Example return:
         # [
         #     {
-        #         "_uid": "n1_abc",
+        #         "_uid": "abc123",
         #         "first_name": "John",
         #         "last_name": "Doe"
         #     },
         #     {
-        #         "_uid": "n1_xyz",
+        #         "_uid": "xyz123",
         #         "first_name": "Jane",
         #         "last_name": "Doe"
         #     }
@@ -115,14 +119,14 @@ class NodeMapping():
         count = 0
         all_results = []
         try:
-            count = self.count_generator.generate(self.count_args)
+            count = int(self.count_generator.generate(self.count_args))
         except:
+            logging.error(f'Possibly incorrect generator assigned for count generation: {self.count_generator}')
             raise Exception(f"Node mapping could not generate a number of nodes to continue generation process, error: {str(sys.exc_info()[0])}")
 
         try:
             for _ in range(count):
                 node_result = {}
-                # logging.info(f'node_mapping.py: NodeMapping.generate_values() generating values for node mapping \'{self.caption}\' with properties {self.properties}')
                 for property_id, property in self.properties.items():
                     # Pass literal values
                     if isinstance(property, PropertyMapping) == False:
@@ -131,12 +135,12 @@ class NodeMapping():
                     # Have PropertyMapping generate a value
                     value = property.generate_value()
                     node_result[property.name] = value
-                # node_result["_uid"] = f"{self.id}_{str(uuid.uuid4())[:8]}"
+
+                # Assign a uuid
                 all_results.append(node_result)
         except:
             raise Exception(f"Node mapping could not generate property values, error: {str(sys.exc_info()[0])}")
         
         # Store and return all_results
         self.generated_values = all_results
-        # logging.info(f'node_mapping.py: NodeMapping.generate_values() generated {len(self.generated_values)} values for node mapping {self.caption}')
         return self.generated_values

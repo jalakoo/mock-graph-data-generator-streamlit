@@ -4,12 +4,13 @@ from tabs.importing_tab import import_tab
 from tabs.design_tab import design_tab
 from tabs.data_importer import data_importer_tab
 from tabs.tutorial import tutorial_tab
-from config import preload_state, load_generators
+from config import setup_logging, preload_state, load_generators_to_streamlit
 
 # SETUP
 st.set_page_config(layout="wide")
+setup_logging()
 preload_state()
-load_generators()
+load_generators_to_streamlit()
 
 # UI
 st.title("Mock Graph Data Generator")

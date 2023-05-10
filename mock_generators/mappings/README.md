@@ -1,0 +1,1 @@
+Folder for storing mapping files if user should want to save working versions
