@@ -6,6 +6,7 @@ from tabs.design_tab import design_tab
 from tabs.data_importer import data_importer_tab
 from tabs.tutorial import tutorial_tab
 from tabs.getting_help import get_help_tab
+
 from config import setup_logging, preload_state, load_generators_to_streamlit
 
 # SETUP
