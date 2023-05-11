@@ -18,21 +18,21 @@ def design_tab():
         2. Select a Node or Relationship to display a properties inspector on the right
         3. Configure the mock graph generator by adding properties with specially formatted keys and value strings. See additional details on how to do this in the dropdowns below
         4. Once completed, click on the 'Download/Export' button in the arrows.app. Make sure to use the 'JSON' export option
-        5. Proceed to the '② Generate' tab
+        5. Proceed to the '③ Generate' tab
         """)
     d1, d2, d3 = st.columns(3)
     with d1:
-        with st.expander("NODE requirements"):
-            st.write("Nodes require 2 keys to have mock data generated for it:  {count} and {key}. The {count} key identifies which data generator (and args) to use for creating the number of nodes.\n\nExample of node properties that would create mock data:")
-            st.image("mock_generators/media/sample_node_properties.png")
+        with st.expander("NODE Options"):
+            st.write("Add a COUNT key to identify how many of a given node you'd like created. Use a KEY key to notate which other property field you'd like use a unique identifier for a node type.\n\nExample of node properties for specifying specific number of nodes with particular properties:")
+            st.image("mock_generators/media/sample_node_0-5-0.png")
     with d2:
-        with st.expander("RELATIONSHIP requirements"):
-            st.write("Relationships require 1 key: {count} and can take 2 optional keys: {assignment} and {filter}. The {count} key identifies which data generator (and args) to use for creating the number of relationships between a source node and a target node. EXAMPLE: If every source node should connect to exactly one target node, then the target generator value should be 1.\n\nThe {assignement} key identifies which data generator (and args) to use when deciding which target nodes this relationship should connect with.\n\nThe {filter} key identifies a data generator (and args) to use for deciding what, if any, target nodes to ignore.\n\nExample of node properties that would create mock data:")
-            st.image("mock_generators/media/sample_relationship_properties.png")
+        with st.expander("RELATIONSHIP Options"):
+            st.write("Relationships can take 2 optional keys: COUNT and ASSIGNMENT to specify how many of a given relationship should be created and what assignment generator should be used")
+            st.image("mock_generators/media/sample_relationship_0-5-0.png")
     with d3:
-        with st.expander("PROPERTY requirements"):
-            st.write("Properties needing mock generated data should be a stringified JSON object. The unique generator name should be used as a key, followed by a list/array or argument values.\n\nSee the NODE and RELATIONSHIP properties dropdown for examples.\n\nThe right hand Generators preview lists all the available mock data generators. Arguments can be set and example output data can be previewed by clicking on the 'Generate Example Output' button. Use the 'Copy for Arrows' button to copy the required formatted JSON string to your clipboard, to paste into the arrows.app")
-            st.image("mock_generators/media/sample_generator.png")
+        with st.expander("PROPERTY Options"):
+            st.write("Properties needing mock generated data can be a stringified JSON object representing a generator specification. Literals such as numbers, number ranges, and list of options can also be used. For example: 1, 1.0, 1-10, 3.3-4.5, [1,2,3], [1.0, 2.2, 3.3], a_word, [word1, word2, word3] are valid values. General types can also be used, such as string, integer, float, boolean, and datetime.")
+            st.image("mock_generators/media/sample_properties_0-5-0.png")
 
     
     c1, c2 = st.columns([8,2])
