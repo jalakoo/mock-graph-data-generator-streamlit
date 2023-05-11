@@ -1,4 +1,6 @@
 from streamlit_player import st_player
+import streamlit as st
 
 def tutorial_tab():
-    st_player("https://youtu.be/dJMlPYvWdbQ", height=600)
+    url = st.secrets["VIDEO_TUTORIAL_URL"]
+    st_player(url, height=600)
