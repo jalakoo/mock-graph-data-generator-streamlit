@@ -9,7 +9,7 @@ def random_coordinates_for(
 
     # Generate random coordinates
     min_range = 0
-    max_width = number * 1000
+    max_width = number * 300
     x_values = np.random.uniform(min_range, max_width, number)
     y_values = np.random.uniform(min_range, max_width, number)
 
@@ -27,7 +27,6 @@ def agraph_data_from_response(response: str)->tuple[any, any, any]:
     except Exception as e:
         logging.error(e)
         return None, None, None
-    print(f'JSON: {answers}')
     if isinstance(answers, list) == False:
         logging.error(f'Response could not be converted to list, got {type(answers)} instead.')
         return None, None, None

@@ -7,6 +7,8 @@ import json
 import io
 
 CHATGPT_KEY = "chatgpt"
+LAST_PROMPT_KEY = "last_prompt"
+LAST_OPENAI_RESPONSE = "last_openai_response"
 
 def agraph_data_prompt(prompt: str)-> str:
     # Full prompt string to query openai with and finasse expected response
@@ -65,7 +67,12 @@ def ideate_tab():
     if CHATGPT_KEY not in st.session_state:
         # For dev only
         # st.session_state[CHATGPT_KEY] = st.secrets["OPENAI_API_KEY"]
-        st.session_state[CHATGPT_KEY] = None
+        st.session_state[CHATGPT_KEY] = ""
+    if LAST_PROMPT_KEY not in st.session_state:
+        st.session_state[LAST_PROMPT_KEY] = ""
+    if LAST_OPENAI_RESPONSE not in st.session_state:
+        st.session_state[LAST_OPENAI_RESPONSE] = ""
+
     current_api = st.session_state[CHATGPT_KEY]
     new_api = st.text_input("OpenAI API Key", value=current_api, type="password")
     if new_api != current_api:
@@ -73,34 +80,45 @@ def ideate_tab():
 
     openai.api_key = st.session_state[CHATGPT_KEY]
 
-    # Display graph data from prompt
-    prompt = st.text_input("Prompt")
+    if openai.api_key is None or openai.api_key == "":
+        st.warning("Please enter your OpenAI API Key")
+    else:
+        # Display graph data from prompt
+        prompt = st.text_input("Prompt")
+        last_prompt = st.session_state[LAST_PROMPT_KEY]
+
+        # Display Graph
+        if prompt is not None and prompt != "":
+            
+            if prompt != last_prompt:
+                print(f'New Prompt: {prompt}')
+                st.session_state[LAST_PROMPT_KEY] = prompt
+                full_prompt = agraph_data_prompt(prompt)
+                openai_response = generate_openai_response(full_prompt)
+                print(f'new open_ai_response: {openai_response}')
+                st.session_state[LAST_OPENAI_RESPONSE] = openai_response
+
+            oai_r = st.session_state[LAST_OPENAI_RESPONSE]
+            # Convert openai response to agraph compatible data
+            nodes, edges, config = agraph_data_from_response(oai_r)
 
 
-    # Display Graph
-    if prompt is not None and prompt != "":
-        print(f'Prompt: {prompt}')
-        full_prompt = agraph_data_prompt(prompt)
-        openai_response = generate_openai_response(full_prompt)
-        print(f'open_ai_response: {openai_response}')
 
-        # Convert openai response to agraph compatible data
-        nodes, edges, config = agraph_data_from_response(openai_response)
-
-        # Arrows compatible file
-        arrows_dict = convert_agraph_to_arrows(nodes, edges)
-
-        # Convert dict to file for download
-        json_data = json.dumps(arrows_dict)
-        json_file = io.BytesIO(json_data.encode())
-
-        # Button to download graph data in arrows.app compatible JSON
-        c1, c2 = st.columns([4,1])
-        with c1:
+            # Button to download graph data in arrows.app compatible JSON
             if nodes is not None:
-                agraph(nodes=nodes, 
-                    edges=edges, 
-                    config=config)
-        with c2:
-            st.write("Download Options")
-            st.download_button("Arrows.app Compatible File", json_file, file_name="graph_data.json", mime="application/json")
+
+                # Arrows compatible file
+                arrows_dict = convert_agraph_to_arrows(nodes, edges)
+
+                # Convert dict to file for download
+                json_data = json.dumps(arrows_dict)
+                json_file = io.BytesIO(json_data.encode())
+
+                c1, c2 = st.columns([4,1])
+                with c1:
+                        agraph(nodes=nodes, 
+                            edges=edges, 
+                            config=config)
+                with c2:
+                    st.write("Download Options")
+                    st.download_button("Arrows.app Compatible File", json_file, file_name="graph_data.json", mime="application/json")
