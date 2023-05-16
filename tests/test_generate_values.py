@@ -1,6 +1,6 @@
 import pytest
 from mock_generators.config import load_generators
-from mock_generators.logic.generate_values import literal_generator_from_value, actual_generator_for_raw_property, generator_for_raw_property, keyword_generator_for_raw_property
+from mock_generators.logic.generate_values import literal_generator_from_value, actual_generator_for_raw_property, generator_for_raw_property, keyword_generator_for_raw_property, find_longest_float_precision
 
 
 test_generators = load_generators("mock_generators/named_generators.json")
@@ -85,6 +85,21 @@ class TestActualGenerators:
         except Exception as e:
             assert False, f'Exception: {e}'
 
+class TestLiteralSupport:
+    def test_find_longest_float_percision(self):
+        try:
+            test_floats = [1.01, 2.002, 3.004]
+            precision = find_longest_float_precision(test_floats)
+            assert precision == 3
+        except Exception as e:
+            assert False, f'Exception: {e}'
+
+        try:
+            test_floats = [1, -2]
+            precision = find_longest_float_precision(test_floats)
+            assert precision == 0
+        except Exception as e:
+            assert False, f'Exception: {e}'
 
 class TestLiteralGenerators:
     def test_integer(self):
@@ -102,11 +117,18 @@ class TestLiteralGenerators:
     def test_float(self):
         try:
             test_string = "1.0"
-            # This should be equivalent to the integer generator with arg of [1]
             generator, args = literal_generator_from_value(test_string, test_generators)
-            # Test generator returned creates acceptable value
             value = generator.generate(args)
             assert value == 1.0
+        except Exception as e:
+            assert False, f'Exception: {e}'
+
+    def test_negative_float(self):
+        try:
+            test_string = "-1.0"
+            generator, args = literal_generator_from_value(test_string, test_generators)
+            value = generator.generate(args)
+            assert value == -1.0
         except Exception as e:
             assert False, f'Exception: {e}'
 
@@ -126,16 +148,77 @@ class TestLiteralGenerators:
     def test_float_range(self):
         try:
             test_string = "1.0-2"
-            # This should be equivalent to the integer generator with arg of [1]
             generator, args = literal_generator_from_value(test_string, test_generators)
-            # Test generator returned creates acceptable value
             value = generator.generate(args)
             assert value <= 2.0
             assert value >= 1.0
         except Exception as e:
             assert False, f'Exception: {e}'
+        try:
+            test_string = "1-2.0"
+            generator, args = literal_generator_from_value(test_string, test_generators)
+            value = generator.generate(args)
+            assert value <= 2.0
+            assert value >= 1.0
+        except Exception as e:
+            assert False, f'Exception: {e}'
+        try:
+            test_string = "1.0-2.0"
+            generator, args = literal_generator_from_value(test_string, test_generators)
+            value = generator.generate(args)
+            assert value <= 2.0
+            assert value >= 1.0
+        except Exception as e:
+            assert False, f'Exception: {e}'
+        try:
+            test_string = "1--2.02"
+            generator, args = literal_generator_from_value(test_string, test_generators)
+            value = generator.generate(args)
+            assert value <= 1.00
+            assert value >= -2.01
+        except Exception as e:
+            assert False, f'Exception: {e}'
+        try:
+            test_string = "1.01--2.02"
+            generator, args = literal_generator_from_value(test_string, test_generators)
+            value = generator.generate(args)
+            assert value <= 1.01
+            assert value >= -2.01
+        except Exception as e:
+            assert False, f'Exception: {e}'
 
-
+        try:
+            test_string = "-10.0003-20"
+            generator, args = literal_generator_from_value(test_string, test_generators)
+            value = generator.generate(args)
+            assert value <= 20.0000
+            assert value >= -10.0003
+        except Exception as e:
+            assert False, f'Exception: {e}'
+        try:
+            test_string = "-10.01-20.02"
+            generator, args = literal_generator_from_value(test_string, test_generators)
+            value = generator.generate(args)
+            assert value <= 20.02
+            assert value >= -10.01
+        except Exception as e:
+            assert False, f'Exception: {e}'
+        try:
+            test_string = "-73--74.004"
+            generator, args = literal_generator_from_value(test_string, test_generators)
+            value = generator.generate(args)
+            assert value <= -73.000
+            assert value >= -74.004
+        except Exception as e:
+            assert False, f'Exception: {e}'
+        try:
+            test_string = "-73.979--74.004"
+            generator, args = literal_generator_from_value(test_string, test_generators)
+            value = generator.generate(args)
+            assert value <= -73.979
+            assert value >= -74.004
+        except Exception as e:
+            assert False, f'Exception: {e}'
     def test_int_list(self):
         try:
             test_string = "[1,2,3]"
