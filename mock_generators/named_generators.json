@@ -6,7 +6,7 @@
         "args": [],
         "code_url": "mock_generators/generators/address_usa.py",
         "description": "Random Address using the random-address package.",
-        "name": "URL",
+        "name": "Address USA",
         "tags": [
             "address",
             "location"
@@ -17,7 +17,7 @@
         "args": [],
         "code_url": "mock_generators/generators/street.py",
         "description": "Random Street Address using the Faker library.",
-        "name": "String",
+        "name": "Street",
         "tags": [
             "address",
             "street"
@@ -28,7 +28,7 @@
         "args": [],
         "code_url": "mock_generators/generators/postcode.py",
         "description": "Random Postal Code using the Faker library.",
-        "name": "String",
+        "name": "Postcode",
         "tags": [
             "address",
             "street"
@@ -175,7 +175,7 @@
                 "type": "Integer"
             }
         ],
-        "code_url": "mock_generators/generators/57f2df99.py",
+        "code_url": "mock_generators/generators/bool.py",
         "description": "Bool generator using the Faker library.",
         "name": "Bool",
         "tags": [
@@ -463,7 +463,7 @@
         ],
         "code_url": "mock_generators/generators/float_range.py",
         "description": "Random float between a range. Inclusive.",
-        "name": "Float",
+        "name": "Float Range",
         "tags": [
             "float",
             "decimal",

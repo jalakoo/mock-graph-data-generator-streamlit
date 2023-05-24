@@ -1,7 +1,7 @@
 import pytest
 from mock_generators.config import load_generators
 from mock_generators.logic.generate_values import literal_generator_from_value, actual_generator_for_raw_property, generator_for_raw_property, keyword_generator_for_raw_property, find_longest_float_precision
-
+from datetime import datetime
 
 test_generators = load_generators("mock_generators/named_generators.json")
 
@@ -376,8 +376,6 @@ class TestKeywordGeneratorForProperties:
             assert False, f'Exception: {e}'
 
     def test_date_keywords(self):
-        from datetime import datetime
-
         try:
             generator, args = keyword_generator_for_raw_property("date", test_generators)
             value = generator.generate(args)
@@ -399,3 +397,28 @@ class TestKeywordGeneratorForProperties:
             assert lower_bound <= check_date <= upper_bound
         except Exception as e:
             assert False, f'Exception: {e}'
+
+    def test_datetime(self):
+        try:
+            test_string = "date"
+            # This should be equivalent to the integer generator with arg of [1]
+            generator, args = generator_for_raw_property(test_string, test_generators)
+            # Test generator returned creates acceptable value
+            value = generator.generate(args)
+            lower_bound = datetime.fromisoformat('1970-01-01T00:00:00')
+            upper_bound = datetime.now()
+            assert lower_bound <= datetime.fromisoformat(value) <= upper_bound, f'lower: {lower_bound}, upper:{upper_bound}: value: {value}'
+        except Exception as e:
+            assert False, f'Exception runnning (date) literal: {e}'
+
+        try:
+            test_string = "datetime"
+            # This should be equivalent to the integer generator with arg of [1]
+            generator, args = generator_for_raw_property(test_string, test_generators)
+            # Test generator returned creates acceptable value
+            value = generator.generate(args)
+            lower_bound = datetime.fromisoformat('1970-01-01T00:00:00')
+            upper_bound = datetime.now()
+            assert lower_bound <= datetime.fromisoformat(value) <= upper_bound, f'lower: {lower_bound}, upper:{upper_bound}: value: {value}'
+        except Exception as e:
+            assert False, f'Exception runnning (datetime) literal: {e}'

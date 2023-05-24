@@ -137,7 +137,8 @@ def propertymappings_for_raw_properties(
                 logging.warning(f'generate_mapping.py: propertymappings_for_raw_properties: could not find generator for key: {key}, property_value: {value}')
                 continue
 
-            pid = str(uuid.uuid4())[:8]
+            # pid = str(uuid.uuid4())[:8]
+            pid = key
             property_mapping = PropertyMapping(
                 pid = pid,
                 name=key,

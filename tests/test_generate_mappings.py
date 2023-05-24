@@ -2,12 +2,14 @@ import os
 import pytest
 
 from mock_generators.models.generator import Generator, GeneratorType
+from mock_generators.logic.generate_mapping import propertymappings_for_raw_properties, node_mappings_from, relationshipmappings_from, mapping_from_json
 import json
 import logging
+from datetime import datetime
 
-# test_generators = load_generators("mock_generators/named_generators.json")
+from mock_generators.config import load_generators
+test_generators = load_generators("mock_generators/named_generators.json")
 
-# TODO: Test propertymappings_for_raw_properties
 # TODO: Test node_mappings_from
 # TODO: Test relationshipmappings_from
 # TODO: Test mapping_from_json
@@ -64,15 +66,16 @@ class TestClass:
     #         print(f'Exception: {e}')
 
 
-    # def test_propertymappings_for_raw_properties_smoke(self):
-    #     raw_props = {
-    #             "alpha": "{\"test_int\":[1]}",
-    #             "bravo": "{\"test_float\":[1.0, 2.0]}"
-    #         }
-    #     mappings = propertymappings_for_raw_properties(
-    #         raw_properties=raw_props,
-    #         generators= test_generators)
-    #     assert len(mappings) == 2
+    def test_propertymappings_for_raw_properties_smoke(self):
+        raw_props = {
+                "alpha": "{\"test_int\":[1]}",
+                "bravo": "{\"test_float\":[1.0, 2.0]}"
+            }
+        mappings = propertymappings_for_raw_properties(
+            raw_properties=raw_props,
+            generators= test_generators)
+        # property mapping named '_uid'  should be added
+        assert len(mappings) == 3, f'Properties: {mappings}'
 
     # def test_node_mappings_from_literals(self):
     #     nodes = [
@@ -95,25 +98,47 @@ class TestClass:
     #         }
     #     ]
 
-    # def test_propertymappings_for_raw_properties_literals(self):
-    #     raw_props = {
-    #             "string": "test",
-    #             "bool": True,
-    #             "int": 1,
-    #             "float": 1.0,
-    #             "datetime": "2020-01-01T00:00:00Z",
-    #     }
-    #     mappings = propertymappings_for_raw_properties(
-    #         raw_properties=raw_props,
-    #         generators= test_generators)
+    def test_propertymappings_for_raw_properties_literals(self):
+        raw_props = {
+                "string": "test",
+                "bool": "bool",
+                "int": "1",
+                "float": "1.0",
+                "datetime": "datetime",
+        }
+        mappings = propertymappings_for_raw_properties(
+            raw_properties=raw_props,
+            generators= test_generators)
         
-    #     assert len(mappings) == 5
-    #     assert mappings["string"] == "test"
-    #     assert mappings["bool"] == True
-    #     assert mappings["int"] == 1
-    #     assert mappings["float"] == 1.0
-    #     assert mappings["datetime"] == "2020-01-01T00:00:00Z"
+        # assert len(mappings) == 5
 
+        # Check each property mapping
+        s_gen = mappings.get("string", None)
+        assert s_gen is not None
+        s_val = s_gen.generate_value()
+        assert s_val == "test"
+
+        b_gen = mappings.get("bool", None)
+        assert b_gen is not None
+        b_val = b_gen.generate_value()
+        assert b_val == True or b_val == False
+
+        i_gen = mappings.get("int", None)
+        assert i_gen is not None
+        i_val = i_gen.generate_value()
+        assert i_val == 1
+
+        f_gen = mappings.get("float", None)
+        assert f_gen is not None
+        f_val = f_gen.generate_value()
+        assert f_val == 1.0
+
+        d_gen = mappings.get("datetime", None)
+        assert d_gen is not None
+        d_val = d_gen.generate_value()
+        lower_bound = datetime.fromisoformat('1970-01-01T00:00:00')
+        upper_bound = datetime.now()
+        assert lower_bound <= datetime.fromisoformat(d_val) <= upper_bound, f'lower: {lower_bound}, upper:{upper_bound}: value: {d_val}'
 
 
     # def test_node_mappings_from(self):
