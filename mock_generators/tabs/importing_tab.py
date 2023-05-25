@@ -15,7 +15,7 @@ def import_tab():
         1. Import or select a previously imported JSON file from an arrows.app export
         2. The mock graph data generator will automatically generate a .csv and .zip files
         3. Download the .zip file
-        4. Proceed to the '③ Data Importer' tab
+        4. Proceed to the '④ Data Importer' tab
         """
         )
     

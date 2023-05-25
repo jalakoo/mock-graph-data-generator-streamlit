@@ -2,6 +2,7 @@
 from models.generator import Generator, GeneratorType
 import logging
 import json
+import re
 
 # ORIGINAL GENERATOR ASSIGNMENT
 def actual_generator_for_raw_property(
@@ -94,11 +95,39 @@ def is_int(value: str) -> bool:
     
 def is_float(value: str) -> bool:
     try:
-        f = float(value)
+        _ = float(value)
         return True
     except ValueError:
         return False
     
+def find_longest_float_precision(float_list):
+    max_precision = 0
+    for num in float_list:
+        num_str = str(num)
+        if '.' in num_str:
+            decimal_part = num_str.split('.')[1]
+            precision = len(decimal_part)
+            max_precision = max(max_precision, precision)
+    return max_precision
+
+def extract_numbers(string):
+    # Use regex to find all number patterns in the string
+    number_list = re.findall(r"-?\d+(?:\.\d+)?", string)
+
+    # Convert the extracted strings to appropriate number types
+    number_list = [int(num) if num.isdigit() else float(num) for num in number_list]
+
+    return number_list
+
+def numbers_list_from(string):
+    # numbers = []
+    # ranges = string.split('-')
+    # for r in ranges:
+    #     numbers.extend(extract_numbers(r))
+    # return numbers 
+    options = re.split(r'(?<=[^-])-', string)
+    return options
+
 def literal_generator_from_value(
         value: str,
         generators: list[Generator]
@@ -134,9 +163,10 @@ def literal_generator_from_value(
     # Original specificaion took stringified JSON objects to notate generator and args to use. We're going to convert matching literal values to appropriate generators
     
     # Default is to use the literal generator
-    result = {
-        "string": [value]
-    }
+    result = None
+    # result = {
+    #     "string": [value]
+    # }
 
     # Check if value is an int or float
     if is_int(value):
@@ -145,7 +175,7 @@ def literal_generator_from_value(
             "int": [integer]
         }
 
-    if is_float(value):
+    if result is None and is_float(value):
         f = float(value)
         result = {
             "float": [f]
@@ -153,24 +183,23 @@ def literal_generator_from_value(
 
     # NOTE: Not currently handling complex literals
      
-    # Check if value is a range of ints or floats
-    r = value.split("-")
-    if len(r) == 2:
-        # Single dash in string, possibly a literal range
-        values = [r[0], r[1]]
-        if all_ints(values):
-            result = {
-                "int_range": [int(r[0]), int(r[1])]
-            }
-        elif some_floats(values):
-            # Float range function expects 3 args - this one seems more sensible than other functions
-            result = {
-                "float_range": [float(r[0]), float(r[1]), 2]
-            }
- 
+    # Check if value is a range of positive ints or floats
+    if result is None:
+        numbers = numbers_list_from(value) 
+        if len(numbers) == 2:
+        # Check for correctly formatted int or float range string
+            precision = find_longest_float_precision(numbers)
+            if precision == 0:
+                    result = {
+                        "int_range": [int(numbers[0]), int(numbers[1])]
+                    }
+            else:
+                    result = {
+                        "float_range": [float(numbers[0]), float(numbers[1]), precision]
+                    }
 
     # Check for literal list of ints, floats, or strings
-    if value.startswith('[') and value.endswith(']'):
+    if result is None and value.startswith('[') and value.endswith(']'):
         values = value[1:-1].split(',')
         # Generators take a strange format where the args are always a string - including # lists of other data, like ints, floats. ie ["1,2,3"] is an expected arg type
         # because certain generators could take multiple args from different text fields
@@ -193,6 +222,10 @@ def literal_generator_from_value(
                 "string_from_list": values
             }
 
+    if result is None:
+        result = {
+            "string": [value]
+        }
     # Package and return from legacy process
     actual_string = json.dumps(result)
     return actual_generator_for_raw_property(actual_string, generators)
