@@ -230,7 +230,7 @@ def literal_generator_from_value(
             }
         else:
             result = {
-                "string_from_list": values
+                "string_from_list": [f"{value[1:-1]}"]
             }
 
     if result is None:
