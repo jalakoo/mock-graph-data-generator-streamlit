@@ -118,6 +118,8 @@ class NodeMapping():
         # ]
         count = 0
         all_results = []
+
+        # TODO: Limit counts by env config
         try:
             count = int(self.count_generator.generate(self.count_args))
         except:

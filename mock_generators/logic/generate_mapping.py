@@ -88,37 +88,6 @@ def propertymappings_for_raw_properties(
     if "ADDRESS" in raw_keys:
         raw_properties.pop("ADDRESS")
         raw_properties = generate_addresses_to(raw_properties, generators)
-        # Going to an address generator to create following properties:
-        # address_line_1, address_line_2, city, state, zip, latitude, longitude
-        # generator, args = actual_generator_for_raw_property('{"address_usa": []}', generators)
-        # value = generator.generate(args)
-        # # Insert all values - they will be read as literals during the node generation process
-        # try:
-        #     address1 = value.get('address1', None)
-        #     if address1 is not None:
-        #         raw_properties['address1'] = f'{{"string":["{address1}"]}}'
-        #     address2 = value.get('address2', None)
-        #     if address2 is not None:
-        #         raw_properties['address2'] = f'{{"string":["{address2}"]}}'
-        #     city = value.get('city', None)
-        #     if city is not None:
-        #         raw_properties['city'] = f'{{"string":["{city}"]}}'
-        #     state = value.get('state', None)
-        #     if state is not None:
-        #         raw_properties['state'] = f'{{"string":["{state}"]}}'
-        #     postalCode = value.get('postalCode', None)
-        #     if postalCode is not None:
-        #         raw_properties['postalCode'] = f'{{"string":["{postalCode}"]}}'
-        #     lat = value.get('coordinates', None).get('lat', None)
-        #     if lat is not None:
-        #         raw_properties['latitude'] = f'{{"string":["{lat}"]}}'
-        #     lng = value.get('coordinates', None).get('lng', None)
-        #     if lng is not None:
-        #         raw_properties['longitude'] = f'{{"string":["{lng}"]}}'
-        #     # Add country
-        #     raw_properties['country'] = f'{{"string":["USA"]}}'
-        # except Exception as e:
-        #     logging.error(f'Problem extracting data from address object: {value}: ERROR: {e}')
 
     for key, value in raw_properties.items():
 
@@ -137,7 +106,8 @@ def propertymappings_for_raw_properties(
                 logging.warning(f'generate_mapping.py: propertymappings_for_raw_properties: could not find generator for key: {key}, property_value: {value}')
                 continue
 
-            pid = str(uuid.uuid4())[:8]
+            # pid = str(uuid.uuid4())[:8]
+            pid = key
             property_mapping = PropertyMapping(
                 pid = pid,
                 name=key,

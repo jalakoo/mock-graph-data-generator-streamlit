@@ -3,6 +3,7 @@ from models.generator import Generator, GeneratorType
 import logging
 import json
 import re
+from datetime import datetime
 
 # ORIGINAL GENERATOR ASSIGNMENT
 def actual_generator_for_raw_property(
@@ -49,13 +50,23 @@ def keyword_generator_for_raw_property(
             result = {
                 "float_range": [1.0,100.0, 2]
             }
-    elif value.lower() == "bool" or value.lower() == "boolean":
+    elif value.lower() == "bool":
             result = {
                 "bool": [50]
             }
-    elif value.lower() == "date" or value.lower() == "datetime":
+    elif value.lower() == "boolean":
             result = {
-                "date": ["1970-01-01", "2022-11-24"]
+                "bool": [50]
+            }
+    elif value.lower() == "date":
+            today = datetime.now().strftime('%Y-%m-%d')
+            result = {
+                "date": ["1970-01-01", f"{today}"]
+            }     
+    elif value.lower() == "datetime":
+            today = datetime.now().strftime('%Y-%m-%d')
+            result = {
+                "date": ["1970-01-01", f"{today}"]
             }
 
     # Default
@@ -219,7 +230,7 @@ def literal_generator_from_value(
             }
         else:
             result = {
-                "string_from_list": values
+                "string_from_list": [f"{value[1:-1]}"]
             }
 
     if result is None:
