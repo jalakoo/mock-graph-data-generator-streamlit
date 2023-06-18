@@ -17,6 +17,7 @@ pandas = "*"
 random-address = "*"
 openai = "*"
 numpy = "*"
+certifi = "*"
 
 [dev-packages]
 mock-generators = {editable = true, path = "."}
