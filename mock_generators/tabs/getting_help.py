@@ -1,5 +1,8 @@
 import streamlit as st
 
 def get_help_tab():
-    st.write("Version 0.5.0")
-    st.write("Email jason.koo@neo4j.com for help.")
+    version = st.secrets["VERSION"]
+    st.write(f"Version {version}")
+    st.markdown("""
+    Post issues and comments in this [github repo](https://github.com/jalakoo/mock-graph-data-generator/issues)
+    """)

@@ -12,8 +12,8 @@ def data_importer_tab():
     # with col2:
     #     st.write(f"Data Importer App.\n\nUse the [Data Importer Tool](https://data-importer.graphapp.io/) to upload generated .zip file to for review and ingesetion to a Neo4j database instance.")
     with st.expander('Instructions'):
-        st.write("""
-        1. Connect to your Neo4j instance
+        st.markdown("""
+        1. Connect to your Neo4j instance below or through [the console](https://console.neo4j.io)
         2. Click on the '...' options button in the Data Importer header
         3. Select 'Open model (with data)'
         4. Select the .zip file with the generated data
