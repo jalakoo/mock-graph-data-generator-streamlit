@@ -1,1 +1,0 @@
-This folder is the default location for sample files and imported arrows.app .json files.
