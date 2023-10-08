@@ -1,1 +1,0 @@
-Original template files for abstract base class implementation that failed.  Generic and the assignment generators are still in use. Other files left here for reference.

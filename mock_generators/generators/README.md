@@ -1,1 +1,0 @@
-This folder contains all the raw code generator files used by app to dyanmically select and run functions for creating mock property data.

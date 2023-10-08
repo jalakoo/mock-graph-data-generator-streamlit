@@ -1,17 +1,9 @@
 # MOCK GRAPH DATA GENERATOR
-This is a prototype app for generating mock graph data for [Neo4j](https://neo4j.com/) database instances.
+Applet with Streamlit UI interface to conveniently use and test the graph-data-generator package.
 
-The app uses [Streamlit](https://streamlit.io/) to create and manage the UI interface.
-
-
-## Recommendations
-Connect with a Chromium browser. Known issues when using with Safari, especially with interfacing with arrows and the data-importer.
-
+## Install Poetry
+This applet uses [Poetry](https://python-poetry.org) for dependency management.
 
 ## Running
-Locally
-```
-pipenv shell
-pipenv sync
-pipenv run streamlit run mock_generators/app.py
-```
+`poetry update`
+`poetry run streamlit run graph_data_generator_streamlit/app.py`

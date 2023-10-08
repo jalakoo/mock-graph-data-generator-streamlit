@@ -1,1 +1,0 @@
-Widgets folder contains reusuable components

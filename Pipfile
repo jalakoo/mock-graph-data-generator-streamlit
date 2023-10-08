@@ -4,23 +4,11 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-pytest = "*"
-streamlit = "*"
-streamlit-extras = "*"
-pyperclip = "*"
-streamlit-agraph = "*"
-lorem-text = "*"
-faker = "*"
 streamlit-player = "*"
-requests = "*"
-pandas = "*"
-random-address = "*"
-openai = "*"
-numpy = "*"
-certifi = "*"
+graph-data-generator = "*"
+streamlit-extras = "*"
 
 [dev-packages]
-mock-generators = {editable = true, path = "."}
 
 [requires]
 python_version = "3.11"
