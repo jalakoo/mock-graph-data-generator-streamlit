@@ -1,7 +1,7 @@
 from streamlit_player import st_player
 import streamlit as st
 
-def instructions_tab():
+def instructions_ui():
     st.title("Graph Data Generator App")
     st.markdown(
         """
@@ -12,5 +12,4 @@ def instructions_tab():
         - Each tool may require independent logins with first use.
     """)
     # url = st.secrets["VIDEO_TUTORIAL_URL"]
-    # Disabling until updated video is available
     # st_player(url, height=600)

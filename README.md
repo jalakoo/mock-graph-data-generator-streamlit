@@ -5,5 +5,15 @@ Applet with Streamlit UI interface to conveniently use and test the graph-data-g
 This applet uses [Poetry](https://python-poetry.org) for dependency management.
 
 ## Running
-`poetry update`
-`poetry run streamlit run graph_data_generator_streamlit/app.py`
+```
+poetry update
+poetry run streamlit run graph_data_generator_streamlit/app.py
+```
+
+or 
+
+```
+pipenv shell
+pipenv sync
+pipenv run streamlit run graph_data_generator_streamlit/app.py 
+```

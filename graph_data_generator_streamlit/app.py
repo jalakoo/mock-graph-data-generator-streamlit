@@ -1,26 +1,27 @@
 import streamlit as st
-from tabs.instructions_tab import instructions_tab
-from tabs.design_tab import design_tab
-from tabs.generate_tab import generate_tab
-from tabs.data_importer_tab import data_importer_tab
+from ui.instructions_ui import instructions_ui
+from ui.generate_ui import generate_ui
+from ui.config_ui import config_ui
+from ui.design_ui import arrows_ui, generators_ui
 import logging
-import sys
 
 # SETUP
 st.set_page_config(layout="wide")
 logging.getLogger().setLevel(logging.DEBUG)
 logging.info(f'App Started')
 
-instructions_tab()
+# Header
+instructions_ui()
+with st.expander("Optional Configurations"):
+    config_ui()
 
-st.markdown("-------------")
-st.markdown("**① DESIGN**")
-design_tab()
+# Body
+c1, c2 = st.columns([8,2])
+with c1:
+    st.markdown("**① DESIGN**")
+    arrows_ui()
 
-st.markdown("-------------")
-st.markdown("**② GENERATE**")
-generate_tab()
-
-st.markdown("-------------")
-st.markdown("**③ IMPORT**")
-data_importer_tab()
+    st.markdown("**② GENERATE**")
+    generate_ui()
+with c2:
+    generators_ui()
