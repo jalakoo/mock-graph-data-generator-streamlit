@@ -42,20 +42,60 @@ def agraph_data_prompt(prompt: str)-> str:
     return full_prompt
 
 
-def convert_response(response: str | list) -> tuple[list, list]:
+def agraph_from_response(response: str | list) -> tuple[list[Node], list[Edge]]:
     """
-    Converts an openai response into nodes and relationships
+    Converts an openai response into agraph nodes and relationships
 
     Args:
-        response: OpenAI response content
+        response: String or list in the format of [["node_id_string", "edge_id_string", "another_node_id_string"],...]
     
     Returns:
-        A tuple of node labels and relationship types
+        A tuple of agraph nodes in a list and agraph edges in a list
 
     Raises:
         ...
     """
-    raise NotImplementedError("Not implemented yet")
+    logging.debug(f'Response recieved: {response}')
+    # Response will be a list of 3 item tuples
+
+    # Convert to list of lists - if needed
+    if isinstance(response, str):
+        answers = json.loads(response)
+    elif isinstance(response, list):
+        answers = response
+    else:
+        raise ValueError(f'Response is not a string or list. Response: {response}')
+
+    logging.debug(f'JSON parsed: {answers}')
+    nodes = set()
+    result_edges = []
+    for item in answers:
+        # Each should be a tuple of 3 items, node-edge-node
+        n1 = item[0]
+        r = item[1]
+        n2 = item[2]
+
+        # Standardize casing
+        r = r.upper()
+        n1 = n1.title()
+        n2 = n2.title()
+        nodes.add(n1)
+        nodes.add(n2) 
+
+        edge = Edge(source=n1, target=n2, label=r)
+        result_edges.append(edge)
+
+    result_nodes = []
+    for node_label in list(nodes):
+        node = Node(id=node_label, label=node_label)
+        result_nodes.append(node)
+
+    logging.debug(f'Nodes returning: {result_nodes}')
+    logging.debug(f'Edges returning: {result_edges}')
+
+    return result_nodes, result_edges
+
+
 
 def agraph_data_from_reponse(response: str | list)->tuple[any, any, any]:
     # Returns agraph compatible nodes, edges, and config
@@ -110,24 +150,27 @@ def generate_openai_response(prompt)-> str:
 
 def agraph_from_prompt(prompt: str):
     full_prompt = agraph_data_prompt(prompt)
-    openai_response = generate_openai_response(full_prompt)
-    nodes, edges, config = agraph_data_from_reponse(openai_response)
+    openai_response = generate_openai_response(full_prompt)    
+    nodes, edges = agraph_from_response(openai_response)
+    config = Config(width=800, height=800, directed=True)
+
     if nodes is not None:
         agraph(nodes=nodes, 
             edges=edges, 
             config=config)
     
+def agraph_from_sample(prompt: str):
+    # TODO: Pull from a file of samples
+    openai_response = '[["Sharks", "eat", "big fish"], ["Big fish", "eat", "small fish"], ["Small fish", "eat", "bugs"]]'
+    nodes, edges = agraph_from_response(openai_response)
+    config = Config(width=800, height=800, directed=True)
+
+    if nodes is not None:
+        agraph(nodes=nodes, 
+            edges=edges, 
+            config=config) 
+
 def ideate_ui():
-    # with st.expander("Instructions"):
-    #     st.markdown(
-    #     """
-    #     Not sure how to start with data modeling? Use this variation of GraphGPT to generate a graph data model from a prompt.
-    #     1. Add your [OpenAI API Key](https://platform.openai.com/account/api-keys) to the OpenAI API Key field
-    #     2. Enter in a prompt / narrative description of what you'd like modelled
-    #     3. Download data as an arrows.app compatible JSON file
-    #     4. Proceed to the '① Design' tab
-    #     """
-    #     )
 
     # LOAD OPENAI KEY
     open_ai_key = st.secrets.get("OPENAI_API_KEY", None)
@@ -143,23 +186,29 @@ def ideate_ui():
 
     openai.api_key = st.session_state.get("OPENAI_API_KEY", None)
 
-
     # Load a sample prompt
     sample_prompt = None
-    if st.button("Sample prompt"):
+    if st.button("Load Sample", key="graphgpt_load_sample"):
         sample_prompt = "Sharks eat big fish. Big fish eat small fish. Small fish eat bugs."
 
     # Display Prompt
     prompt = st.text_input("Prompt", value=sample_prompt)
     if prompt is None or prompt == "":
         return
-    agraph_from_prompt(prompt)
+    
+    if prompt == sample_prompt:
+        agraph_from_sample(prompt)
+    else:
+        agraph_from_prompt(prompt)
 
     # TODO: Button to download graph data in arrows.app compatible JSON
-    if st.button("Copy .JSON", help="Output can be pasted into the ② GENERATE tab"):
-        st.info("Not implemented yet")
-    if st.button("Push to Arrows"):
-        st.info("Not implemented yet")
+    g1, g2, g3 = st.columns([1,1,3])
+    with g1:
+        if st.button("Copy .JSON", help="Output can be pasted into the ② GENERATE tab"):
+            st.info("Not implemented yet")
+    with g2:
+        if st.button("Edit in Arrows"):
+            st.info("Not implemented yet")
 
 
 def agraph_test():
