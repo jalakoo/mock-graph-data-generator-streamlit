@@ -1,0 +1,40 @@
+{
+    "nodes": [
+      {
+        "id": "n0",
+        "position": {
+          "x": -41.66856095418268,
+          "y": -563.8057251425922
+        },
+        "caption": "Person",
+        "style": {},
+        "labels": [],
+        "properties": {
+          "first_name": "\"{\\\"first_name\\\": []}\","
+        }
+      },
+      {
+        "id": "n1",
+        "position": {
+          "x": 337.88984975524227,
+          "y": -563.8057251425922
+        },
+        "caption": "Event",
+        "style": {},
+        "labels": [],
+        "properties": {
+          "name": "string"
+        }
+      }
+    ],
+    "relationships": [
+      {
+        "id": "n0",
+        "type": "ATTENDS",
+        "style": {},
+        "properties": {},
+        "fromId": "n0",
+        "toId": "n1"
+      }
+    ]
+  }
