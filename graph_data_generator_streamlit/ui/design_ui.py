@@ -37,7 +37,8 @@ def filtered_generators(
         return True
     
     return [generator for key, generator in sorted(generators.items(), key=lambda gen:(gen[1].name)) if passes_search(search_term, generator) and passes_type_filter(type_filter, generator)]
-        
+
+# Why isn't this working outside of this class files?
 def generators_ui():
     search_term = st.text_input("Search Generators by keyword", "", help="Generators are functions for creating mock data.")
     # st.write(generators)
@@ -103,6 +104,8 @@ def generators_ui():
             json_string = json.dumps(obj, default=str)
 
             st.write('Copy & paste below as a node/relationship property value in arrows.app')
+
+            # st.code widgets automatically include a copy and paste button
             st.code(f'{json_string}')
             
 def arrows_ui():
@@ -111,4 +114,6 @@ def arrows_ui():
         Use the arrows app to quickly design your mock data. When ready, click on the `Download/Export` button, select the `JSON` tab, then copy the .JSON data to the **② Generate** section
         """
     )
+    # TODO: Read from state if a graphGPT model has been created and load that
+
     components.iframe("https://arrows.app", height=1000, scrolling=False)

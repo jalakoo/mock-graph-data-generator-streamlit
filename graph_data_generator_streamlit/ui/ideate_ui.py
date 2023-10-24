@@ -6,6 +6,8 @@ import logging
 import openai
 import json
 
+# Yes yes - move all the non-ui stuff into a controller or something already
+
 CHATGPT_KEY = "chatgpt"
 
 def arrows_uri(json: dict) -> str:
@@ -163,7 +165,7 @@ def agraph_from_sample(prompt: str):
     # TODO: Pull from a file of samples
     openai_response = '[["Sharks", "eat", "big fish"], ["Big fish", "eat", "small fish"], ["Small fish", "eat", "bugs"]]'
     nodes, edges = agraph_from_response(openai_response)
-    config = Config(width=800, height=800, directed=True)
+    config = Config(height=400, width=1000, directed=True)
 
     if nodes is not None:
         agraph(nodes=nodes, 
@@ -171,6 +173,8 @@ def agraph_from_sample(prompt: str):
             config=config) 
 
 def ideate_ui():
+
+    st.markdown("Use a variation of Varun Shenoy's original [GraphGPT](https://graphgpt.vercel.app) to convert a natural language description into a graph data model")
 
     # LOAD OPENAI KEY
     open_ai_key = st.secrets.get("OPENAI_API_KEY", None)
@@ -211,36 +215,36 @@ def ideate_ui():
             st.info("Not implemented yet")
 
 
-def agraph_test():
-    # Agraph
-    nodes = []
-    edges = []
-    nodes.append( Node(id="Spiderman", 
-                    label="Peter Parker", 
-                    size=25, 
-                    shape="circularImage",
-                    image="http://marvel-force-chart.surge.sh/marvel_force_chart_img/top_spiderman.png") 
-                ) # includes **kwargs
-    nodes.append( Node(id="Captain_Marvel", 
-                    size=25,
-                    shape="circularImage",
-                    image="http://marvel-force-chart.surge.sh/marvel_force_chart_img/top_captainmarvel.png") 
-                )
-    edges.append( Edge(source="Captain_Marvel", 
-                    label="friend_of", 
-                    target="Spiderman", 
-                    # **kwargs
-                    ) 
-                ) 
+# def agraph_sample():
+#     # Agraph
+#     nodes = []
+#     edges = []
+#     nodes.append( Node(id="Spiderman", 
+#                     label="Peter Parker", 
+#                     size=25, 
+#                     shape="circularImage",
+#                     image="http://marvel-force-chart.surge.sh/marvel_force_chart_img/top_spiderman.png") 
+#                 ) # includes **kwargs
+#     nodes.append( Node(id="Captain_Marvel", 
+#                     size=25,
+#                     shape="circularImage",
+#                     image="http://marvel-force-chart.surge.sh/marvel_force_chart_img/top_captainmarvel.png") 
+#                 )
+#     edges.append( Edge(source="Captain_Marvel", 
+#                     label="friend_of", 
+#                     target="Spiderman", 
+#                     # **kwargs
+#                     ) 
+#                 ) 
 
-    config = Config(width=750,
-                    height=950,
-                    directed=True, 
-                    physics=True, 
-                    hierarchical=False,
-                    # **kwargs
-                    )
+#     config = Config(width=750,
+#                     height=950,
+#                     directed=True, 
+#                     physics=True, 
+#                     hierarchical=False,
+#                     # **kwargs
+#                     )
 
-    agraph(nodes=nodes, 
-            edges=edges, 
-            config=config)
+#     agraph(nodes=nodes, 
+#             edges=edges, 
+#             config=config)

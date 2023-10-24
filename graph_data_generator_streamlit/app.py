@@ -14,17 +14,29 @@ logging.info(f'App Started')
 # Header
 instructions_ui()
 
+# Modify CSS to keep buttons closer together
+st.markdown("""
+            <style>
+                div[data-testid="column"] {
+                    width: fit-content !important;
+                    flex: unset;
+                }
+                div[data-testid="column"] * {
+                    width: fit-content !important;
+                }
+            </style>
+            """, unsafe_allow_html=True)
 
 # Body
-c1, c2 = st.columns([8,2])
-with c1:
-    st.markdown("**① DESIGN**")
-    with st.expander("GraphGPT"):
-        ideate_ui()
-    with st.expander("Arrows Data Modeler"):
-        arrows_ui()
+st.markdown("**① DESIGN**")
+with st.expander("GraphGPT"):
+    ideate_ui()
+with st.expander("Arrows Data Modeler"):
+    arrows_ui()
 
-    st.markdown("**② GENERATE**")
-    generate_ui()
-with c2:
+st.markdown("**② GENERATE**")
+generate_ui()
+
+# Side bar
+with st.sidebar:
     generators_ui()
