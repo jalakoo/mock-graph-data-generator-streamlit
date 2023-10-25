@@ -49,5 +49,5 @@ def config_ui():
 
     # Display current app version
     # TODO: Pull this directly from the pyproject.toml
-    version = "0.7.0"
+    version = "0.7.1"
     st.write(f"Version {version}")

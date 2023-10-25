@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mock-graph-data-generator-streamlit"
-version = "0.7.0"
+version = "0.7.1"
 description = ""
 authors = ["Jason Koo <jalakoo@gmail.com>"]
 readme = "README.md"
