@@ -1,4 +1,3 @@
-from streamlit_player import st_player
 import streamlit as st
 
 def instructions_ui():

@@ -4,10 +4,9 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-streamlit-player = "*"
 graph-data-generator = "*"
-streamlit-extras = "*"
 neo4j-uploader = "*"
+streamlit = "*"
 
 [dev-packages]
 
