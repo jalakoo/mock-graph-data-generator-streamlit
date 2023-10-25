@@ -6,6 +6,9 @@ from ui.design_ui import arrows_ui, generators_ui
 from ui.ideate_ui import ideate_ui
 from ui.export_ui import export_ui
 import logging
+import json
+import graph_data_generator as gdg
+from neo4j_uploader import upload
 
 # SETUP
 st.set_page_config(layout="wide",initial_sidebar_state='collapsed')
@@ -59,15 +62,51 @@ instructions_ui()
 st.markdown("**① DESIGN**")
 with st.expander("GraphGPT"):
     ideate_ui()
-with st.expander("Arrows"):
-    arrows_ui()
+
+
+# with st.expander("Arrows"):
+#     arrows_ui()
+
 
 st.markdown("**② GENERATE**")
-generate_ui()
+prior = None
+if st.session_state["ARROWS_DICT"] is not None:
+    dict = st.session_state.get("ARROWS_DICT", {}).get('graph', None)
+    string = json.dumps(dict, indent=4)
+    st.session_state["JSON_CONFIG"] = string
+if st.button('Load Sample'):
+    sample_raw = json.load(open("graph_data_generator_streamlit/samples/minimal.json"))
+    prior = json.dumps(sample_raw, indent=4)
+    st.session_state["JSON_CONFIG"] = prior
+
+txt = st.text_area("Enter .JSON config below", height=500, help="Click out of the text area to generate the .zip file.", value=st.session_state.JSON_CONFIG)
+def get_data(txt: str):
+    mapping = gdg.generate_mapping(txt)
+    zip = gdg.package(mapping)
+    data = gdg.generate_dictionaries(mapping)
+    return data
 
 st.markdown("**③ EXPORT**")
-export_ui()
+if st.button("wtf"):
+    data = get_data(txt)
+    st.write("wtf")
+# if txt is None:
+#     st.error("Add JSON config to generate data")
+# else:
+#     # Generate data
+#     mapping = gdg.generate_mapping(txt)
+#     zip = gdg.package(mapping)
+#     data = gdg.generate_dictionaries(mapping)
 
-# Side bar
-with st.sidebar:
-    generators_ui()
+#     filename = st.text_input("Name of file", value="mock_data", help="Name of file to be used for the.zip file. Ignored if pushing directly to a Neo4j database instance.")
+
+#     st.download_button(
+#         label = "Download .zip file",
+#         data = zip,
+#         file_name = f"{filename}.zip",
+#         mime = "text/plain"
+#     )
+
+# # Side bar
+# with st.sidebar:
+#     generators_ui()

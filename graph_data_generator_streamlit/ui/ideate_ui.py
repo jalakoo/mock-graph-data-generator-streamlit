@@ -5,28 +5,148 @@ from streamlit_agraph import agraph, Node, Edge, Config
 import logging
 import openai
 import json
+import random
+import base64
 
 # Yes yes - move all the non-ui stuff into a controller or something already
 
 CHATGPT_KEY = "chatgpt"
 
-def arrows_uri(json: dict) -> str:
+def arrows_uri(input: str | dict) -> str:
     """
     Generates a URI for an arrows app visualization from a json object. WARNING! May overwrite existing arrows drawing.
 
     Args:
-        json: A dictionary object representing an arrows compatible .json configuration
+        input: A dictionary or string representing an arrows compatible .json configuration
 
     Returns:
         A string URI for an arrows app visualization
     """
     # TODO: Convert the diction object into a base 64 json string
-    json_string = json.dumps(json)
-    base64_string = "unimplemented"
-    result = f"https://arrows.app/#/import/json={base64_string}"
+    if isinstance(input, dict):
+        input = json.dumps(input)
+    
+    # b = base64.b64encode(bytes(input, 'utf-8')) # bytes
+    # base64_str = b.decode('utf-8')
+
+    b = input.encode('utf-8')
+    base64_str = base64.b64encode(b).decode('utf-8')
+
+    result = f"https://arrows.app/#/import/json={base64_str}"
+
+    logging.debug(f'\n\nOutput arrows uri from {input} with base64 JSON: \n{result}')
+
     return result
 
-def agraph_data_prompt(prompt: str)-> str:
+
+def arrows_dictionary(nodes: list[Node], edges: list[Edge], name: str = "GraphGPT Generated Model") -> dict:
+    """
+    Generates an arrows.app compatible .json file from agraph nodes and edges
+
+    Args:
+        nodes: List of agraph Nodes
+        edges: List of agraph Edges
+
+    Returns:
+        A dictionary matching arrows .json schema
+    """
+    result_nodes = []
+    result_relationships = []
+    for n in nodes:
+        random_x = round(random.uniform(-600, 600), 14)
+        random_y = round(random.uniform(-600, 600), 14)
+        result_nodes.append({
+            "id": n.id,
+            "position":{
+                "x" : random_x,
+                "y": random_y
+            },
+            "caption": n.label,
+            "style":{},
+            "labels":[],
+            "properties":{}
+        })
+    for idx, e in enumerate(edges):
+        logging.debug(f'Processing edge to relationships: {e.__dict__}')
+        ns = e.source
+        nt = e.to
+        result_relationships.append(
+            {
+                "id":f"n{idx}",
+                "type":e.label,
+                "fromId":ns,
+                "toId":nt,
+                "style":{},
+                "properties":{}
+            }
+        )
+    result = {
+        "graph": {
+            "style": {
+            "font-family": "sans-serif",
+            "background-color": "#ffffff",
+            "background-image": "",
+            "background-size": "100%",
+            "node-color": "#ffffff",
+            "border-width": 4,
+            "border-color": "#000000",
+            "radius": 50,
+            "node-padding": 5,
+            "node-margin": 2,
+            "outside-position": "auto",
+            "node-icon-image": "",
+            "node-background-image": "",
+            "icon-position": "inside",
+            "icon-size": 64,
+            "caption-position": "inside",
+            "caption-max-width": 200,
+            "caption-color": "#000000",
+            "caption-font-size": 50,
+            "caption-font-weight": "normal",
+            "label-position": "inside",
+            "label-display": "pill",
+            "label-color": "#000000",
+            "label-background-color": "#ffffff",
+            "label-border-color": "#000000",
+            "label-border-width": 4,
+            "label-font-size": 40,
+            "label-padding": 5,
+            "label-margin": 4,
+            "directionality": "directed",
+            "detail-position": "inline",
+            "detail-orientation": "parallel",
+            "arrow-width": 5,
+            "arrow-color": "#000000",
+            "margin-start": 5,
+            "margin-end": 5,
+            "margin-peer": 20,
+            "attachment-start": "normal",
+            "attachment-end": "normal",
+            "relationship-icon-image": "",
+            "type-color": "#000000",
+            "type-background-color": "#ffffff",
+            "type-border-color": "#000000",
+            "type-border-width": 0,
+            "type-font-size": 16,
+            "type-padding": 5,
+            "property-position": "outside",
+            "property-alignment": "colon",
+            "property-color": "#000000",
+            "property-font-size": 16,
+            "property-font-weight": "normal"
+            },
+            "nodes":result_nodes,
+            "relationships":result_relationships,
+            "diagramName": name
+        }
+    }
+
+    logging.debug(f'\n\nProcessed incoming nodes: {nodes}, edges: {edges} to:\n {result}')
+    
+    return result
+
+
+def triples_prompt(prompt: str)-> str:
     # Full prompt string to query openai with and finasse expected response
     full_prompt = f"""
     Given a prompt, extrapolate as many relationships as possible from it and provide a list of updates.
@@ -44,7 +164,7 @@ def agraph_data_prompt(prompt: str)-> str:
     return full_prompt
 
 
-def agraph_from_response(response: str | list) -> tuple[list[Node], list[Edge]]:
+def agraph_nodes_edges(response: str | list) -> tuple[list[Node], list[Edge]]:
     """
     Converts an openai response into agraph nodes and relationships
 
@@ -81,6 +201,7 @@ def agraph_from_response(response: str | list) -> tuple[list[Node], list[Edge]]:
         r = r.upper()
         n1 = n1.title()
         n2 = n2.title()
+
         nodes.add(n1)
         nodes.add(n2) 
 
@@ -97,40 +218,7 @@ def agraph_from_response(response: str | list) -> tuple[list[Node], list[Edge]]:
 
     return result_nodes, result_edges
 
-
-
-def agraph_data_from_reponse(response: str | list)->tuple[any, any, any]:
-    # Returns agraph compatible nodes, edges, and config
-    logging.debug(f'Response recieved: {response}')
-    # Response will be a list of 3 item tuples
-    if isinstance(response, str):
-        answers = json.loads(response)
-    elif isinstance(response, list):
-        answers = response
-    else:
-        raise ValueError(f'Response is not a string or list. Response: {response}')
-
-    logging.debug(f'JSON parsed: {answers}')
-    nodes = []
-    edges = []
-    for idx, item in enumerate(answers):
-        print(f'Item: {item}')
-        n1 = item[0]
-        r = item[1]
-        n2 = item[2]
-        n1id = f'{idx}_n1'
-        n2id = f'{idx}_n2'
-        node1 = Node(id=n1id, label=n1)
-        node2 = Node(id=n2id, label=n2)
-        edge = Edge(source=n1id, target=n2id, label=r)
-        if node1 not in nodes:
-            nodes.append(node1)
-        if node2 not in nodes:
-            nodes.append(node2)
-        edges.append(edge)
-    config = Config(width=800, height=800, directed=True)
-    return (nodes, edges, config)
-
+@st.cache_data
 def generate_openai_response(prompt)-> str:
     # response = openai.chat.Completion.create(
     #     model="gpt-3.5-turbo",
@@ -149,22 +237,11 @@ def generate_openai_response(prompt)-> str:
     content = response.choices[0].message.content
     logging.debug(f'OpenAI Response: {response}, type: {type(content)}')
     return content
-
-def agraph_from_prompt(prompt: str):
-    full_prompt = agraph_data_prompt(prompt)
-    openai_response = generate_openai_response(full_prompt)    
-    nodes, edges = agraph_from_response(openai_response)
-    config = Config(width=800, height=800, directed=True)
-
-    if nodes is not None:
-        agraph(nodes=nodes, 
-            edges=edges, 
-            config=config)
     
 def agraph_from_sample(prompt: str):
     # TODO: Pull from a file of samples
     openai_response = '[["Sharks", "eat", "big fish"], ["Big fish", "eat", "small fish"], ["Small fish", "eat", "bugs"]]'
-    nodes, edges = agraph_from_response(openai_response)
+    nodes, edges = agraph_nodes_edges(openai_response)
     config = Config(height=400, width=1000, directed=True)
 
     if nodes is not None:
@@ -177,43 +254,68 @@ def ideate_ui():
     st.markdown("Use a variation of Varun Shenoy's original [GraphGPT](https://graphgpt.vercel.app) to convert a natural language description into a graph data model")
 
     # LOAD OPENAI KEY
-    open_ai_key = st.secrets.get("OPENAI_API_KEY", None)
-    if open_ai_key is None or open_ai_key == "":
-        open_ai_key = st.session_state.get("OPENAI_API_KEY", None)
-    else:
-        st.session_state["OPENAI_API_KEY"] = open_ai_key
+    # open_ai_key = st.secrets.get("OPENAI_API_KEY", None)
+    # if open_ai_key is None or open_ai_key == "":
+    #     open_ai_key = st.session_state.get("OPENAI_API_KEY", None)
+    # else:
+    #     st.session_state["OPENAI_API_KEY"] = open_ai_key
 
     # OPENAI TEXTFIELD
-    new_open_ai_key = st.text_input(f'OpenAI KEY', type="password", value=open_ai_key)
-    if new_open_ai_key != open_ai_key:
-        st.session_state["OPENAI_API_KEY"] = new_open_ai_key
+    new_open_ai_key = st.text_input(f'OpenAI KEY', type="password", value=st.session_state["OPENAI_API_KEY"])
+    # if new_open_ai_key != open_ai_key:
+    #     st.session_state["OPENAI_API_KEY"] = new_open_ai_key
 
-    openai.api_key = st.session_state.get("OPENAI_API_KEY", None)
+    # Set openAI key
+    openai.api_key = new_open_ai_key
 
-    # Load a sample prompt
-    sample_prompt = None
-    if st.button("Load Sample", key="graphgpt_load_sample"):
-        sample_prompt = "Sharks eat big fish. Big fish eat small fish. Small fish eat bugs."
+    # Display prompt for user input
+    sample_prompt = "Sharks eat big fish. Big fish eat small fish. Small fish eat bugs."
+    if st.button('Load Sample Prompt'):
+        st.session_state["SAMPLE_PROMPT"] = sample_prompt
 
-    # Display Prompt
-    prompt = st.text_input("Prompt", value=sample_prompt)
+    prompt = st.text_input("Prompt", value=st.session_state["SAMPLE_PROMPT"])
     if prompt is None or prompt == "":
         return
+
+    # Send completion request to openAI
+    full_prompt = triples_prompt(prompt)
+    response = generate_openai_response(full_prompt) 
+
+    # Convert response to agraph nodes and edges
+    nodes, edges = agraph_nodes_edges(response)
+
+    # Configure and display agraph
+    config = Config(width=800, height=400, directed=True)
+    if nodes is None:
+        return
     
-    if prompt == sample_prompt:
-        agraph_from_sample(prompt)
-    else:
-        agraph_from_prompt(prompt)
+    # Display data
+    # a1, a2 = st.columns([4,2])
+    # with a1:
+    st.write('Graph Viewer')
+    agraph(nodes=nodes,  
+        edges=edges, 
+        config=config)
+    
+    # For displaying JSON schema. This is quite long
+    # with a2:
+        # st.write('JSON Representation')
+        # arrows_str = json.dumps(arrows_dict, indent=4)
+        # st.code(arrows_str)
 
-    # TODO: Button to download graph data in arrows.app compatible JSON
-    g1, g2, g3 = st.columns([1,1,3])
-    with g1:
-        if st.button("Copy .JSON", help="Output can be pasted into the ② GENERATE tab"):
-            st.info("Not implemented yet")
-    with g2:
+    # Prep arrows compatible dictioary for button options
+    arrows_dict = arrows_dictionary(nodes, edges)
+
+    b1, b2, b3 = st.columns([1,1,4])
+    with b1:
         if st.button("Edit in Arrows"):
-            st.info("Not implemented yet")
-
+            # Prep arrows compatible json
+            uri = arrows_uri(arrows_dict)
+            st.session_state["ARROWS_URI"] = uri
+            st.warning("Close and reopen 'Arrows Data Modeler' to refresh")
+    with b2:
+        if st.button("Push to Generator"):
+            st.session_state["ARROWS_DICT"] = arrows_dict
 
 # def agraph_sample():
 #     # Agraph

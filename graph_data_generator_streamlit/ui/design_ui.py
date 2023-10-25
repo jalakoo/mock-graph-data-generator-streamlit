@@ -116,4 +116,12 @@ def arrows_ui():
     )
     # TODO: Read from state if a graphGPT model has been created and load that
 
-    components.iframe("https://arrows.app", height=1000, scrolling=False)
+    uri = "https://arrows.app"
+    if "ARROWS_URI" in st.session_state:
+        prior_uri = st.session_state["ARROWS_URI"]
+        if prior_uri is not None:
+            uri = prior_uri
+
+    components.iframe(uri, height=1000, scrolling=False)
+
+    st.session_state["ARROWS_URI"] = None
