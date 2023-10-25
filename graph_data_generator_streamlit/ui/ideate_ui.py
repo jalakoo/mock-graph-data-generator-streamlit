@@ -7,6 +7,7 @@ import openai
 import json
 import random
 import base64
+import ast
 
 # Yes yes - move all the non-ui stuff into a controller or something already
 
@@ -156,6 +157,7 @@ def triples_prompt(prompt: str)-> str:
     Each relationship must have 3 items in the list.
     Limit the number of relationships to 12.
     Return only the data, do not explain.
+    Only return a list of 3 item lists.
 
     For example, the prompt: `Alice is Bob's roommate` should return [["Alice", "roommate", "Bob"]]
 
@@ -177,12 +179,17 @@ def agraph_nodes_edges(response: str | list) -> tuple[list[Node], list[Edge]]:
     Raises:
         ...
     """
-    logging.debug(f'Response recieved: {response}')
+    logging.debug(f'agraph_nodes_edges() response recieved: {response}')
     # Response will be a list of 3 item tuples
 
     # Convert to list of lists - if needed
     if isinstance(response, str):
-        answers = json.loads(response)
+        try:
+            answers = json.loads(response)
+        except:
+            logging.debug(f'Unable to parse string to list with json.loads. Attempting ast...')
+            answers = ast.literal_eval(response)
+
     elif isinstance(response, list):
         answers = response
     else:
@@ -220,8 +227,10 @@ def agraph_nodes_edges(response: str | list) -> tuple[list[Node], list[Edge]]:
 
 @st.cache_data
 def generate_openai_response(prompt)-> str:
+    # TODO: Make this configurable
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
+        # model="gpt-4",
         messages=[{"role": "user", "content": prompt}]
     )
     # TODO: Validate reponse
@@ -255,7 +264,7 @@ def ideate_ui():
     if st.button('Load Sample', key="graphgpt_sample"):
         st.session_state["SAMPLE_PROMPT"] = sample_prompt
 
-    prompt = st.text_input("Prompt", value=st.session_state["SAMPLE_PROMPT"])
+    prompt = st.text_area("Prompt", value=st.session_state["SAMPLE_PROMPT"])
     if prompt is None or prompt == "":
         return
 
@@ -271,7 +280,7 @@ def ideate_ui():
     nodes, edges = agraph_nodes_edges(response)
 
     # Configure and display agraph
-    config = Config(width=800, height=400, directed=True)
+    config = Config(width=1000, height=400, directed=True)
     if nodes is None:
         return
     
