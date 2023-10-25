@@ -65,7 +65,6 @@ with st.expander("Arrows"):
 st.markdown("**② GENERATE**")
 generate_ui()
 
-st.markdown("**③ EXPORT**")
 export_ui()
 
 # Side bar

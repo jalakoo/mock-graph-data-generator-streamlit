@@ -22,13 +22,12 @@ def arrows_uri(input: str | dict) -> str:
     Returns:
         A string URI for an arrows app visualization
     """
-    # TODO: Convert the diction object into a base 64 json string
+
+    # Convert dict to string if needed
     if isinstance(input, dict):
         input = json.dumps(input)
-    
-    # b = base64.b64encode(bytes(input, 'utf-8')) # bytes
-    # base64_str = b.decode('utf-8')
 
+    # Convert the diction object into a base 64 json string
     b = input.encode('utf-8')
     base64_str = base64.b64encode(b).decode('utf-8')
 
@@ -70,10 +69,11 @@ def arrows_dictionary(nodes: list[Node], edges: list[Edge], name: str = "GraphGP
         logging.debug(f'Processing edge to relationships: {e.__dict__}')
         ns = e.source
         nt = e.to
+        type = e.label.replace(" ", "_")
         result_relationships.append(
             {
                 "id":f"n{idx}",
-                "type":e.label,
+                "type":type,
                 "fromId":ns,
                 "toId":nt,
                 "style":{},
@@ -220,15 +220,6 @@ def agraph_nodes_edges(response: str | list) -> tuple[list[Node], list[Edge]]:
 
 @st.cache_data
 def generate_openai_response(prompt)-> str:
-    # response = openai.chat.Completion.create(
-    #     model="gpt-3.5-turbo",
-    #     prompt=prompt,
-    #     temperature=0.5,
-    #     max_tokens=800,
-    #     top_p=1.0,
-    #     frequency_penalty=0.8,
-    #     presence_penalty=0.0
-    #     )
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": prompt}]
@@ -253,33 +244,28 @@ def ideate_ui():
 
     st.markdown("Use a variation of Varun Shenoy's original [GraphGPT](https://graphgpt.vercel.app) to convert a natural language description into a graph data model")
 
-    # LOAD OPENAI KEY
-    # open_ai_key = st.secrets.get("OPENAI_API_KEY", None)
-    # if open_ai_key is None or open_ai_key == "":
-    #     open_ai_key = st.session_state.get("OPENAI_API_KEY", None)
-    # else:
-    #     st.session_state["OPENAI_API_KEY"] = open_ai_key
-
     # OPENAI TEXTFIELD
     new_open_ai_key = st.text_input(f'OpenAI KEY', type="password", value=st.session_state["OPENAI_API_KEY"])
-    # if new_open_ai_key != open_ai_key:
-    #     st.session_state["OPENAI_API_KEY"] = new_open_ai_key
 
     # Set openAI key
     openai.api_key = new_open_ai_key
 
     # Display prompt for user input
     sample_prompt = "Sharks eat big fish. Big fish eat small fish. Small fish eat bugs."
-    if st.button('Load Sample Prompt'):
+    if st.button('Load Sample', key="graphgpt_sample"):
         st.session_state["SAMPLE_PROMPT"] = sample_prompt
 
     prompt = st.text_input("Prompt", value=st.session_state["SAMPLE_PROMPT"])
     if prompt is None or prompt == "":
         return
 
-    # Send completion request to openAI
-    full_prompt = triples_prompt(prompt)
-    response = generate_openai_response(full_prompt) 
+    if prompt == sample_prompt:
+        # Load vetted response to save on hitting openai for the same thing
+        response = [["Sharks", "eat", "big fish"], ["Big fish", "eat", "small fish"], ["Small fish", "eat", "bugs"]]
+    else: 
+        # Send completion request to openAI
+        full_prompt = triples_prompt(prompt)
+        response = generate_openai_response(full_prompt) 
 
     # Convert response to agraph nodes and edges
     nodes, edges = agraph_nodes_edges(response)
@@ -290,23 +276,20 @@ def ideate_ui():
         return
     
     # Display data
-    # a1, a2 = st.columns([4,2])
-    # with a1:
     st.write('Graph Viewer')
     agraph(nodes=nodes,  
         edges=edges, 
         config=config)
     
-    # For displaying JSON schema. This is quite long
-    # with a2:
-        # st.write('JSON Representation')
-        # arrows_str = json.dumps(arrows_dict, indent=4)
-        # st.code(arrows_str)
+    # For displaying JSON schema. This can be quite long though
+    # st.write('JSON Representation')
+    # arrows_str = json.dumps(arrows_dict, indent=4)
+    # st.code(arrows_str)
 
     # Prep arrows compatible dictioary for button options
     arrows_dict = arrows_dictionary(nodes, edges)
 
-    b1, b2, b3 = st.columns([1,1,4])
+    b1, b2, b3 = st.columns([1,1,3])
     with b1:
         if st.button("Edit in Arrows"):
             # Prep arrows compatible json

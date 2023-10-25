@@ -1,11 +1,7 @@
 # Now the new Generate Tab
 
 import streamlit as st
-from graph_data_generator import generators
-import graph_data_generator as gdg
-from managers.n4j_manager import upload_data
 import json
-import pyclip
 
 def generate_ui():
 
@@ -19,3 +15,7 @@ def generate_ui():
         st.session_state["JSON_CONFIG"] = prior
 
     txt = st.text_area("Enter .JSON config below", height=500, help="Click out of the text area to generate the .zip file.", value=st.session_state.JSON_CONFIG)
+
+    if txt != st.session_state.JSON_CONFIG:
+        st.session_state["JSON_CONFIG"] = txt
+

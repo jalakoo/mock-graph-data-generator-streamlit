@@ -3,7 +3,8 @@
 import streamlit as st
 from graph_data_generator import generators
 import graph_data_generator as gdg
-from managers.n4j_manager import upload_data
+from neo4j_uploader import upload, start_logging, stop_logging
+import json
 
 def export_ui():
 
@@ -14,18 +15,15 @@ def export_ui():
 
     # Generate data
     mapping = gdg.generate_mapping(txt)
-    zip = gdg.package(mapping)
+    # zip = gdg.package(mapping)
     data = gdg.generate_dictionaries(mapping)
 
-    # filename = st.text_input("Name of file", value="mock_data", help="Name of file to be used for the.zip file. Ignored if pushing directly to a Neo4j database instance.")
-
-    # st.download_button(
-    #     label = "Download .zip file",
-    #     data = zip,
-    #     file_name = f"{filename}.zip",
-    #     mime = "text/plain"
-    # )
+    with st.expander('Generated Data'):
+        pretty = json.dumps(data, indent=4)
+        st.code(pretty)
     
+    st.markdown("**③ EXPORT**")
+
     c1, c2 = st.columns([1,1])
     with c1:
         with st.expander('Download .zip file'):
@@ -39,7 +37,7 @@ def export_ui():
                 st.session_state["DOWNLOADING"] == True
 
             try:
-                # zip = gdg.package(mapping)
+                zip = gdg.package(mapping)
                 if zip is None:
                     st.warning('Unexpected problem generating file. Try an alternate JSON input')
                 else:
@@ -70,5 +68,11 @@ def export_ui():
                     st.error("Please specify the Neo4j instance credentials in the Configuration tab")
                     return 
 
-                # data = gdg.generate_dictionaries(mapping)
-                upload_data(creds=(uri, user, password), data=data, should_reset=should_overwrite)
+                # Enable uploader logging
+                start_logging()
+                
+                success = upload(neo4j_creds=(uri, user, password), data=data, should_overwrite=should_overwrite)
+                if success == False:
+                    st.warning("Upload failed. Please check your credentials and try again.")
+                else:
+                    st.info("Upload complete!")
