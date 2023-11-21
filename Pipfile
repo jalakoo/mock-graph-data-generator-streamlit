@@ -4,9 +4,9 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-graph-data-generator = "*"
-neo4j-uploader = "*"
-streamlit = "*"
+graph-data-generator = ">=0.3"
+neo4j-uploader = ">=0.4"
+streamlit = ">=1.28"
 
 [dev-packages]
 
