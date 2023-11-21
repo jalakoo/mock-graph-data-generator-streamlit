@@ -13,14 +13,28 @@ def export_ui():
         st.error("Add JSON config to generate data")
         return
 
+    # TODO: Add a generate data button here?
+    
     # Generate data
     mapping = gdg.generate_mapping(txt)
-    # zip = gdg.package(mapping)
     data = gdg.generate_dictionaries(mapping)
 
     with st.expander('Generated Data'):
         pretty = json.dumps(data, indent=4)
         st.code(pretty)
+
+    # Display node and relationship counts
+    all_nodes = data.get("nodes", None)
+    nodes_count = 0
+    for _, nodes_list in all_nodes.items():
+        nodes_count += len(nodes_list)
+
+    all_relationships = data.get("relationships", None)
+    relationships_count = 0
+    for _, relationships_list in all_relationships.items():
+        relationships_count += len(relationships_list)
+
+    st.write(f'{nodes_count} Nodes and {relationships_count} Relationships generated')
     
     st.markdown("**③ EXPORT**")
 
@@ -63,6 +77,8 @@ def export_ui():
             should_overwrite = st.toggle("Reset DB?", value=True)
 
             # Optionally upload generated data to Neo4j
+            # TODO: Clicking on this button will force the generator to rerun
+
             if st.button("Upload to Neo4j", help="Upload generated data to a Neo4j instance"):
                 if uri is None or user is None or password is None:
                     st.error("Please specify the Neo4j instance credentials in the Configuration tab")
@@ -71,8 +87,9 @@ def export_ui():
                 # Enable uploader logging
                 start_logging()
                 
-                success = upload(neo4j_creds=(uri, user, password), data=data, should_overwrite=should_overwrite)
-                if success == False:
-                    st.warning("Upload failed. Please check your credentials and try again.")
-                else:
-                    st.info("Upload complete!")
+                try:
+                    time, nodes, rels, props = upload(neo4j_creds=(uri, user, password), data=data, should_overwrite=should_overwrite)
+                except Exception as e:
+                    st.error(f"Upload failed. Please check your credentials and try again. Error encountered: {e}")
+                
+                st.info(f"Upload completed in {time} seconds, {nodes} nodes created, {rels} relationships created, {props} properties set.")
