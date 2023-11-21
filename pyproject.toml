@@ -15,6 +15,7 @@ graph-data-generator = ">=0.3.2,<0.4.0"
 neo4j = "^5.14.1"
 streamlit-agraph = "^0.0.45"
 openai = "^0.28.1"
+pyarrow = ">=14.0.1"
 
 
 [tool.poetry.group.dev.dependencies]
