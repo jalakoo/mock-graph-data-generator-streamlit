@@ -10,7 +10,7 @@
         "style": {},
         "labels": [],
         "properties": {
-          "first_name": "\"{\\\"first_name\\\": []}\","
+          "first_name": "{\"first_name\": []}"
         }
       },
       {
