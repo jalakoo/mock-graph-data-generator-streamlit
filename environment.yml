@@ -1,0 +1,7 @@
+name: mock-graph-data-generator-streamlit
+dependencies:
+- graph-data-generator=0.3
+- neo4j-uploader=0.4
+- pyarrow=14.0.1
+- pip:
+  - streamlit = ">=1.28"
