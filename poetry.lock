@@ -454,7 +454,7 @@ name = "graph-data-generator"
 version = "0.3.2"
 description = ""
 optional = false
-python-versions = "^3.10"
+python-versions = "^3.9"
 files = []
 develop = false
 
@@ -466,7 +466,7 @@ lorem-text = "^2.1"
 type = "git"
 url = "https://github.com/jalakoo/graph-data-generator.git"
 reference = "dev"
-resolved_reference = "c32c95bd196a1caae41b0421d40d36c5f431a131"
+resolved_reference = "d63c86c8a0811b48a48925a44a6842c75081755c"
 
 [[package]]
 name = "idna"
@@ -796,10 +796,10 @@ pyarrow = ["pyarrow (>=1.0.0)"]
 
 [[package]]
 name = "neo4j-uploader"
-version = "0.4.0"
+version = "0.4.1"
 description = ""
 optional = false
-python-versions = "^3.10"
+python-versions = "^3.9"
 files = []
 develop = false
 
@@ -810,7 +810,7 @@ neo4j = "^5.14.1"
 type = "git"
 url = "https://github.com/jalakoo/neo4j-uploader.git"
 reference = "dev"
-resolved_reference = "7544c810af7ec1015909dae1e4e87d0cd2f6a887"
+resolved_reference = "ead957a5021e8f3b64664a3570bcb2ec6344d601"
 
 [[package]]
 name = "networkx"
