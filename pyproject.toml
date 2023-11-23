@@ -9,13 +9,13 @@ packages = [{include = "graph_data_generator_streamlit"}]
 [tool.poetry.dependencies]
 python = "^3.11"
 streamlit = ">=1.27,<2.0"
-neo4j-uploader = { git = "https://github.com/jalakoo/neo4j-uploader.git", branch="dev"}
 pyclip = ">=0.7,<1.0"
 neo4j = "^5.14.1"
 streamlit-agraph = "^0.0.45"
 openai = "^0.28.1"
 pyarrow = ">=14.0.1"
-graph-data-generator = { git = "https://github.com/jalakoo/graph-data-generator.git", branch="dev"}
+neo4j-uploader = "^0.4.0"
+graph-data-generator = "^0.3.3"
 
 
 [tool.poetry.group.dev.dependencies]

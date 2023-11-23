@@ -424,22 +424,18 @@ test = ["black", "coverage[toml]", "ddt (>=1.1.1,!=1.4.3)", "mock", "mypy", "pre
 
 [[package]]
 name = "graph-data-generator"
-version = "0.3.2"
+version = "0.3.3"
 description = ""
 optional = false
-python-versions = "^3.9"
-files = []
-develop = false
+python-versions = ">=3.9,<4.0"
+files = [
+    {file = "graph_data_generator-0.3.3-py3-none-any.whl", hash = "sha256:df930ffd93c6ddc68428c1eb1b30d80b963e76c9c917547ae3294283752ed959"},
+    {file = "graph_data_generator-0.3.3.tar.gz", hash = "sha256:c73a8827d949ea1d511a2c51ef59f4830bb6562fd3ce19ecd27d3add596eb939"},
+]
 
 [package.dependencies]
-faker = "^19.1.0"
-lorem-text = "^2.1"
-
-[package.source]
-type = "git"
-url = "https://github.com/jalakoo/graph-data-generator.git"
-reference = "dev"
-resolved_reference = "d63c86c8a0811b48a48925a44a6842c75081755c"
+faker = ">=19.1.0,<20.0.0"
+lorem-text = ">=2.1,<3.0"
 
 [[package]]
 name = "idna"
@@ -769,21 +765,17 @@ pyarrow = ["pyarrow (>=1.0.0)"]
 
 [[package]]
 name = "neo4j-uploader"
-version = "0.4.1"
+version = "0.4.0"
 description = ""
 optional = false
-python-versions = "^3.9"
-files = []
-develop = false
+python-versions = ">=3.11,<4.0"
+files = [
+    {file = "neo4j_uploader-0.4.0-py3-none-any.whl", hash = "sha256:027281b496b66919dc4688df160248dc72d2cfce8af9b2301433ae2e7b1794cd"},
+    {file = "neo4j_uploader-0.4.0.tar.gz", hash = "sha256:ba16904b9882885c90ac44ddb5d2cd0e93b410a781094c3fed570d1ff0bc3c42"},
+]
 
 [package.dependencies]
-neo4j = "^5.14.1"
-
-[package.source]
-type = "git"
-url = "https://github.com/jalakoo/neo4j-uploader.git"
-reference = "dev"
-resolved_reference = "ead957a5021e8f3b64664a3570bcb2ec6344d601"
+neo4j = ">=5.14.1,<6.0.0"
 
 [[package]]
 name = "networkx"
@@ -1819,4 +1811,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "72e0200ec63b9f40415afa4b0fccda9fa49aff3d67c5b682695bf6820a87b40f"
+content-hash = "cb1b592c64e39bd4089524a7ff86a898f331bc0fc1c3224e1d712f91ceff6715"
