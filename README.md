@@ -15,13 +15,5 @@ poetry update
 poetry run streamlit run graph_data_generator_streamlit/app.py
 ```
 
-or 
-
-```
-pipenv shell
-pipenv sync
-pipenv run streamlit run graph_data_generator_streamlit/app.py 
-```
-
 ## Testing with local packages
 `poetry add --editable /path/to/package`
