@@ -42,6 +42,8 @@ if "ARROWS_DICT" not in st.session_state:
     st.session_state["ARROWS_DICT"] = None
 if "JSON_CONFIG" not in st.session_state:
     st.session_state["JSON_CONFIG"] = None
+if "SAMPLE_IMAGES" not in st.session_state:
+    st.session_state["SAMPLE_IMAGES"] = []
 
 
 # Header
