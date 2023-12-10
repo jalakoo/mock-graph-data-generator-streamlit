@@ -5,12 +5,17 @@ from ui.config_ui import config_ui
 from ui.design_ui import arrows_ui, generators_ui
 from ui.ideate_ui import ideate_ui
 from ui.export_ui import export_ui
+from ui.samples_ui import samples_list
+from graph_data_generator import start_logging
 import logging
 
 # SETUP
 st.set_page_config(layout="wide",initial_sidebar_state='collapsed')
 logging.getLogger().setLevel(logging.DEBUG)
 logging.info(f'App Started')
+
+# Uncomment to start graph_data_generator logging
+# start_logging()
 
 # LOAD any env
 neo4j_uri = st.secrets.get("NEO4J_URI", None)
@@ -69,4 +74,8 @@ export_ui()
 
 # Side bar
 with st.sidebar:
-    generators_ui()
+    tab1, tab2 = st.tabs(["Generators", "Samples"])
+    with tab1:
+        generators_ui()
+    with tab2:
+        samples_list()

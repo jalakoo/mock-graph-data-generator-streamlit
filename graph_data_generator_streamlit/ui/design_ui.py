@@ -72,9 +72,13 @@ def generators_ui():
                         key = f'{generator.name}_{arg.label}'
                         ))
                 if arg.type == GeneratorType.BOOL:
+                    options = ["True", "False"]
+                    default = str(arg.default)
+                    default_index = options.index(default)
                     arg_inputs.append(st.radio(
                         label=arg.label,
-                        index=arg.default,
+                        index=default_index,
+                        options = options,
                         key = f'{generator.name}_{arg.label}'
                     ))
                 if arg.type == GeneratorType.DATETIME:
