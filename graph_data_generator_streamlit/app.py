@@ -3,7 +3,7 @@ from ui.instructions_ui import instructions_ui
 from ui.generate_ui import generate_ui
 from ui.config_ui import config_ui
 from ui.design_ui import arrows_ui, generators_ui
-from ui.ideate_ui import ideate_ui
+from ui.ideate_ui import ideate_ui, design_ui
 from ui.export_ui import export_ui
 from ui.samples_ui import samples_list
 from graph_data_generator import start_logging
@@ -64,6 +64,7 @@ instructions_ui()
 
 # Body
 st.markdown("**① DESIGN**")
+# design_ui()
 with st.expander("GraphGPT"):
     ideate_ui()
 with st.expander("Arrows"):

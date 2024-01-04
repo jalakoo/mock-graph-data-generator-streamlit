@@ -2,6 +2,7 @@
 
 import streamlit as st
 from streamlit_agraph import agraph, Node, Edge, Config
+import streamlit.components.v1 as components
 import logging
 import openai
 import json
@@ -34,7 +35,7 @@ def arrows_uri(input: str | dict) -> str:
 
     result = f"https://arrows.app/#/import/json={base64_str}"
 
-    logging.debug(f'\n\nOutput arrows uri from {input} with base64 JSON: \n{result}')
+    # logging.debug(f'\n\nOutput arrows uri from {input} with base64 JSON: \n{result}')
 
     return result
 
@@ -249,6 +250,96 @@ def agraph_from_sample(prompt: str):
             edges=edges, 
             config=config) 
 
+def design_ui():
+    st.markdown("Use a variation of Varun Shenoy's original [GraphGPT](https://graphgpt.vercel.app) to convert a natural language description into a graph data model")
+
+    # OPENAI TEXTFIELD
+    new_open_ai_key = st.text_input(f'OpenAI KEY', type="password", value=st.session_state["OPENAI_API_KEY"])
+
+    # Set openAI key
+    openai.api_key = new_open_ai_key
+
+    # Display prompt for user input
+    sample_prompt = "Sharks eat big fish. Big fish eat small fish. Small fish eat bugs."
+    if st.button('Load Sample', key="graphgpt_sample"):
+        st.session_state["SAMPLE_PROMPT"] = sample_prompt
+
+    prompt = st.text_area("Prompt", value=st.session_state["SAMPLE_PROMPT"])
+    if prompt is None or prompt == "":
+        return
+
+    if prompt == sample_prompt:
+        # Load vetted response to save on hitting openai for the same thing
+        response = [["Sharks", "eat", "big fish"], ["Big fish", "eat", "small fish"], ["Small fish", "eat", "bugs"]]
+    else: 
+        # Send completion request to openAI
+        full_prompt = triples_prompt(prompt)
+        response = generate_openai_response(full_prompt) 
+
+    # Convert response to agraph nodes and edges
+    nodes, edges = agraph_nodes_edges(response)
+
+    # Configure and display agraph
+    config = Config(width=1000, height=400, directed=True)
+    if nodes is None:
+        return
+    
+    # Display data
+    st.write('Graph Viewer')
+    agraph(nodes=nodes,  
+        edges=edges, 
+        config=config)
+    
+    # For displaying JSON schema. This can be quite long though
+    # st.write('JSON Representation')
+    # arrows_str = json.dumps(arrows_dict, indent=4)
+    # st.code(arrows_str)
+
+    # Prep arrows compatible dictioary for button options
+    arrows_dict = arrows_dictionary(nodes, edges)
+
+    b1, b2 = st.columns(2)
+    with b1:
+        if st.button("Edit in Arrows"):
+            # Prep arrows compatible json
+            uri = arrows_uri(arrows_dict)
+
+            logging.info(f'Arrows URI generated: {uri}')
+
+            st.session_state["ARROWS_URI"] = uri
+    with b2:
+        if st.button("Push to Generator"):
+            st.session_state["ARROWS_DICT"] = arrows_dict
+
+    st.markdown(
+        """
+        Use the arrows app to quickly design your mock data. When ready, click on the `Download/Export` button, select the `JSON` tab, then copy the .JSON data to the **② Generate** section
+        """
+    )
+    
+    # Read from state if a graphGPT model has been created and load that
+
+    uri = "https://arrows.app"
+
+
+    if "ARROWS_URI" in st.session_state:
+        prior_uri = st.session_state["ARROWS_URI"]
+        logging.info(f'Previously saved arrows uri: {prior_uri}')
+        if prior_uri is not None:
+            uri = prior_uri
+            components.iframe(uri, height=1000, scrolling=False)
+            logging.info(f'Previously saved arrows uri should have loaded')
+
+        else:
+            components.iframe(uri, height=1000, scrolling=False)
+            logging.info(f'No previously saved arrows uri should have loaded. Uri: {uri}')
+    else:
+        logging.info(f'No prior arrows uri found. Uri: {uri}')
+
+        components.iframe(uri, height=1000, scrolling=False)
+
+    st.session_state["ARROWS_URI"] = None
+
 def ideate_ui():
 
     st.markdown("Use a variation of Varun Shenoy's original [GraphGPT](https://graphgpt.vercel.app) to convert a natural language description into a graph data model")
@@ -303,6 +394,9 @@ def ideate_ui():
         if st.button("Edit in Arrows"):
             # Prep arrows compatible json
             uri = arrows_uri(arrows_dict)
+
+            logging.info(f'Arrows URI generated: {uri}')
+
             st.session_state["ARROWS_URI"] = uri
             st.warning("Close and reopen 'Arrows Data Modeler' to refresh")
     with b2:
