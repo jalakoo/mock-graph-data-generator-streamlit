@@ -2,6 +2,7 @@
 
 import streamlit as st
 from streamlit_agraph import agraph, Node, Edge, Config
+import streamlit.components.v1 as components
 import logging
 import openai
 import json
@@ -34,7 +35,7 @@ def arrows_uri(input: str | dict) -> str:
 
     result = f"https://arrows.app/#/import/json={base64_str}"
 
-    logging.debug(f'\n\nOutput arrows uri from {input} with base64 JSON: \n{result}')
+    # logging.debug(f'\n\nOutput arrows uri from {input} with base64 JSON: \n{result}')
 
     return result
 
@@ -150,22 +151,73 @@ def arrows_dictionary(nodes: list[Node], edges: list[Edge], name: str = "GraphGP
 def triples_prompt(prompt: str)-> str:
     # Full prompt string to query openai with and finasse expected response
     full_prompt = f"""
-    Given a prompt, extrapolate as many relationships as possible from it and provide a list of updates.
+    Given a prompt, extrapolate the most important Relationships. 
 
-    If an update is a relationship, provide [ENTITY 1, RELATIONSHIP, ENTITY 2]. The relationship is directed, so the order matters.
+    Each Relationship must connect 2 Entities represented as an item list like ["ENTITY 1", "RELATIONSHIP", "ENTITY 2"]. The Relationship is directed, so the order matters.
 
-    Each relationship must have 3 items in the list.
-    Limit the number of relationships to 12.
-    Return only the data, do not explain.
-    Only return a list of 3 item lists.
+    Use singular nouns for Entities.
 
-    For example, the prompt: `Alice is Bob's roommate` should return [["Alice", "roommate", "Bob"]]
+    For example; the prompt: `All birds like to eat seeds` should return: ["Bird", "EATS", "Seed"]
+
+    Limit the list to a maximum of 12 relationships. Prioritize item lists with Entities in multiple item lists. Remove duplicates.
 
     prompt: {prompt}
     """
     return full_prompt
 
+# def agraph_nodes_edges(response: dict) -> tuple[list[Node], list[Edge]]:
+#     """
+#     Converts an openai response into agraph nodes and relationships
 
+#     Args:
+#         response: Dict result from an open completion call that used the json output option
+    
+#     Returns:
+#         A tuple of agraph nodes in a list and agraph edges in a list
+
+#     Raises:
+#         ...
+#     """
+#     logging.debug(f'agraph_nodes_edges() response recieved: {response}')
+#     # Response will be a list of 3 item tuples
+
+#     # Answer should be embedded in the 'data' key.
+#     answers = response.get('data', response)
+
+#     if isinstance(answers, list) is False:
+#         raise Exception('Answers is not a list')
+
+#     logging.debug(f'Object parsed: {answers}')
+
+#     nodes = set()
+#     result_edges = []
+#     for item in answers:
+#         # Each should be a tuple of 3 items, node-edge-node
+#         n1 = item[0]
+#         r = item[1]
+#         n2 = item[2]
+
+#         # Standardize casing
+#         r = r.upper()
+#         n1 = n1.title()
+#         n2 = n2.title()
+
+#         nodes.add(n1)
+#         nodes.add(n2) 
+
+#         edge = Edge(source=n1, target=n2, label=r)
+#         result_edges.append(edge)
+
+#     result_nodes = []
+#     for node_label in list(nodes):
+#         node = Node(id=node_label, label=node_label)
+#         result_nodes.append(node)
+
+#     logging.debug(f'Nodes returning: {result_nodes}')
+#     logging.debug(f'Edges returning: {result_edges}')
+
+#     return result_nodes, result_edges
+# Original version using openai model that DOES NOT support json output
 def agraph_nodes_edges(response: str | list) -> tuple[list[Node], list[Edge]]:
     """
     Converts an openai response into agraph nodes and relationships
@@ -182,23 +234,40 @@ def agraph_nodes_edges(response: str | list) -> tuple[list[Node], list[Edge]]:
     logging.debug(f'agraph_nodes_edges() response recieved: {response}')
     # Response will be a list of 3 item tuples
 
+    answers = None
+
     # Convert to list of lists - if needed
     if isinstance(response, str):
         try:
             answers = json.loads(response)
+            logging.info(f'JSON parsed response: {answers}')
         except:
             logging.debug(f'Unable to parse string to list with json.loads. Attempting ast...')
-            answers = ast.literal_eval(response)
-
-    elif isinstance(response, list):
-        answers = response
+            try: 
+                answers = ast.literal_eval(response)
+            except:
+                logging.debug(f'Unable to parse string to list with ast.literal_eval. String format was unexpected.')
     else:
-        raise ValueError(f'Response is not a string or list. Response: {response}')
+        answers = response
+    
+    if isinstance(answers, dict):
+        # Sometimes openai will return answers with single key dict (that key could be relationships, data, etc)
+        key = list(answers.keys())[0]
+        answers = answers.get(key, None)
 
-    logging.debug(f'JSON parsed: {answers}')
+    logging.debug(f'Processing answers: {answers}')
+
+    if isinstance(answers, list) is False:
+        raise Exception(f'Answers is not a list: {answers}')
+
     nodes = set()
     result_edges = []
-    for item in answers:
+
+    answers_dedupped = [t for t in {tuple(r) for r in answers}]
+
+    logging.debug(f'Answers dedupped: {answers_dedupped}')
+
+    for item in answers_dedupped:
         # Each should be a tuple of 3 items, node-edge-node
         n1 = item[0]
         r = item[1]
@@ -228,10 +297,15 @@ def agraph_nodes_edges(response: str | list) -> tuple[list[Node], list[Edge]]:
 @st.cache_data
 def generate_openai_response(prompt)-> str:
     # TODO: Make this configurable
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+    client = openai.OpenAI()
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo-1106",
         # model="gpt-4",
-        messages=[{"role": "user", "content": prompt}]
+        response_format={"type":"json_object"},
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant designed to output JSON"},
+            {"role": "user", "content": prompt}
+            ]
     )
     # TODO: Validate reponse
     content = response.choices[0].message.content
@@ -261,14 +335,26 @@ def ideate_ui():
 
     # Display prompt for user input
     sample_prompt = "Sharks eat big fish. Big fish eat small fish. Small fish eat bugs."
-    if st.button('Load Sample', key="graphgpt_sample"):
-        st.session_state["SAMPLE_PROMPT"] = sample_prompt
+    run_openai = True
+
+    b1, b2 = st.columns(2)
+    with b1:
+        if st.button('Load Sample', key="graphgpt_sample"):
+            st.session_state["SAMPLE_PROMPT"] = sample_prompt
+    
+    with b2:
+        if st.button('Load Sample without OpenAI', key="graphgpt_sample_no_key"):
+            st.session_state["SAMPLE_PROMPT"] = sample_prompt
+            run_openai = False
 
     prompt = st.text_area("Prompt", value=st.session_state["SAMPLE_PROMPT"])
     if prompt is None or prompt == "":
         return
 
-    if prompt == sample_prompt:
+    nodes = None
+    edges = None
+
+    if run_openai == False:
         # Load vetted response to save on hitting openai for the same thing
         response = [["Sharks", "eat", "big fish"], ["Big fish", "eat", "small fish"], ["Small fish", "eat", "bugs"]]
     else: 
@@ -277,7 +363,11 @@ def ideate_ui():
         response = generate_openai_response(full_prompt) 
 
     # Convert response to agraph nodes and edges
-    nodes, edges = agraph_nodes_edges(response)
+    try:
+        nodes, edges = agraph_nodes_edges(response)
+    except Exception as e:
+        logging.error(f'Problem converting response to agraph nodes and edges. Error: {e}')
+        st.error(f'Problem converting prompt to graph. Please try again or rephrase the prompt')
 
     # Configure and display agraph
     config = Config(width=1000, height=400, directed=True)
@@ -298,47 +388,15 @@ def ideate_ui():
     # Prep arrows compatible dictioary for button options
     arrows_dict = arrows_dictionary(nodes, edges)
 
-    b1, b2, b3 = st.columns([1,1,3])
+    b1, b2 = st.columns(2)
     with b1:
         if st.button("Edit in Arrows"):
             # Prep arrows compatible json
             uri = arrows_uri(arrows_dict)
+
+            logging.info(f'Arrows URI generated: {uri}')
+
             st.session_state["ARROWS_URI"] = uri
-            st.warning("Close and reopen 'Arrows Data Modeler' to refresh")
     with b2:
         if st.button("Push to Generator"):
             st.session_state["ARROWS_DICT"] = arrows_dict
-
-# def agraph_sample():
-#     # Agraph
-#     nodes = []
-#     edges = []
-#     nodes.append( Node(id="Spiderman", 
-#                     label="Peter Parker", 
-#                     size=25, 
-#                     shape="circularImage",
-#                     image="http://marvel-force-chart.surge.sh/marvel_force_chart_img/top_spiderman.png") 
-#                 ) # includes **kwargs
-#     nodes.append( Node(id="Captain_Marvel", 
-#                     size=25,
-#                     shape="circularImage",
-#                     image="http://marvel-force-chart.surge.sh/marvel_force_chart_img/top_captainmarvel.png") 
-#                 )
-#     edges.append( Edge(source="Captain_Marvel", 
-#                     label="friend_of", 
-#                     target="Spiderman", 
-#                     # **kwargs
-#                     ) 
-#                 ) 
-
-#     config = Config(width=750,
-#                     height=950,
-#                     directed=True, 
-#                     physics=True, 
-#                     hierarchical=False,
-#                     # **kwargs
-#                     )
-
-#     agraph(nodes=nodes, 
-#             edges=edges, 
-#             config=config)

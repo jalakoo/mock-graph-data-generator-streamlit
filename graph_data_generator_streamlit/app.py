@@ -64,6 +64,7 @@ instructions_ui()
 
 # Body
 st.markdown("**① DESIGN**")
+# design_ui()
 with st.expander("GraphGPT"):
     ideate_ui()
 with st.expander("Arrows"):

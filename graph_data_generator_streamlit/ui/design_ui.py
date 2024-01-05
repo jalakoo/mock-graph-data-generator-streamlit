@@ -118,14 +118,30 @@ def arrows_ui():
         Use the arrows app to quickly design your mock data. When ready, click on the `Download/Export` button, select the `JSON` tab, then copy the .JSON data to the **② Generate** section
         """
     )
-    # TODO: Read from state if a graphGPT model has been created and load that
+    
+    # Read from state if a graphGPT model has been created and load that
 
     uri = "https://arrows.app"
+
+
     if "ARROWS_URI" in st.session_state:
         prior_uri = st.session_state["ARROWS_URI"]
+        logging.info(f'Previously saved arrows uri: {prior_uri}')
         if prior_uri is not None:
             uri = prior_uri
+            logging.info(f'Previously saved arrows uri should have loaded')
+    else:
+        logging.info(f'No prior arrows uri found. Uri: {uri}')
 
-    components.iframe(uri, height=1000, scrolling=False)
+    # components.iframe(uri, height=1000, scrolling=False)
+
+    components.html(
+  f"""
+  <iframe src="{uri}"
+    width=100% height="600">
+  </iframe>
+  """, height=600, scrolling=False
+)
+    logging.info(f'Arrows source URI rendered: {uri}')
 
     st.session_state["ARROWS_URI"] = None
