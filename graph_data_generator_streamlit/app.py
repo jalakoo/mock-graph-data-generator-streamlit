@@ -1,12 +1,10 @@
 import streamlit as st
 from ui.instructions_ui import instructions_ui
 from ui.generate_ui import generate_ui
-from ui.config_ui import config_ui
 from ui.design_ui import arrows_ui, generators_ui
 from ui.ideate_ui import ideate_ui
 from ui.export_ui import export_ui
 from ui.samples_ui import samples_list
-from graph_data_generator import start_logging
 import logging
 
 # SETUP
@@ -17,17 +15,25 @@ logging.info(f'App Started')
 # Uncomment to start graph_data_generator logging
 # start_logging()
 
-# LOAD any env
-neo4j_uri = st.secrets.get("NEO4J_URI", None)
+# LOAD optional env data
+try:
+    neo4j_uri = st.secrets.get("NEO4J_URI", None)
+    neo4j_user = st.secrets.get("NEO4J_USER", None)
+    open_ai_key = st.secrets.get("OPENAI_API_KEY", None)
+    neo4j_pass = st.secrets.get("NEO4J_PASSWORD", None)
+except:
+    neo4j_uri = None
+    neo4j_user = None
+    neo4j_pass = None
+    open_ai_key = None
+    pass
+
 if "NEO4J_URI" not in st.session_state:
     st.session_state["NEO4J_URI"] = neo4j_uri
-neo4j_user = st.secrets.get("NEO4J_USER", None)
 if "NEO4J_USER" not in st.session_state:
     st.session_state["NEO4J_USER"] = neo4j_user
-password = st.secrets.get("NEO4J_PASSWORD", None)
 if "NEO4J_PASSWORD" not in st.session_state:
-    st.session_state["NEO4J_PASSWORD"] = password
-open_ai_key = st.secrets.get("OPENAI_API_KEY", None)
+    st.session_state["NEO4J_PASSWORD"] = neo4j_pass
 if "OPENAI_API_KEY" not in st.session_state:
     st.session_state["OPENAI_API_KEY"] = open_ai_key
 
