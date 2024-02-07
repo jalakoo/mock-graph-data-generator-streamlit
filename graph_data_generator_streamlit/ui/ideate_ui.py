@@ -27,7 +27,7 @@ def arrows_uri(input: str | dict) -> str:
 
     # Convert dict to string if needed
     if isinstance(input, dict):
-        input = json.dumps(input)
+        input = json.dumps(input, default=str)
 
     # Convert the diction object into a base 64 json string
     b = input.encode('utf-8')
