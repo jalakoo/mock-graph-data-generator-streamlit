@@ -3,7 +3,7 @@
 import streamlit as st
 from graph_data_generator import generators
 import graph_data_generator as gdg
-from neo4j_uploader import upload, start_logging, stop_logging
+from neo4j_uploader import upload, start_logging, stop_logging, UploadResult
 import json
 
 def export_ui():
@@ -20,7 +20,7 @@ def export_ui():
     data = gdg.generate_dictionaries(mapping)
 
     with st.expander('Generated Data'):
-        pretty = json.dumps(data, indent=4)
+        pretty = json.dumps(data, indent=4, default=str)
         st.code(pretty)
 
     # Display node and relationship counts
@@ -83,13 +83,16 @@ def export_ui():
                 if uri is None or user is None or password is None:
                     st.error("Please specify the Neo4j instance credentials in the Configuration tab")
                     return 
-
-                # Enable uploader logging
-                start_logging()
-                
-                try:
-                    time, nodes, rels, props = upload(neo4j_creds=(uri, user, password), data=data, should_overwrite=should_overwrite)
-                except Exception as e:
-                    st.error(f"Upload failed. Please check your credentials and try again. Error encountered: {e}")
-                
-                st.info(f"Upload completed in {time} seconds, {nodes} nodes created, {rels} relationships created, {props} properties set.")
+                else:
+                    # Enable uploader logging
+                    start_logging()
+                    
+                    try:
+                        result = upload(neo4j_creds=(uri, user, password), data=data, should_overwrite=should_overwrite)
+                        if result.was_successful == False:
+                            st.error(f'Upload failed. Error encountered: {result.error_message}')
+                        else:
+                            st.info(f"Upload completed in {result.seconds_to_complete} seconds, {result.nodes_created} nodes created, {result.relationships_created} relationships created, {result.properties_set} properties set.")
+                    except Exception as e:
+                        st.error(f"Upload failed. Please check your credentials and try again. Error encountered: {e}")
+                    
