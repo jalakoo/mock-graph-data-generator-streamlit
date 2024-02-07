@@ -329,22 +329,18 @@ def ideate_ui():
     # OPENAI TEXTFIELD
     new_open_ai_key = st.text_input(f'OpenAI KEY', type="password", value=st.session_state["OPENAI_API_KEY"])
 
+    if new_open_ai_key is None or new_open_ai_key == "":
+        st.warning(f'OpenAI API Key required to use this feature')
+        return
+    
     # Set openAI key
     openai.api_key = new_open_ai_key
 
     # Display prompt for user input
     sample_prompt = "Sharks eat big fish. Big fish eat small fish. Small fish eat bugs."
-    run_openai = True
 
-    b1, b2 = st.columns(2)
-    with b1:
-        if st.button('Load Sample', key="graphgpt_sample"):
-            st.session_state["SAMPLE_PROMPT"] = sample_prompt
-    
-    with b2:
-        if st.button('Load Sample without OpenAI', key="graphgpt_sample_no_key"):
-            st.session_state["SAMPLE_PROMPT"] = sample_prompt
-            run_openai = False
+    if st.button('Load Sample', key="graphgpt_sample"):
+        st.session_state["SAMPLE_PROMPT"] = sample_prompt
 
     prompt = st.text_area("Prompt", value=st.session_state["SAMPLE_PROMPT"])
     if prompt is None or prompt == "":
@@ -353,13 +349,9 @@ def ideate_ui():
     nodes = None
     edges = None
 
-    if run_openai == False:
-        # Load vetted response to save on hitting openai for the same thing
-        response = [["Sharks", "eat", "big fish"], ["Big fish", "eat", "small fish"], ["Small fish", "eat", "bugs"]]
-    else: 
-        # Send completion request to openAI
-        full_prompt = triples_prompt(prompt)
-        response = generate_openai_response(full_prompt) 
+    # Send completion request to openAI
+    full_prompt = triples_prompt(prompt)
+    response = generate_openai_response(full_prompt) 
 
     # Convert response to agraph nodes and edges
     try:

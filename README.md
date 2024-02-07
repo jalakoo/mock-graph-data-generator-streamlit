@@ -17,3 +17,17 @@ poetry run streamlit run graph_data_generator_streamlit/app.py
 
 ## Testing with local packages
 `poetry add --editable /path/to/package`
+
+## Running in Google Cloud
+- Set up a [Google Cloud account](https://cloud.google.com)
+- Create a [Google Cloud Project](https://developers.google.com/workspace/guides/create-project)
+- [Enable billing](https://cloud.google.com/billing/docs/how-to/modify-project) for that project
+- Temporarily move any .streamlit/secret.toml file to the root folder director (same level as Dockerfile)
+- Install [glcoud cli](https://cloud.google.com/sdk/docs/install)
+- Run the following commands from the terminal of your local dev machine:
+```
+gcloud builds submit --tag gcr.io/<google_cloud_project_id>/mock-graph-generator
+gcloud run deploy --image gcr.io/<google_cloud_project_id>/mock-graph-generator --platform managed --allow-unauthenticated
+
+When completed, can move secrets.toml file back to .streamlit/ - that or maintain a separate external secrets.toml file just for Google Cloud
+```
