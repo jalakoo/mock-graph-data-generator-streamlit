@@ -8,6 +8,7 @@ import json
 import random
 import base64
 import ast
+import os
 
 # Yes yes - move all the non-ui stuff into a controller or something already
 
@@ -334,7 +335,8 @@ def ideate_ui():
         return
     
     # Set openAI key
-    openai.api_key = new_open_ai_key
+    openai.api_key = new_open_ai_key # This doesn't work in a Google Cloud Run instance
+    os.environ["OPENAI_API_KEY"] = new_open_ai_key
 
     # Display prompt for user input
     sample_prompt = "Sharks eat big fish. Big fish eat small fish. Small fish eat bugs."
@@ -351,7 +353,7 @@ def ideate_ui():
 
     # Send completion request to openAI
     full_prompt = triples_prompt(prompt)
-    response = generate_openai_response(full_prompt) 
+    response = generate_openai_response(full_prompt)
 
     # Convert response to agraph nodes and edges
     try:
@@ -367,8 +369,8 @@ def ideate_ui():
     
     # Display data
     st.write('Graph Viewer')
-    agraph(nodes=nodes,  
-        edges=edges, 
+    agraph(nodes=nodes,
+        edges=edges,
         config=config)
     
     # For displaying JSON schema. This can be quite long though
