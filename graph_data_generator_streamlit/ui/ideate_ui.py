@@ -2,7 +2,6 @@
 
 import streamlit as st
 from streamlit_agraph import agraph, Node, Edge, Config
-import streamlit.components.v1 as components
 import logging
 import openai
 import json
