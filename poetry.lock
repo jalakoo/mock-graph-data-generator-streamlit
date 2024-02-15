@@ -601,17 +601,18 @@ pyarrow = ["pyarrow (>=1.0.0)"]
 
 [[package]]
 name = "neo4j-uploader"
-version = "0.4.1"
+version = "0.5.2"
 description = ""
 optional = false
 python-versions = ">=3.9,<4.0"
 files = [
-    {file = "neo4j_uploader-0.4.1-py3-none-any.whl", hash = "sha256:884f634e959d6dd704f8b515caffb5994d0b2a6e5801e52456cf29cc8696dad7"},
-    {file = "neo4j_uploader-0.4.1.tar.gz", hash = "sha256:38bcf69bdce4b8f0aeffdb2d71c6f66d98facb59a0c85720bcf77e94f33ed3c6"},
+    {file = "neo4j_uploader-0.5.2-py3-none-any.whl", hash = "sha256:41e03985c55088283a36a8bac03e63794b45089ca95fbb975aebfa482af01812"},
+    {file = "neo4j_uploader-0.5.2.tar.gz", hash = "sha256:06d2502832b0c983ce373dac46e1538e1ebe73e1b3436d3bec6e760128129fa4"},
 ]
 
 [package.dependencies]
 neo4j = ">=5.14.1,<6.0.0"
+pydantic = ">=2.5.2,<3.0.0"
 
 [[package]]
 name = "networkx"
@@ -1718,4 +1719,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "804fe58ee6d8e55bcade0a828755fcaa4887af0a08d05520a082ae1778d94ef9"
+content-hash = "3b38a0b55e526acf691c7f462ab19cd70e4169d25dd830383e1307b4105bc4ed"

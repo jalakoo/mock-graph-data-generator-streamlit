@@ -88,6 +88,7 @@ def export_ui():
                     
                     try:
                         result = upload(neo4j_creds=(uri, user, password), data=data, should_overwrite=should_overwrite)
+                        print(f'Upload result: {result}')
                         if result.was_successful == False:
                             st.error(f'Upload failed. Error encountered: {result.error_message}')
                         else:
