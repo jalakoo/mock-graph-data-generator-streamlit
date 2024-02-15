@@ -601,13 +601,13 @@ pyarrow = ["pyarrow (>=1.0.0)"]
 
 [[package]]
 name = "neo4j-uploader"
-version = "0.5.2"
+version = "0.5.3"
 description = ""
 optional = false
 python-versions = ">=3.9,<4.0"
 files = [
-    {file = "neo4j_uploader-0.5.2-py3-none-any.whl", hash = "sha256:41e03985c55088283a36a8bac03e63794b45089ca95fbb975aebfa482af01812"},
-    {file = "neo4j_uploader-0.5.2.tar.gz", hash = "sha256:06d2502832b0c983ce373dac46e1538e1ebe73e1b3436d3bec6e760128129fa4"},
+    {file = "neo4j_uploader-0.5.3-py3-none-any.whl", hash = "sha256:60ea4c80783816c5fe3d79c1566eb2bae53fad352cdae5dd537edeee64eacf76"},
+    {file = "neo4j_uploader-0.5.3.tar.gz", hash = "sha256:0fc92d38fc23dc72820ac9fee6c33f163a699de450fd1447c55eb8b074d77e48"},
 ]
 
 [package.dependencies]
@@ -1719,4 +1719,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "3b38a0b55e526acf691c7f462ab19cd70e4169d25dd830383e1307b4105bc4ed"
+content-hash = "4a3288c740b84a583505450fa65f0e90c83ec6900468b90363fd6cf658776b03"

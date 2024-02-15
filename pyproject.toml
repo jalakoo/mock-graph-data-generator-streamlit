@@ -15,7 +15,7 @@ streamlit-agraph = "^0.0.45"
 openai = "^1.6.1"
 opencv-python = "^4.8.1.78"
 pillow = "^10.1.0"
-neo4j-uploader = "^0.5.2"
+neo4j-uploader = "0.5.3"
 graph-data-generator = "^0.4.1"
 
 
