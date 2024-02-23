@@ -34,8 +34,6 @@ def main()-> None:
             "--server.address=0.0.0.0",
         ]
     )
-    # cli.main(prog_name="streamlit")
-
 
     # SETUP
     st.set_page_config(layout="wide",initial_sidebar_state='collapsed')
