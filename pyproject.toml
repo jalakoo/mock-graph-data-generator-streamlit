@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mock-graph-data-generator-streamlit"
-version = "0.7.9"
+version = "0.7.10"
 description = ""
 authors = ["Jason Koo <jalakoo@gmail.com>"]
 readme = "README.md"
@@ -15,7 +15,7 @@ streamlit-agraph = "^0.0.45"
 openai = "^1.6.1"
 opencv-python = "^4.8.1.78"
 pillow = "^10.1.0"
-neo4j-uploader = "0.5.3"
+neo4j-uploader = {git = "https://github.com/jalakoo/neo4j-uploader.git", rev = "main"}
 graph-data-generator = "^0.4.1"
 
 
