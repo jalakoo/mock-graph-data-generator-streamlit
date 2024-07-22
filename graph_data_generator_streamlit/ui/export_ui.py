@@ -1,6 +1,14 @@
 import streamlit as st
 import graph_data_generator as gdg
-from neo4j_uploader import upload, start_logging, UploadResult
+from neo4j_uploader import (
+    Neo4jConfig,
+    upload,
+    start_logging,
+    UploadResult,
+    convert_legacy_node_records,
+    convert_legacy_relationship_records,
+    batch_upload_generator,
+)
 from typing import Callable
 
 import json
@@ -9,6 +17,7 @@ import logging
 # Limit default Neo4j verbosity level
 logging.getLogger("neo4j.io").setLevel(logging.INFO)
 logging.getLogger("neo4j.pool").setLevel(logging.INFO)
+logging.getLogger("neo4j_uploader").setLevel(logging.INFO)
 
 
 def export_ui():
@@ -117,20 +126,58 @@ def export_ui():
                 # Execute upload
                 else:
 
-                    progress_text = "Uploading..."
+                    # Using st.spinner to show progress
+                    # with st.spinner("Uploading..."):
+                    #     result = upload(
+                    #         neo4j_creds=(uri, user, password),
+                    #         data=data,
+                    #         should_overwrite=should_overwrite,
+                    #     )
+                    #     if result is None:
+                    #         st.error(f"Unexpected result: {result}")
+                    #     else:
+                    #         if result.was_successful == False:
+                    #             st.error(f"Upload Errors encountered\n{result}")
+                    #         else:
+                    #             st.info(f"Upload completed\n{result}")
+
+                    # Using st.progress to show progress
                     progress_indicator = st.progress(0.0)
-                    progress_text_placeholder = st.empty()
+                    remaining_seconds_placeholder = st.empty()
+                    expected_end_time_placeholder = st.empty()
                     final_result = None
 
-                    for result in upload(
-                        neo4j_creds=(uri, user, password),
-                        data=data,
-                        should_overwrite=should_overwrite,
+                    nodes = convert_legacy_node_records(data.get("nodes"), True, "_uid")
+                    rels = convert_legacy_relationship_records(
+                        data.get("relationships"), True, "_uid"
+                    )
+                    converted_data = {"nodes": nodes, "relationships": rels}
+
+                    config = Neo4jConfig(
+                        neo4j_uri=uri,
+                        neo4j_user=user,
+                        neo4j_password=password,
+                        overwrite=should_overwrite,
+                    )
+                    for result in batch_upload_generator(
+                        config=config,
+                        data=converted_data,
                     ):
+                        if result is None:
+                            print(f"Unexpected result: {result}")
+                            continue
                         completion = result.float_completed()
+                        projected_sec = result.projected_seconds_to_complete()
                         progress_text = f"Upload {round(completion * 100)}% complete"
-                        progress_indicator.progress(completion)
-                        progress_text_placeholder.text(progress_text)
+
+                        # Update progress indicatior + supporting text
+                        progress_indicator.progress(completion, progress_text)
+                        remaining_seconds_placeholder.text(
+                            f"Remaining: {projected_sec} seconds"
+                        )
+                        expected_end_time_placeholder.text(
+                            f"Expected completion:{result.projected_completion_time()}"
+                        )
                         final_result = result
 
                     if final_result.was_successful == False:
