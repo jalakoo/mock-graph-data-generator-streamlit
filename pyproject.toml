@@ -7,8 +7,7 @@ readme = "README.md"
 packages = [{include = "graph_data_generator_streamlit"}]
 
 [tool.poetry.dependencies]
-python = "^3.11"
-streamlit = ">=1.27,<2.0"
+python = "^3.12"
 pyclip = ">=0.7,<1.0"
 neo4j = "^5.14.1"
 streamlit-agraph = "^0.0.45"
@@ -17,6 +16,7 @@ opencv-python = "^4.8.1.78"
 pillow = "^10.1.0"
 neo4j-uploader = {git = "https://github.com/jalakoo/neo4j-uploader.git", rev = "main"}
 graph-data-generator = "^0.4.1"
+streamlit = "^1.36.0"
 
 
 [tool.poetry.group.dev.dependencies]

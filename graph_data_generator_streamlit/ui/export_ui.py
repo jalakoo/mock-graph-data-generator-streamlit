@@ -143,8 +143,8 @@ def export_ui():
 
                     # Using st.progress to show progress
                     progress_indicator = st.progress(0.0)
-                    remaining_seconds_placeholder = st.empty()
-                    expected_end_time_placeholder = st.empty()
+                    # remaining_seconds_placeholder = st.empty()
+                    # expected_end_time_placeholder = st.empty()
                     final_result = None
 
                     nodes = convert_legacy_node_records(data.get("nodes"), True, "_uid")
@@ -172,12 +172,15 @@ def export_ui():
 
                         # Update progress indicatior + supporting text
                         progress_indicator.progress(completion, progress_text)
-                        remaining_seconds_placeholder.text(
-                            f"Remaining: {projected_sec} seconds"
-                        )
-                        expected_end_time_placeholder.text(
-                            f"Expected completion:{result.projected_completion_time()}"
-                        )
+
+                        # Seconds remaining and projected completion time inaccurate in streamlit cloud
+
+                        # remaining_seconds_placeholder.text(
+                        #     f"Remaining: {projected_sec} seconds"
+                        # )
+                        # expected_end_time_placeholder.text(
+                        #     f"Expected completion:{result.projected_completion_time()}"
+                        # )
                         final_result = result
 
                     if final_result.was_successful == False:
