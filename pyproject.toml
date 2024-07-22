@@ -15,7 +15,7 @@ streamlit-agraph = "^0.0.45"
 openai = "^1.6.1"
 opencv-python = "^4.8.1.78"
 pillow = "^10.1.0"
-neo4j-uploader = "0.5.3"
+neo4j-uploader = {path = "/Users/jasonkoo/neo4j/repos/neo4j-uploader", develop = true}
 graph-data-generator = "^0.4.1"
 
 

@@ -7,12 +7,12 @@ from ui.export_ui import export_ui
 from ui.samples_ui import samples_list
 import logging
 
-
 # Heavy import support
 import sys
 from pathlib import Path
 from streamlit.config import on_config_parsed
 from streamlit.web import cli
+
 
 # noinspection PyUnresolvedReferences
 def heavy_imports() -> None:
@@ -22,7 +22,7 @@ def heavy_imports() -> None:
     from streamlit_agraph import agraph, Node, Edge, Config
 
 
-def main()-> None:
+def main() -> None:
 
     # Heavy import support
     on_config_parsed(heavy_imports)
@@ -36,9 +36,9 @@ def main()-> None:
     )
 
     # SETUP
-    st.set_page_config(layout="wide",initial_sidebar_state='collapsed')
+    st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
     logging.getLogger().setLevel(logging.DEBUG)
-    logging.info(f'App Started')
+    logging.info(f"App Started")
 
     # Uncomment to start graph_data_generator logging
     # start_logging()
@@ -79,7 +79,6 @@ def main()-> None:
     if "SAMPLE_IMAGES" not in st.session_state:
         st.session_state["SAMPLE_IMAGES"] = []
 
-
     # Header
     instructions_ui()
 
@@ -116,6 +115,7 @@ def main()-> None:
             generators_ui()
         with tab2:
             samples_list()
+
 
 if __name__ == "__main__":
     main()
